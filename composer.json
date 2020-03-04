@@ -1,0 +1,20 @@
+{
+    "name": "quizapp/quizapp",
+    "description": "Quiz app with a highlight",
+    "type": "library",
+    "authors": [
+        {
+            "name": "apostola",
+            "email": "alexei.postolachi@evozon.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/ApostolaT/mvc-framework-skeleton.git"
+        }
+    ],
+    "require": {
+        "mvc/mvc": "dev-master"
+    }
+}
