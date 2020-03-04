@@ -16,10 +16,15 @@
         {
             "type": "vcs",
             "url": "https://github.com/ApostolaT/reallyOrmSkeleton.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/ApostolaT/codeHighlightLib.git"
         }
     ],
     "require": {
         "mvc/mvc": "dev-master",
-        "really-orm-skeleton/really-orm-skeleton": "dev-master"
+        "really-orm-skeleton/really-orm-skeleton": "dev-master",
+        "chl/chl": "dev-master"
     }
 }
