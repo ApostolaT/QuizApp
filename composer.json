@@ -12,9 +12,14 @@
         {
             "type": "vcs",
             "url": "https://github.com/ApostolaT/mvc-framework-skeleton.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/ApostolaT/reallyOrmSkeleton.git"
         }
     ],
     "require": {
-        "mvc/mvc": "dev-master"
+        "mvc/mvc": "dev-master",
+        "really-orm-skeleton/really-orm-skeleton": "dev-master"
     }
 }
