@@ -1,7 +1,4 @@
-<?php
-?>
-
-<p id="demo" style="font-size: 30px; font-weight: bold"></p>
+<p id="demo" style="text-align:center; display:block; margin: 0 auto; margin-top:400px; width: 500px; font-size: 30px; font-weight: bold"></p>
 
 <script>
     // Set the date we're counting down to
@@ -33,3 +30,11 @@
         }
     }, 1000);
 </script>
+<?php
+
+$baseDir = dirname(__DIR__);
+require $baseDir.'/vendor/autoload.php';
+
+
+
+
