@@ -1,5 +1,5 @@
 {
-    "name": "quizapp/quizapp",
+    "name": "QuizApp/QuizApp",
     "description": "Quiz app with a highlight",
     "type": "library",
     "authors": [
@@ -26,5 +26,10 @@
         "mvc/mvc": "dev-master",
         "really-orm-skeleton/really-orm-skeleton": "dev-master",
         "chl/chl": "dev-master"
+    },
+    "autoload": {
+    "psr-4": {
+        "QuizApp\\": "src/"
     }
+}
 }
