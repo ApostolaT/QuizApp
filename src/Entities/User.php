@@ -19,6 +19,11 @@ class User extends AbstractEntity
     /**
      * @ORM
      */
+    private $password;
+
+    /**
+     * @ORM
+     */
     public function setName(string $name)
     {
         $this->name = $name;
@@ -27,7 +32,7 @@ class User extends AbstractEntity
     /**
      * @ORM
      */
-    public function setRole(int $role)
+    public function setRole(string $role)
     {
         $this->role = $role;
     }
@@ -46,5 +51,21 @@ class User extends AbstractEntity
     public function getRole()
     {
         return $this->role;
+    }
+
+    /**
+     * @ORM
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * @ORM
+     */
+    public function setPassword(string $password)
+    {
+        $this->password = $password;
     }
 }

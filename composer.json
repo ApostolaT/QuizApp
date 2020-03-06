@@ -25,7 +25,8 @@
     "require": {
         "mvc/mvc": "dev-master",
         "really-orm-skeleton/really-orm-skeleton": "dev-master",
-        "chl/chl": "dev-master"
+        "chl/chl": "dev-master",
+        "ext-pdo": "*"
     },
     "autoload": {
     "psr-4": {

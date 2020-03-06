@@ -17,9 +17,9 @@ $configuration = [
                 "attributes" => []
             ],
             "user_log_in" => [
-                Router::CONFIG_KEY_PATH => "/user",
+                Router::CONFIG_KEY_PATH => "/login",
                 "controller" => "user",
-                "action" => "logIn",
+                "action" => "loginAction",
                 "method" => "POST",
                 "attributes" => []
             ]
