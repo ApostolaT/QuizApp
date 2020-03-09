@@ -4,6 +4,7 @@
 namespace QuizApp\Controllers;
 
 use Framework\Controller;
+use Framework\Session\Session;
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Services\AbstractService;
 

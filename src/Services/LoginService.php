@@ -18,7 +18,7 @@ class LoginService extends AbstractService
         $this->repositoryManager = $repositoryManager;
     }
 
-    public function userLogIn(RequestInterface $request)
+    public function userLogIn(RequestInterface $request, $session)
     {
         $email =  $request->getParameter("email");
         $password =  $request->getParameter("password");
@@ -30,7 +30,6 @@ class LoginService extends AbstractService
         $role = $entity->getRole();
 
         if (password_verify($password, $dbParam)) {
-            $session = new Session();
             $session->set('name', $email);
             $session->set('role', $role);
 

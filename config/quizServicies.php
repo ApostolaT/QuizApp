@@ -30,6 +30,8 @@ $container->setParameter("dbUser", $dbUser);
 $container->setParameter("dbPassword", $dbPassword);
 $container->setParameter("options", $options);
 
+$session = $container
+    ->register(\Framework\Session\Session::class, \Framework\Session\Session::class);
 $container
     ->register(Framework\Contracts\RouterInterface::class, Framework\Router\Router::class)
     ->addArgument('%MVCconfig%');
@@ -45,6 +47,9 @@ $container
 $loginService = $container
     ->register(\QuizApp\Services\LoginService::class, \QuizApp\Services\LoginService::class)
     ->addTag('service');
+$quizService = $container
+    ->register(\QuizApp\Services\QuizService::class, \QuizApp\Services\QuizService::class)
+    ->addTag('service');
 $container
     ->register(QuizApp\Entities\User::class, QuizApp\Entities\User::class);
 $repositoryManager = $container
@@ -58,8 +63,18 @@ $container
     ->addArgument(QuizApp\Entities\User::class)
     ->addArgument(new Reference(Hydrator::class))
     ->addTag("repository");
+$container
+    ->register(QuizApp\Repositories\QuizRepository::class, QuizApp\Repositories\QuizRepository::class)
+    ->addArgument(new Reference(PDO::class))
+    ->addArgument(QuizApp\Entities\QuizTemplate::class)
+    ->addArgument(new Reference(Hydrator::class))
+    ->addTag("repository");
 $userController = $container
     ->register(QuizApp\Controllers\UserController::class, QuizApp\Controllers\UserController::class)
+    ->addArgument(new Reference(Framework\Contracts\RendererInterface::class))
+    ->addTag('controller');
+$quizController = $container
+    ->register(QuizApp\Controllers\QuizController::class, QuizApp\Controllers\QuizController::class)
     ->addArgument(new Reference(Framework\Contracts\RendererInterface::class))
     ->addTag('controller');
 $loginController = $container
@@ -83,9 +98,11 @@ foreach ($container->findTaggedServiceIds('service') as $id => $tags) {
 
 foreach ($container->findTaggedServiceIds('controller') as $id => $tags) {
     $controller = $container->getDefinition($id);
+    $controller->addMethodCall('setSession', [$session]);
     $dispatcher->addMethodCall("addController", [$controller]);
 }
 
 $loginController->addMethodCall('setService', [$loginService]);
+$quizController->addMethodCall('setService', [$quizService]);
 
 return new \Framework\DependencyInjection\SymfonyContainer($container);

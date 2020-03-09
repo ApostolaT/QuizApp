@@ -28,17 +28,17 @@
 <body>
     <!--Header-->
     <div class="d-flex flex-column flex-md-row align-items-center p-3 mb-3 bg-light border-bottom shadow-sm">
-        <h5 class="my-0 mr-md-auto font-weight-normal">Project name</h5>
+        <h5 class="my-0 mr-md-auto font-weight-normal">QuizApp</h5>
         <nav class="my-2 my-md-0 mr-md-3">
-            <span class="p-2 text-dark">Hello, Admin name!</span>
+            <span class="p-2 text-dark">Hello, <?php echo $session->get('name'); ?></span>
         </nav>
-        <a class="btn btn-secondary" href="#">Logout</a>
+        <a class="btn btn-secondary" href="/logout">Logout</a>
     </div>
 
     <!--Breadcrumbs-->
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb px-3 py-0 mb-3">
-            <li class="breadcrumb-item" ><a href="#">Dashboard</a></li>
+            <li class="breadcrumb-item" ><a href="/">Dashboard</a></li>
             <li class="breadcrumb-item active" aria-current="page">Quizzes listing</li>
         </ol>
     </nav>
@@ -65,7 +65,7 @@
                 </form>
             </div>
             <div class="col-12 col-md-6 d-flex align-items-end justify-content-end">
-                <a class="btn btn-primary py-1" href="#">Add new quiz</a>
+                <a class="btn btn-primary py-1" href="/quiz/add">Add new quiz</a>
             </div>
         </div>
 

@@ -11,7 +11,6 @@ use ReallyOrm\Exceptions\NoSuchRowException;
 class LoginController extends AbstractController
 {
     private $loginService;
-    private $session;
 
     public function setService(AbstractService $service)
     {
@@ -20,20 +19,31 @@ class LoginController extends AbstractController
 
     public function getLoginPage(RequestInterface $request)
     {
-        $response = $this->renderer->renderView("login.phtml", $request->getRequestParameters());
-        return $response;
+        if($this->session->get('name') === null) {
+            return $this->renderer->renderView("login.phtml", $request->getRequestParameters());
+        }
+
+        return $this->loginAction($request);
     }
 
     public function loginAction(RequestInterface $request)
     {
         try {
-            $this->session = $this->loginService->userLogIn($request);
+            if($this->session->get('name') === null) {
+                $this->session = $this->loginService->userLogIn($request, $this->session);
+            }
             return
                 ($this->session->get('role') === 'admin') ?
                     $this->renderer->renderView("admin-dashboard.phtml", ["session" => $this->session])
-                    : $this->renderer->renderView("candidate-quiz-page.html", ["session" => $this->session]);
+                    : $this->renderer->renderView("candidate-quiz-listing.html", ["session" => $this->session]);
         } catch (NoSuchRowException $e) {
             return  $this->renderer->renderView("login.phtml", ["error" => "Wrong input, just try again"]);
         }
+    }
+
+    public function logoutAction(RequestInterface $request)
+    {
+        $this->session->destroy();
+        return $this->renderer->renderView("login.phtml", $request->getRequestParameters());
     }
 }
