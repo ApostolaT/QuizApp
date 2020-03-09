@@ -42,6 +42,9 @@ $container
     ->addArgument('%dbUser%')
     ->addArgument('%dbPassword%')
     ->addArgument('%options%');
+$loginService = $container
+    ->register(\QuizApp\Services\LoginService::class, \QuizApp\Services\LoginService::class)
+    ->addTag('service');
 $container
     ->register(QuizApp\Entities\User::class, QuizApp\Entities\User::class);
 $repositoryManager = $container
@@ -55,8 +58,12 @@ $container
     ->addArgument(QuizApp\Entities\User::class)
     ->addArgument(new Reference(Hydrator::class))
     ->addTag("repository");
-$container
+$userController = $container
     ->register(QuizApp\Controllers\UserController::class, QuizApp\Controllers\UserController::class)
+    ->addArgument(new Reference(Framework\Contracts\RendererInterface::class))
+    ->addTag('controller');
+$loginController = $container
+    ->register(QuizApp\Controllers\LoginController::class, QuizApp\Controllers\LoginController::class)
     ->addArgument(new Reference(Framework\Contracts\RendererInterface::class))
     ->addTag('controller');
 $dispatcher = $container
@@ -69,10 +76,16 @@ foreach ($container->findTaggedServiceIds('repository') as $id => $tags) {
     $repositoryManager->addMethodCall("addRepository", [$repository]);
 }
 
+foreach ($container->findTaggedServiceIds('service') as $id => $tags) {
+    $service = $container->getDefinition($id);
+    $service->addMethodCall('setRepositoryManager', [$repositoryManager]);
+}
+
 foreach ($container->findTaggedServiceIds('controller') as $id => $tags) {
     $controller = $container->getDefinition($id);
-    $controller->addMethodCall("setRepositoryManager", [$repositoryManager]);
     $dispatcher->addMethodCall("addController", [$controller]);
 }
+
+$loginController->addMethodCall('setService', [$loginService]);
 
 return new \Framework\DependencyInjection\SymfonyContainer($container);

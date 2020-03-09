@@ -5,42 +5,15 @@ namespace QuizApp\Controllers;
 
 use Framework\Controller;
 use Psr\Http\Message\RequestInterface;
-use ReallyOrm\Repository\RepositoryManagerInterface;
-use ReallyOrm\Test\Repository\RepositoryManager;
-use QuizApp\Repositories\UserRepository;
+use QuizApp\Services\AbstractService;
 
 class UserController extends Controller\AbstractController
 {
-    private $repositoryManager;
+    private $userService;
 
-    public function setRepositorymanager(RepositoryManagerInterface $repositoryManager)
+    public function setService(AbstractService $userService)
     {
-        $this->repositoryManager = $repositoryManager;
-    }
-
-    public function getLoginPage(RequestInterface $request)
-    {
-        $response = $this->renderer->renderView("login.html", $request->getRequestParameters());
-        return $response;
-    }
-
-    public function loginAction(RequestInterface $request)
-    {
-        $email =  $request->getParameter("email");
-        $password =  $request->getParameter("password");
-
-        echo $email.'<br>';
-        echo $password;
-
-        $repository = $this->repositoryManager->getRepository(UserRepository::class);
-
-        $entity = $repository->findOneBy(['name' => $email]);
-        $dbParam = $entity->getPassword();
-
-
-        if (password_verify($password, $dbParam))
-            echo "salut";
-        return null;
+        $this->userService = $userService;
     }
 
     public function getId(RequestInterface $request)

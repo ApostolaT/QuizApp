@@ -11,14 +11,14 @@ $configuration = [
         "routes" => [
             "log_in_page" => [
                 Router::CONFIG_KEY_PATH => "/",
-                "controller" => "user",
+                "controller" => "login",
                 "action" => "getLoginPage",
                 "method" => "GET",
                 "attributes" => []
             ],
             "user_log_in" => [
                 Router::CONFIG_KEY_PATH => "/login",
-                "controller" => "user",
+                "controller" => "login",
                 "action" => "loginAction",
                 "method" => "POST",
                 "attributes" => []

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "367800430fe41c6ac0b9180ab915052e",
+    "content-hash": "99605e335af1b9df403a98c909a89bd1",
     "packages": [
         {
             "name": "chl/chl",
@@ -936,12 +936,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ApostolaT/reallyOrmSkeleton.git",
-                "reference": "9075ffd72c225d5b52094a8779d0b7bc6846b395"
+                "reference": "cb3cfe4b5c4a7ab82edb8b9226797b67694cd72f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ApostolaT/reallyOrmSkeleton/zipball/9075ffd72c225d5b52094a8779d0b7bc6846b395",
-                "reference": "9075ffd72c225d5b52094a8779d0b7bc6846b395",
+                "url": "https://api.github.com/repos/ApostolaT/reallyOrmSkeleton/zipball/cb3cfe4b5c4a7ab82edb8b9226797b67694cd72f",
+                "reference": "cb3cfe4b5c4a7ab82edb8b9226797b67694cd72f",
                 "shasum": ""
             },
             "require": {
@@ -967,7 +967,7 @@
             "support": {
                 "source": "https://github.com/ApostolaT/reallyOrmSkeleton/tree/master"
             },
-            "time": "2020-03-04T15:48:59+00:00"
+            "time": "2020-03-09T11:13:12+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -1872,6 +1872,8 @@
     },
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "ext-pdo": "*"
+    },
     "platform-dev": []
 }
