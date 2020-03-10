@@ -32,13 +32,13 @@
         <nav class="my-2 my-md-0 mr-md-3">
             <span class="p-2 text-dark">Hello, Admin name!</span>
         </nav>
-        <a class="btn btn-secondary" href="#">Logout</a>
+        <a class="btn btn-secondary" href="/logout">Logout</a>
     </div>
 
     <!--Breadcrumbs-->
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb px-3 py-0 mb-3">
-            <li class="breadcrumb-item" ><a href="#">Dashboard</a></li>
+            <li class="breadcrumb-item" ><a href="/quiz/1">Dashboard</a></li>
             <li class="breadcrumb-item active" aria-current="page">Quiz details</li>
         </ol>
     </nav>
@@ -50,23 +50,30 @@
         </div>
 
         <!--Quiz details form-->
-        <form>
+        <form action="<?php
+            if (isset($entity))
+                echo '/quiz/add/'.$entity->getId().'" method="POST">';
+            else
+                echo '/quiz/add'.'" method="POST">';
+                if (isset($entity)) {
+                    echo '<div class="form-group">
+                    <label for="quizName">Name</label>
+                    <input type="text" class="form-control" id="quizName" name="name" value="' . $entity->getName() . '">
+                </div>';
+                } else {
+                    echo '<div class="form-group">
+                    <label for="quizName">Name</label>
+                    <input type="text" class="form-control" id="quizName" name="name" placeholder="Quiz Name">
+                </div>';
+                }
+            ?>
             <div class="form-group">
-                <label for="quizName">Name</label>
-                <input type="text" class="form-control" id="quizName" placeholder="Quiz name">
-            </div>
-            <div class="form-group">
-                <label for="quizDescription">Description</label>
-                <input type="text" class="form-control" id="quizDescription" placeholder="Quiz description">
-            </div>
-            <div class="form-group">
-                <label for="quizQuestions">Questions</label>
-                <select class="form-control" id="quizQuestions" multiple>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
+                <label for="quizType">Type</label>
+                <select class="form-control" id="quizType" name="type">
+                    <?php
+                    foreach ($entities as $key =>$value)
+                        echo '<option value="'.$value->getId().'">'.$value->getName().'</option>';
+                        ?>
                 </select>
             </div>
             <div class="text-center">

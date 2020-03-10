@@ -32,35 +32,56 @@ $container->setParameter("options", $options);
 
 $session = $container
     ->register(\Framework\Session\Session::class, \Framework\Session\Session::class);
+
 $container
     ->register(Framework\Contracts\RouterInterface::class, Framework\Router\Router::class)
     ->addArgument('%MVCconfig%');
 $container
     ->register(Framework\Contracts\RendererInterface::class, Framework\Render\Renderer::class)
     ->addArgument('%baseViewPath%');
+
 $container
     ->register(PDO::class, PDO::class)
     ->addArgument('%dsn%')
     ->addArgument('%dbUser%')
     ->addArgument('%dbPassword%')
     ->addArgument('%options%');
+
 $loginService = $container
     ->register(\QuizApp\Services\LoginService::class, \QuizApp\Services\LoginService::class)
     ->addTag('service');
 $quizService = $container
     ->register(\QuizApp\Services\QuizService::class, \QuizApp\Services\QuizService::class)
     ->addTag('service');
+$userService = $container
+    ->register(\QuizApp\Services\UserService::class, \QuizApp\Services\UserService::class)
+    ->addTag('service');
+$questionService = $container
+    ->register(\QuizApp\Services\QuestionService::class, \QuizApp\Services\QuestionService::class)
+    ->addTag('service');
+
 $container
     ->register(QuizApp\Entities\User::class, QuizApp\Entities\User::class);
+$container
+    -> register(\QuizApp\Entities\QuizType::class, \QuizApp\Entities\QuizType::class);
+
 $repositoryManager = $container
     ->register(RepositoryManager::class, RepositoryManager::class);
+
 $container
     ->register(Hydrator::class, Hydrator::class)
     ->addArgument(new Reference(RepositoryManager::class));
+
 $container
     ->register(QuizApp\Repositories\UserRepository::class, QuizApp\Repositories\UserRepository::class)
     ->addArgument(new Reference(PDO::class))
     ->addArgument(QuizApp\Entities\User::class)
+    ->addArgument(new Reference(Hydrator::class))
+    ->addTag("repository");
+$container
+    ->register(QuizApp\Repositories\QuizTypeRepository::class, QuizApp\Repositories\QuizTypeRepository::class)
+    ->addArgument(new Reference(PDO::class))
+    ->addArgument(QuizApp\Entities\QuizType::class)
     ->addArgument(new Reference(Hydrator::class))
     ->addTag("repository");
 $container
@@ -69,6 +90,13 @@ $container
     ->addArgument(QuizApp\Entities\QuizTemplate::class)
     ->addArgument(new Reference(Hydrator::class))
     ->addTag("repository");
+$container
+    ->register(QuizApp\Repositories\QuestionRepository::class, QuizApp\Repositories\QuestionRepository::class)
+    ->addArgument(new Reference(PDO::class))
+    ->addArgument(QuizApp\Entities\QuestionTemplate::class)
+    ->addArgument(new Reference(Hydrator::class))
+    ->addTag("repository");
+
 $userController = $container
     ->register(QuizApp\Controllers\UserController::class, QuizApp\Controllers\UserController::class)
     ->addArgument(new Reference(Framework\Contracts\RendererInterface::class))
@@ -81,6 +109,11 @@ $loginController = $container
     ->register(QuizApp\Controllers\LoginController::class, QuizApp\Controllers\LoginController::class)
     ->addArgument(new Reference(Framework\Contracts\RendererInterface::class))
     ->addTag('controller');
+$questionController = $container
+    ->register(QuizApp\Controllers\QuestionController::class, QuizApp\Controllers\QuestionController::class)
+    ->addArgument(new Reference(Framework\Contracts\RendererInterface::class))
+    ->addTag('controller');
+
 $dispatcher = $container
     ->register(Framework\Contracts\DispatcherInterface::class, Framework\Dispatcher\Dispatcher::class)
     ->addArgument('%controllerName%')
@@ -104,5 +137,7 @@ foreach ($container->findTaggedServiceIds('controller') as $id => $tags) {
 
 $loginController->addMethodCall('setService', [$loginService]);
 $quizController->addMethodCall('setService', [$quizService]);
+$userController->addMethodCall('setService', [$userService]);
+$questionController->addMethodCall('setService', [$questionService]);
 
 return new \Framework\DependencyInjection\SymfonyContainer($container);

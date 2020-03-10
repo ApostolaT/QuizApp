@@ -7,19 +7,17 @@ namespace QuizApp\Controllers;
 use Framework\Controller\AbstractController;
 use Framework\Http\Response;
 use Framework\Http\Stream;
-use phpDocumentor\Reflection\Location;
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Services\AbstractService;
 use ReallyOrm\Exceptions\NoSuchRowException;
 
-
-class QuizController extends AbstractController
+class QuestionController extends AbstractController
 {
-    private $quizService;
+    private $questionService;
 
-    public function setService(AbstractService $quizService)
+    public function setService(AbstractService $questionService)
     {
-        $this->quizService = $quizService;
+        $this->questionService = $questionService;
     }
 
     public function listAll(RequestInterface $request)
@@ -27,50 +25,48 @@ class QuizController extends AbstractController
         // TODO create a check function for session
         if ($this->session->get('name') !== null) {
             try {
-                $entities = $this->quizService->getAll($request);
-                return $this->renderer->renderView("admin-quizzes-listing.phtml", ['session' => $this->session, 'entities' => $entities]);
+                $entities = $this->questionService->getAll($request);
+                return $this->renderer->renderView("admin-questions-listing.phtml", ['session' => $this->session, 'entities' => $entities]);
             } catch (NoSuchRowException $e) {
-                return $this->renderer->renderView("admin-quizzes-listing.phtml", ['session' => $this->session]);
+                return $this->renderer->renderView("admin-questions-listing.phtml", ['session' => $this->session]);
             }
         }
 
         return $this->renderer->renderView("login.phtml", []);
     }
 
-    public function goToAddQuiz(RequestInterface $request)
+    public function goToAddQuestion(RequestInterface $request)
     {
         if ($this->session->get('name') !== null) {
-            $entities = $this->quizService->getType();
-
-            return $this->renderer->renderView("admin-quiz-details.phtml", ['session' => $this->session, 'entities' => $entities]);
+            return $this->renderer->renderView("admin-question-details.phtml", ['session' => $this->session]);
         }
 
         return $this->renderer->renderView("login.phtml", $request->getRequestParameters());
     }
 
-    public function addQuiz(RequestInterface $request)
+    public function addQuestion(RequestInterface $request)
     {
         if ($this->session->get('name') !== null) {
-            if ($this->quizService->createEntity($request, $this->session)) {
+            if ($this->questionService->createEntity($request, $this->session)) {
                 $response = new Response(Stream::createFromString(' '), []);
                 $response = $response->withStatus(301);
-                $response = $response->withHeader('Location', 'http://local.quiz.com/quiz/1');
+                $response = $response->withHeader('Location', 'http://local.quiz.com/question/1');
 
                 return $response;
             }
-            $this->goToAddQuiz($request);
+            $this->goToAddQuestion($request);
         }
 
         return $this->renderer->renderView("login.phtml", $request->getRequestParameters());
     }
 
-    public function deleteQuiz(RequestInterface $request)
+    public function deleteQuestion(RequestInterface $request)
     {
         if ($this->session->get('name') !== null) {
-            if ($this->quizService->delete($request)) {
+            if ($this->questionService->delete($request)) {
                 $response = new Response(Stream::createFromString(' '), []);
                 $response = $response->withStatus(301);
-                $response = $response->withHeader('Location', 'http://local.quiz.com/quiz/1');
+                $response = $response->withHeader('Location', 'http://local.quiz.com/question/1');
 
                 return $response;
             }
@@ -80,28 +76,27 @@ class QuizController extends AbstractController
         return $this->renderer->renderView("login.phtml", $request->getRequestParameters());
     }
 
-    public function getUpdateQuizPage(RequestInterface $request)
+    public function getUpdateQuestionPage(RequestInterface $request)
     {
         if ($this->session->get('name') !== null) {
-            $entity = $this->quizService->getUpdatePageParams($request);
-            $entities = $this->quizService->getType();
+            $entity = $this->questionService->getUpdatePageParams($request);
 
-            return $this->renderer->renderView('admin-quiz-details.phtml', ['session' => $this->session, 'entity' => $entity, 'entities' => $entities]);
+            return $this->renderer->renderView('admin-question-details.phtml', ['session' => $this->session, 'entity' => $entity]);
         }
         return $this->renderer->renderView("login.phtml", $request->getRequestParameters());
     }
 
-    public function updateQuiz(RequestInterface $request)
+    public function updateQuestion(RequestInterface $request)
     {
         if ($this->session->get('name') !== null) {
-            if ($this->quizService->updateEntity($request, $this->session)) {
+            if ($this->questionService->updateEntity($request, $this->session)) {
                 $response = new Response(Stream::createFromString(' '), []);
                 $response = $response->withStatus(301);
-                $response = $response->withHeader('Location', 'http://local.quiz.com/quiz/1');
+                $response = $response->withHeader('Location', 'http://local.quiz.com/question/1');
 
                 return $response;
             }
-            $this->goToAddQuiz($request);
+            $this->goToAddQuestion($request);
         }
     }
 }

@@ -30,10 +30,13 @@ class LoginService extends AbstractService
         $role = $entity->getRole();
 
         if (password_verify($password, $dbParam)) {
+            $session->set('id', $entity->getId());
             $session->set('name', $email);
             $session->set('role', $role);
 
             return $session;
         }
+
+        // TODO throw excepion
     }
 }

@@ -1,31 +1,29 @@
 <?php include 'header.phtml'; ?>
-            <li class="breadcrumb-item active" aria-current="page">Quizzes listing</li>
+            <li class="breadcrumb-item active" aria-current="page">Users listing</li>
         </ol>
     </nav>
 
     <div class="container">
         <!--Page title block-->
         <div class="text-center">
-            <h1>Quizzes listing</h1>
+            <h1>Users listing</h1>
         </div>
 
         <!--Table actions block-->
         <div class="row">
             <div class="col-12 col-md-6">
                 <form action="">
-                    <label for="quizSearch">Quiz name search</label>
-                    <div class="input-group">
-                        <input type="text" id="quizSearch" class="form-control" placeholder="">
-                        <div class="input-group-append">
-                            <button class="btn btn-secondary" type="submit">
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </div>
+                    <div class="form-group">
+                        <label for="roleSearch">User role select</label>
+                        <select class="form-control" id="roleSearch">
+                            <option>admin</option>
+                            <option>user</option>
+                        </select>
                     </div>
                 </form>
             </div>
             <div class="col-12 col-md-6 d-flex align-items-end justify-content-end">
-                <a class="btn btn-primary py-1" href="/quiz/add">Add new quiz</a>
+                <a class="btn btn-primary py-1 mb-3" href="/user/add">Add new user</a>
             </div>
         </div>
 
@@ -36,29 +34,28 @@
                 <tr>
                     <!--Sorting arrow are displayed using the 'asc','dsc' classes-->
                     <th scope="col" class="sorting-header asc dsc">ID</th>
-                    <th scope="col">Quiz</th>
-                    <th scope="col">Type</th>
-                    <th scope="col">Created By</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Role</th>
                     <th scope="col">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 <?php
-                    if (isset($entities)) {
-                        foreach ($entities as $key => $values) {
-                            ;
-                            echo '<tr>
+                if (isset($entities)) {
+                    foreach ($entities as $key => $values) {
+                        ;
+                        echo '<tr>
                     <th scope="row">' . $values->getId() . '</th>
                     <td>' . $values->getName() . '</td>
-                    <td>' . $values->getType() . '</td>
-                    <td>' . $values->getCreatedBy() . '</td>
+                    <td>' . $values->getRole() . '</td>
+                   
                     <td class="text-center">
-                        <a class="btn btn-primary py-1" href="/quiz/add/' . $values->getId() . '">Edit</a>
+                        <a class="btn btn-primary py-1" href="/user/add/' . $values->getId() . '">Edit</a>
                         <a class="btn btn-danger py-1" href="delete/' . $values->getId() . '">Delete</a>
                     </td>
                 </tr>';
-                        }
                     }
+                }
                 ?>
                 </tbody>
             </table>

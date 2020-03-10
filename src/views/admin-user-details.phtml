@@ -1,0 +1,43 @@
+<?php require "header.phtml"; ?>
+            <li class="breadcrumb-item active" aria-current="page">User details</li>
+        </ol>
+    </nav>
+
+    <div class="container">
+        <!--Page title block-->
+        <div class="text-center">
+            <h1>New user / Edit user</h1>
+        </div>
+
+        <!--UserController details form-->
+        <form action="<?php
+        if (isset($entity))
+            echo '/user/add/'.$entity->getId().'" method="POST">';
+        else
+            echo '/user/add'.'" method="POST">';
+        if (isset($entity)) {
+            echo '<div class="form-group">
+                <label for="userEmail">Email</label>
+                <input type="email" class="form-control" id="userEmail" name="email" value="'.$entity->getName().'">
+            </div>';
+        } else {
+            echo '<div class="form-group">
+                <label for="userEmail">Email</label>
+                <input type="email" class="form-control" id="userEmail" name="email" placeholder="User email">
+            </div>';
+        }
+        ?>
+            <div class="form-group">
+                <label for="userRole">Role</label>
+                <select class="form-control" name="role" id="userRole">
+                    <option value="admin">admin</option>
+                    <option value="user">user</option>
+                </select>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

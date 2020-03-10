@@ -6,6 +6,7 @@ use ReallyOrm\Entity\AbstractEntity;
 
 class QuestionTemplate extends AbstractEntity
 {
+
     /**
      * @ORM
      */

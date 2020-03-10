@@ -38,7 +38,7 @@ class LoginController extends AbstractController
                     : $this->renderer->renderView("candidate-quiz-listing.html", ["session" => $this->session]);
         } catch (NoSuchRowException $e) {
             return  $this->renderer->renderView("login.phtml", ["error" => "Wrong input, just try again"]);
-        }
+        }// TODO catch exception
     }
 
     public function logoutAction(RequestInterface $request)
