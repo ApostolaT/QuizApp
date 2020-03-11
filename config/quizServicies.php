@@ -96,7 +96,23 @@ $container
     ->addArgument(QuizApp\Entities\QuestionTemplate::class)
     ->addArgument(new Reference(Hydrator::class))
     ->addTag("repository");
+$container
+    ->register(QuizApp\Repositories\TextRepository::class, QuizApp\Repositories\TextRepository::class)
+    ->addArgument(new Reference(PDO::class))
+    ->addArgument(QuizApp\Entities\TextTemplate::class)
+    ->addArgument(new Reference(Hydrator::class))
+    ->addTag("repository");
+$container
+    ->register(QuizApp\Repositories\QuizQuestionTemplateRepository::class, QuizApp\Repositories\QuizQuestionTemplateRepository::class)
+    ->addArgument(new Reference(PDO::class))
+    ->addArgument(QuizApp\Entities\QuizQuestionTemplate::class)
+    ->addArgument(new Reference(Hydrator::class))
+    ->addTag("repository");
 
+$userController = $container
+    ->register(QuizApp\Controllers\ErrorController::class, QuizApp\Controllers\ErrorController::class)
+    ->addArgument(new Reference(Framework\Contracts\RendererInterface::class))
+    ->addTag('controller');
 $userController = $container
     ->register(QuizApp\Controllers\UserController::class, QuizApp\Controllers\UserController::class)
     ->addArgument(new Reference(Framework\Contracts\RendererInterface::class))
@@ -136,7 +152,8 @@ foreach ($container->findTaggedServiceIds('controller') as $id => $tags) {
 }
 
 $loginController->addMethodCall('setService', [$loginService]);
-$quizController->addMethodCall('setService', [$quizService]);
+$quizController->addMethodCall('setQuizService', [$quizService]);
+$quizController->addMethodCall('setQuestionService', [$questionService]);
 $userController->addMethodCall('setService', [$userService]);
 $questionController->addMethodCall('setService', [$questionService]);
 

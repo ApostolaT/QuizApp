@@ -1,6 +1,8 @@
 <?php
 
 
+// TODO if not routematch go to not found
+
 namespace QuizApp\Controllers;
 
 
@@ -31,8 +33,11 @@ class QuestionController extends AbstractController
                 return $this->renderer->renderView("admin-questions-listing.phtml", ['session' => $this->session]);
             }
         }
+        $response = new Response(Stream::createFromString(' '), []);
+        $response = $response->withStatus(301);
+        $response = $response->withHeader('Location', 'http://local.quiz.com');
 
-        return $this->renderer->renderView("login.phtml", []);
+        return $response;
     }
 
     public function goToAddQuestion(RequestInterface $request)
@@ -40,8 +45,11 @@ class QuestionController extends AbstractController
         if ($this->session->get('name') !== null) {
             return $this->renderer->renderView("admin-question-details.phtml", ['session' => $this->session]);
         }
+        $response = new Response(Stream::createFromString(' '), []);
+        $response = $response->withStatus(301);
+        $response = $response->withHeader('Location', 'http://local.quiz.com');
 
-        return $this->renderer->renderView("login.phtml", $request->getRequestParameters());
+        return $response;
     }
 
     public function addQuestion(RequestInterface $request)
@@ -56,8 +64,11 @@ class QuestionController extends AbstractController
             }
             $this->goToAddQuestion($request);
         }
+        $response = new Response(Stream::createFromString(' '), []);
+        $response = $response->withStatus(301);
+        $response = $response->withHeader('Location', 'http://local.quiz.com');
 
-        return $this->renderer->renderView("login.phtml", $request->getRequestParameters());
+        return $response;
     }
 
     public function deleteQuestion(RequestInterface $request)
@@ -73,17 +84,25 @@ class QuestionController extends AbstractController
 
             return $this->listAll($request);
         }
-        return $this->renderer->renderView("login.phtml", $request->getRequestParameters());
+        $response = new Response(Stream::createFromString(' '), []);
+        $response = $response->withStatus(301);
+        $response = $response->withHeader('Location', 'http://local.quiz.com');
+
+        return $response;
     }
 
     public function getUpdateQuestionPage(RequestInterface $request)
     {
         if ($this->session->get('name') !== null) {
-            $entity = $this->questionService->getUpdatePageParams($request);
+            $entities = $this->questionService->getUpdatePageParams($request);
 
-            return $this->renderer->renderView('admin-question-details.phtml', ['session' => $this->session, 'entity' => $entity]);
+            return $this->renderer->renderView('admin-question-details.phtml', ['session' => $this->session, 'question' => $entities["question"], 'answer'=>$entities["answer"]]);
         }
-        return $this->renderer->renderView("login.phtml", $request->getRequestParameters());
+        $response = new Response(Stream::createFromString(' '), []);
+        $response = $response->withStatus(301);
+        $response = $response->withHeader('Location', 'http://local.quiz.com');
+
+        return $response;
     }
 
     public function updateQuestion(RequestInterface $request)

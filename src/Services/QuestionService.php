@@ -7,7 +7,9 @@ namespace QuizApp\Services;
 use Framework\Controller\AbstractController;
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Entities\QuestionTemplate;
+use QuizApp\Entities\TextTemplate;
 use QuizApp\Repositories\QuestionRepository;
+use QuizApp\Repositories\TextRepository;
 use ReallyOrm\Repository\RepositoryManagerInterface;
 
 class QuestionService extends AbstractService
@@ -17,6 +19,13 @@ class QuestionService extends AbstractService
     public function setRepositoryManager(RepositoryManagerInterface $repositoryManager)
     {
         $this->repositoryManager = $repositoryManager;
+    }
+
+    public function selectAll()
+    {
+        $repository = $this->repositoryManager->getRepository(QuestionRepository::class);
+
+        return $repository->findBy([], [], 0, 0);
     }
 
     public function getAll(RequestInterface $request)
@@ -33,26 +42,45 @@ class QuestionService extends AbstractService
 
     public function createEntity($request)
     {
-        $repository = $this->repositoryManager->getRepository(QuestionRepository::class);
-        $name = $request->getParameter('email');
-        $type = $request->getParameter('role');
-        $password = "";
+        $questionRepository = $this->repositoryManager->getRepository(QuestionRepository::class);
+        $text = $request->getParameter('question');
+        $answer = $request->getParameter('answer');
+        $type = $request->getParameter('type');
+
+        $repositoryType = "QuizApp\Repositories\\".ucfirst(strtolower($type))."Repository";
+        $textRepository = $this->repositoryManager->getRepository($repositoryType);
+
+        // TODO check the answer if empty
 
         $entity = new QuestionTemplate();
-        $entity->setName($name);
-        $entity->setPassword($password);
-        $entity->setRole($type);
+        $entity->setText($text);
+        $entity->setType($type);
 
-        return $repository->insertOnDuplicateKeyUpdate($entity);
+        if ($questionRepository->insertOnDuplicateKeyUpdate($entity)) {
+            $id = $questionRepository->getLastInsertedId();
+            $questionType = new TextTemplate();
+            $questionType->setText($answer);
+            $questionType->setQuestionTemplateId($id);
+
+             return $textRepository->insertOnDuplicateKeyUpdate($questionType);
+        }
+
+        return false;
     }
 
     public function delete($request) {
         $repository = $this->repositoryManager->getRepository(QuestionRepository::class);
-        $id = $request->getRequestParameters()['id'];
 
+        $id = $request->getRequestParameters()['id'];
         $entity = $repository->find((int)$id);
 
-        return $repository->delete($entity);
+        $type = $entity->getType();
+        $repositoryType = "QuizApp\Repositories\\".ucfirst(strtolower($type))."Repository";
+        $textRepository = $this->repositoryManager->getRepository($repositoryType);
+
+        $answer = $textRepository->findOneBy(["questionTemplateId" => (int)$id]);
+
+        return ($textRepository->delete($answer) && $repository->delete($entity));
     }
 
     public function getUpdatePageParams(RequestInterface $request)
@@ -61,7 +89,13 @@ class QuestionService extends AbstractService
         $repository = $this->repositoryManager->getrepository(QuestionRepository::class);
         $entity = $repository->find((int)$id);
 
-        return $entity;
+        $type = $entity->getType();
+        $repositoryType = "QuizApp\Repositories\\".ucfirst(strtolower($type))."Repository";
+        $textRepository = $this->repositoryManager->getRepository($repositoryType);
+
+        $answer = $textRepository->findOneBy(["questionTemplateId" => (int)$id]);
+
+        return ["question" =>$entity, "answer" => $answer];
     }
 
     public function updateEntity($request, $session)
@@ -69,13 +103,21 @@ class QuestionService extends AbstractService
         //TODO make update in quizzes like here
         $repository = $this->repositoryManager->getRepository(QuestionRepository::class);
         $id = $request->getRequestParameters()['id'];
-        $entity = $repository->find((int)$id);
-        $name = $request->getParameter('email');
-        $role = $request->getParameter('role');
+        $questionEntity = $repository->find((int)$id);
 
-        $entity->setName($name);
-        $entity->setRole($role);
+        $type = $questionEntity->getType();
+        $repositoryType = "QuizApp\Repositories\\".ucfirst(strtolower($type))."Repository";
+        $textRepository = $this->repositoryManager->getRepository($repositoryType);
+        $answerEntity = $textRepository->findOneBy(["questionTemplateId" => (int)$id]);
 
-        return $repository->insertOnDuplicateKeyUpdate($entity);
+        $name = $request->getParameter('question');
+        $role = $request->getParameter('type');
+        $answer = $request->getParameter('answer');
+
+        $questionEntity->setText($name);
+        $questionEntity->setType($role);
+        $answerEntity->setText($answer);
+
+        return ($textRepository->insertOnDuplicateKeyUpdate($answerEntity) &&  $repository->insertOnDuplicateKeyUpdate($questionEntity));
     }
 }

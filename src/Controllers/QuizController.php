@@ -16,10 +16,16 @@ use ReallyOrm\Exceptions\NoSuchRowException;
 class QuizController extends AbstractController
 {
     private $quizService;
+    private $questionService;
 
-    public function setService(AbstractService $quizService)
+    public function setQuizService(AbstractService $quizService)
     {
         $this->quizService = $quizService;
+    }
+
+    public function setQuestionService(AbstractService $questionService)
+    {
+        $this->questionService = $questionService;
     }
 
     public function listAll(RequestInterface $request)
@@ -41,8 +47,17 @@ class QuizController extends AbstractController
     {
         if ($this->session->get('name') !== null) {
             $entities = $this->quizService->getType();
+            $questionEntities = $this->questionService->selectAll();
 
-            return $this->renderer->renderView("admin-quiz-details.phtml", ['session' => $this->session, 'entities' => $entities]);
+            return
+                $this->renderer->renderView(
+                    "admin-quiz-details.phtml",
+                    [
+                        'session' => $this->session,
+                        'entities' => $entities,
+                        'question' => $questionEntities
+                    ]
+                );
         }
 
         return $this->renderer->renderView("login.phtml", $request->getRequestParameters());
@@ -85,8 +100,15 @@ class QuizController extends AbstractController
         if ($this->session->get('name') !== null) {
             $entity = $this->quizService->getUpdatePageParams($request);
             $entities = $this->quizService->getType();
+            $questionEntities = $this->questionService->selectAll();
 
-            return $this->renderer->renderView('admin-quiz-details.phtml', ['session' => $this->session, 'entity' => $entity, 'entities' => $entities]);
+            return
+                $this->renderer->renderView(
+                    'admin-quiz-details.phtml',
+                    ['session' => $this->session,
+                        'entity' => $entity,
+                        'entities' => $entities,
+                        'question' => $questionEntities]);
         }
         return $this->renderer->renderView("login.phtml", $request->getRequestParameters());
     }

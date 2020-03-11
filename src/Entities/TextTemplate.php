@@ -19,7 +19,7 @@ class TextTemplate extends AbstractEntity
     /**
      * @ORM
      */
-    private function setQuestionTemplateId(int $id)
+    public function setQuestionTemplateId(int $id)
     {
         $this->questionTemplateId = $id;
     }
@@ -43,7 +43,7 @@ class TextTemplate extends AbstractEntity
     /**
      * @ORM
      */
-    private function getQuestionTemplateId()
+    public function getQuestionTemplateId()
     {
         return $this->questionTemplateId;
     }

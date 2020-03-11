@@ -7,6 +7,8 @@ $configuration = [
         "controller_suffix" => "Controller",
         "controller_namespace" => "QuizApp\Controllers"
     ],
+    "domain" =>
+        "http://local.quiz.com",
     "routing" => [
         "routes" => [
             "log_in_page" => [
@@ -152,7 +154,7 @@ $configuration = [
             ],
             "add_question" => [
                 Router::CONFIG_KEY_PATH => "/question/add",
-                "controller" => "user",
+                "controller" => "question",
                 "action" => "addQuestion",
                 "method" => "POST",
                 "attributes" => []
@@ -180,6 +182,15 @@ $configuration = [
                 "controller" => "question",
                 "action" => "updateQuestion",
                 "method" => "POST",
+                "attributes" => [
+                    "id" => '\d+'
+                ]
+            ],
+            "handle_error" => [
+                Router::CONFIG_KEY_PATH => "/error/{id}",
+                "controller" => "error",
+                "action" => "getErrorPage",
+                "method" => "GET",
                 "attributes" => [
                     "id" => '\d+'
                 ]

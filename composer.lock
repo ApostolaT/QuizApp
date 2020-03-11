@@ -98,12 +98,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ApostolaT/mvc-framework-skeleton.git",
-                "reference": "7eca3913ab2e68a293d25dcfcc076022d1ad5780"
+                "reference": "9536d0d66d1190602ee8810fb7e1c734760d9de0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ApostolaT/mvc-framework-skeleton/zipball/7eca3913ab2e68a293d25dcfcc076022d1ad5780",
-                "reference": "7eca3913ab2e68a293d25dcfcc076022d1ad5780",
+                "url": "https://api.github.com/repos/ApostolaT/mvc-framework-skeleton/zipball/9536d0d66d1190602ee8810fb7e1c734760d9de0",
+                "reference": "9536d0d66d1190602ee8810fb7e1c734760d9de0",
                 "shasum": ""
             },
             "require": {
@@ -130,7 +130,7 @@
             "support": {
                 "source": "https://github.com/ApostolaT/mvc-framework-skeleton/tree/master"
             },
-            "time": "2020-03-10T14:10:41+00:00"
+            "time": "2020-03-11T19:30:34+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -936,12 +936,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ApostolaT/reallyOrmSkeleton.git",
-                "reference": "ad708c59e3b7b76de7f6013878ec89cb4b922945"
+                "reference": "a3e82a5674af2e61150c6dd528b104aebcddfe72"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ApostolaT/reallyOrmSkeleton/zipball/ad708c59e3b7b76de7f6013878ec89cb4b922945",
-                "reference": "ad708c59e3b7b76de7f6013878ec89cb4b922945",
+                "url": "https://api.github.com/repos/ApostolaT/reallyOrmSkeleton/zipball/a3e82a5674af2e61150c6dd528b104aebcddfe72",
+                "reference": "a3e82a5674af2e61150c6dd528b104aebcddfe72",
                 "shasum": ""
             },
             "require": {
@@ -967,7 +967,7 @@
             "support": {
                 "source": "https://github.com/ApostolaT/reallyOrmSkeleton/tree/master"
             },
-            "time": "2020-03-10T12:46:01+00:00"
+            "time": "2020-03-11T18:00:06+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",

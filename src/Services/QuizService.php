@@ -5,7 +5,9 @@ namespace QuizApp\Services;
 
 
 use Psr\Http\Message\RequestInterface;
+use QuizApp\Entities\QuizQuestionTemplate;
 use QuizApp\Entities\QuizTemplate;
+use QuizApp\Repositories\QuizQuestionTemplateRepository;
 use QuizApp\Repositories\QuizRepository;
 use QuizApp\Repositories\QuizTypeRepository;
 use ReallyOrm\Repository\RepositoryManagerInterface;
@@ -26,9 +28,16 @@ class QuizService extends AbstractService
 
         $repository = $this->repositoryManager->getRepository(QuizRepository::class);
 
-        $entities = $repository->findBy([], [], 10, 0);
+        $entities = $repository->findBy([], [], 10, $from);
 
         return $entities;
+    }
+
+    public function selectAll()
+    {
+        $repository = $this->repositoryManager->getRepository(QuizRepository::class);
+
+        return $repository->findBy([], [], 0, 0);
     }
 
     public function getType()
@@ -44,12 +53,32 @@ class QuizService extends AbstractService
         $repository = $this->repositoryManager->getRepository(QuizRepository::class);
         $name = $request->getParameter('name');
         $type = $request->getParameter('type');
+        $questions = $request->getparameter('questions');
 
         $createdBy = $session->get('id');
         $entity = new QuizTemplate();
         $entity->setName($name);
         $entity->setCreatedBy($createdBy);
         $entity->setType($type);
+
+        $count = 0;
+        if ($repository->insertOnDuplicateKeyUpdate($entity)) {
+            $quizQuestionTemplateRepository = $this->repositoryManager->getRepository(QuizQuestionTemplateRepository::class);
+            $id = $quizQuestionTemplateRepository->getLastInsertedId();
+
+            foreach ($questions as $value) {
+                $quizQuestionTemplateEntity = new QuizQuestionTemplate();
+                $quizQuestionTemplateEntity->setQuizTemplateId($id);
+                $quizQuestionTemplateEntity->setQuestionTemplateId($value);
+                if ($quizQuestionTemplateRepository->insertOnDuplicateKeyUpdate($quizQuestionTemplateEntity)) {
+                    $count++;
+                }
+
+            }
+
+            return count($questions) === $count;
+        }
+
 
         return $repository->insertOnDuplicateKeyUpdate($entity);
     }
@@ -79,13 +108,28 @@ class QuizService extends AbstractService
         $type = $request->getParameter('type');
         $id = $request->getRequestParameters()['id'];
 
-        $createdBy = $session->get('id');
-        $entity = new QuizTemplate();
-        $entity->setId($id);
+        $entity = $repository->find((int)$id);
         $entity->setName($name);
-        $entity->setCreatedBy($createdBy);
         $entity->setType($type);
 
-        return $repository->insertOnDuplicateKeyUpdate($entity);
+        $count = 0;
+        if ($repository->insertOnDuplicateKeyUpdate($entity))
+        {
+            $questions = $request->getparameter('questions');
+            $quizQuestionTemplateRepository = $this->repositoryManager->getRepository(QuizQuestionTemplateRepository::class);
+            $quizQuestionTemplateRepository->deleteById($id);
+            foreach ($questions as $value) {
+                $quizQuestionTemplateEntity = new QuizQuestionTemplate();
+                $quizQuestionTemplateEntity->setQuizTemplateId($id);
+                $quizQuestionTemplateEntity->setQuestionTemplateId($value);
+                if ($quizQuestionTemplateRepository->insertOnDuplicateKeyUpdate($quizQuestionTemplateEntity)){
+                    $count++;
+                }
+            }
+
+            return count($questions) === $count;
+        }
+
+        return false;
     }
 }

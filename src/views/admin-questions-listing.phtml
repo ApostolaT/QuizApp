@@ -1,44 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <!--Required meta tags-->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-    <!--Libraries used by Bootstrap-->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-
-    <!--Font awesome CSS-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
-
-    <!--Bootstrap CSS-->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
-    <!--Bootstrap JS-->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-
-    <!--Custom css-->
-    <link rel="stylesheet" href="../../public/assets/css/custom-css.css">
-
-    <title>Admin - Questions listing</title>
-</head>
-
-<body>
-    <!--Header-->
-    <div class="d-flex flex-column flex-md-row align-items-center p-3 mb-3 bg-light border-bottom shadow-sm">
-        <h5 class="my-0 mr-md-auto font-weight-normal">Project name</h5>
-        <nav class="my-2 my-md-0 mr-md-3">
-            <span class="p-2 text-dark">Hello, Admin name!</span>
-        </nav>
-        <a class="btn btn-danger" href="#">Logout</a>
-    </div>
-
-    <!--Breadcrumbs-->
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb px-3 py-0 mb-3">
-            <li class="breadcrumb-item" ><a href="#">Dashboard</a></li>
+<?php include "header.phtml"; ?>
             <li class="breadcrumb-item active" aria-current="page">Questions listing</li>
         </ol>
     </nav>
@@ -65,7 +25,7 @@
                 </form>
             </div>
             <div class="col-12 col-md-6 d-flex align-items-end justify-content-end">
-                <a class="btn btn-primary py-1" href="#">Add new question</a>
+                <a class="btn btn-primary py-1" href="/question/add">Add new question</a>
             </div>
         </div>
 
@@ -77,34 +37,27 @@
                     <!--Sorting arrow are displayed using the 'asc','dsc' classes-->
                     <th scope="col" class="sorting-header asc dsc">ID</th>
                     <th scope="col">Text</th>
+                    <th scope="col">Type</th>
                     <th scope="col">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>asd asad asdadadsad</td>
+                <?php
+                if (isset($entities)) {
+                    foreach ($entities as $key => $values) {
+                        ;
+                        echo '<tr>
+                    <th scope="row">' . $values->getId() . '</th>
+                    <td>' . $values->getText() . '</td>
+                    <td>' . $values->getType() . '</td>
                     <td class="text-center">
-                        <a class="btn btn-primary py-1" href="#">Edit</a>
-                        <a class="btn btn-danger py-1" href="#">Delete</a>
+                        <a class="btn btn-primary py-1" href="/question/add/' . $values->getId() . '">Edit</a>
+                        <a class="btn btn-danger py-1" href="/question/delete/' . $values->getId() . '">Delete</a>
                     </td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>asd asad asdadadsad</td>
-                    <td class="text-center">
-                        <a class="btn btn-primary py-1" href="#">Edit</a>
-                        <a class="btn btn-danger py-1" href="#">Delete</a>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>asd asad asdadadsad</td>
-                    <td class="text-center">
-                        <a class="btn btn-primary py-1" href="#">Edit</a>
-                        <a class="btn btn-danger py-1" href="#">Delete</a>
-                    </td>
-                </tr>
+                </tr>';
+                    }
+                }
+                ?>
                 </tbody>
             </table>
         </div>
