@@ -936,12 +936,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ApostolaT/reallyOrmSkeleton.git",
-                "reference": "a3e82a5674af2e61150c6dd528b104aebcddfe72"
+                "reference": "532bb5f65f286e2ab0933b01c3fd90647808502c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ApostolaT/reallyOrmSkeleton/zipball/a3e82a5674af2e61150c6dd528b104aebcddfe72",
-                "reference": "a3e82a5674af2e61150c6dd528b104aebcddfe72",
+                "url": "https://api.github.com/repos/ApostolaT/reallyOrmSkeleton/zipball/532bb5f65f286e2ab0933b01c3fd90647808502c",
+                "reference": "532bb5f65f286e2ab0933b01c3fd90647808502c",
                 "shasum": ""
             },
             "require": {
@@ -967,7 +967,7 @@
             "support": {
                 "source": "https://github.com/ApostolaT/reallyOrmSkeleton/tree/master"
             },
-            "time": "2020-03-11T18:00:06+00:00"
+            "time": "2020-03-12T18:43:36+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",

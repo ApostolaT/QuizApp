@@ -4,7 +4,10 @@
 namespace QuizApp\Controllers;
 
 use Framework\Controller\AbstractController;
+use Framework\Http\Stream;
+use http\Env\Response;
 use Psr\Http\Message\RequestInterface;
+use QuizApp\Exceptions\userLoginException;
 use QuizApp\Services\AbstractService;
 use ReallyOrm\Exceptions\NoSuchRowException;
 
@@ -32,18 +35,27 @@ class LoginController extends AbstractController
             if($this->session->get('name') === null) {
                 $this->session = $this->loginService->userLogIn($request, $this->session);
             }
-            return
-                ($this->session->get('role') === 'admin') ?
-                    $this->renderer->renderView("admin-dashboard.phtml", ["session" => $this->session])
-                    : $this->renderer->renderView("candidate-quiz-listing.html", ["session" => $this->session]);
+
+            if ($this->session->get('role') === 'admin') {
+                return $this->renderer->renderView('admin-dashboard.phtml', ['session' => $this->session]);
+            }
+            if ($this->session->get('role') === 'user') {
+                $response = new \Framework\Http\Response(Stream::createFromString(' '), []);
+                $response = $response->withStatus(301);
+                $response = $response->withHeader('Location', 'http://local.quiz.com/quiz/1');
+
+                return $response;
+            }
         } catch (NoSuchRowException $e) {
             return  $this->renderer->renderView("login.phtml", ["error" => "Wrong input, just try again"]);
-        }// TODO catch exception
+        } catch (userLoginException $e) {
+            return  $this->renderer->renderView("login.phtml", ["error" => "Your password must not be an empty string"]);
+        }
     }
 
     public function logoutAction(RequestInterface $request)
     {
         $this->session->destroy();
-        return $this->renderer->renderView("login.phtml", $request->getRequestParameters());
+        return $this->renderer->renderView("login.phtml", []);
     }
 }

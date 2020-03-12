@@ -23,7 +23,7 @@ class UserController extends Controller\AbstractController
     public function listAll(RequestInterface $request)
     {
         // TODO create a check function for session
-        if ($this->session->get('name') !== null) {
+        if ($this->session->get('role') === 'admin') {
             try {
                 $entities = $this->userService->getAll($request);
                 return $this->renderer->renderView("admin-users-listing.phtml", ['session' => $this->session, 'entities' => $entities]);
@@ -37,7 +37,7 @@ class UserController extends Controller\AbstractController
 
     public function goToAddUser(RequestInterface $request)
     {
-        if ($this->session->get('name') !== null) {
+        if ($this->session->get('role') === 'admin') {
             return $this->renderer->renderView("admin-user-details.phtml", ['session' => $this->session]);
         }
 
@@ -46,7 +46,7 @@ class UserController extends Controller\AbstractController
 
     public function addUser(RequestInterface $request)
     {
-        if ($this->session->get('name') !== null) {
+        if ($this->session->get('role') === 'admin') {
             if ($this->userService->createEntity($request, $this->session)) {
                 $response = new Response(Stream::createFromString(' '), []);
                 $response = $response->withStatus(301);
@@ -62,7 +62,7 @@ class UserController extends Controller\AbstractController
 
     public function deleteUser(RequestInterface $request)
     {
-        if ($this->session->get('name') !== null) {
+        if ($this->session->get('role') === 'admin') {
             if ($this->userService->delete($request)) {
                 $response = new Response(Stream::createFromString(' '), []);
                 $response = $response->withStatus(301);
@@ -78,7 +78,7 @@ class UserController extends Controller\AbstractController
 
     public function getUpdateUserPage(RequestInterface $request)
     {
-        if ($this->session->get('name') !== null) {
+        if ($this->session->get('role') === 'admin') {
             $entity = $this->userService->getUpdatePageParams($request);
 
             return $this->renderer->renderView('admin-user-details.phtml', ['session' => $this->session, 'entity' => $entity]);
@@ -88,7 +88,7 @@ class UserController extends Controller\AbstractController
 
     public function updateUser(RequestInterface $request)
     {
-        if ($this->session->get('name') !== null) {
+        if ($this->session->get('role') === 'admin') {
             if ($this->userService->updateEntity($request, $this->session)) {
                 $response = new Response(Stream::createFromString(' '), []);
                 $response = $response->withStatus(301);

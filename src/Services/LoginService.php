@@ -3,9 +3,8 @@
 
 namespace QuizApp\Services;
 
-
-use Framework\Session\Session;
 use Psr\Http\Message\RequestInterface;
+use QuizApp\Exceptions\UserLoginException;
 use QuizApp\Repositories\UserRepository;
 use ReallyOrm\Repository\RepositoryManagerInterface;
 
@@ -18,18 +17,28 @@ class LoginService extends AbstractService
         $this->repositoryManager = $repositoryManager;
     }
 
+    /**
+     * @throws UserLoginException
+     */
     public function userLogIn(RequestInterface $request, $session)
     {
-        $email =  $request->getParameter("email");
-        $password =  $request->getParameter("password");
+        $email = $request->getParameter("email");
+        $password = $request->getParameter("password");
 
         $repository = $this->repositoryManager->getRepository(UserRepository::class);
 
         $entity = $repository->findOneBy(['name' => $email]);
-        $dbParam = $entity->getPassword();
+        $dbPassword = $entity->getPassword();
         $role = $entity->getRole();
 
-        if (password_verify($password, $dbParam)) {
+        if ($dbPassword === "" && $password !== "")
+        {
+            $dbPassword = password_hash($password, PASSWORD_BCRYPT);;
+            $entity->setPassword($dbPassword);
+            $repository->insertOnDuplicateKeyUpdate($entity);
+        }
+
+        if (password_verify($password, $dbPassword)) {
             $session->set('id', $entity->getId());
             $session->set('name', $email);
             $session->set('role', $role);
@@ -37,6 +46,6 @@ class LoginService extends AbstractService
             return $session;
         }
 
-        // TODO throw excepion
+        throw new UserLoginException();
     }
 }

@@ -28,6 +28,4 @@ class QuizType extends AbstractEntity
     {
         $this->name = $name;
     }
-
-
 }

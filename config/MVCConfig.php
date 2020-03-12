@@ -186,6 +186,45 @@ $configuration = [
                     "id" => '\d+'
                 ]
             ],
+            "get_or_create_quiz_instance" => [
+                Router::CONFIG_KEY_PATH => "/quizInstance/add/{id}",
+                "controller" => "quizInstance",
+                "action" => "createQuizInstance",
+                "method" => "GET",
+                "attributes" => [
+                    "id" => '\d+'
+                ]
+            ],
+            "create_question_instances" => [
+                Router::CONFIG_KEY_PATH => "/questionInstance/add",
+                "controller" => "questionInstance",
+                "action" => "createQuestionInstances",
+                "method" => "GET",
+                "attributes" => []
+            ],
+            "get_question_instance" => [
+                Router::CONFIG_KEY_PATH => "/quiz/question/{offset}",
+                "controller" => "questionInstance",
+                "action" => "getQuestionPage",
+                "method" => "GET",
+                "attributes" => [
+                    "offset" => '\d+'
+                ]
+            ],
+            "set_text_instance_id" => [
+                Router::CONFIG_KEY_PATH => "/quiz/text/add",
+                "controller" => "questionInstance",
+                "action" => "updateTextInstance",
+                "method" => "POST",
+                "attributes" => []
+            ],
+            "get_finish_page" => [
+                Router::CONFIG_KEY_PATH => "/quiz/completed",
+                "controller" => "questionInstance",
+                "action" => "getReviewPage",
+                "method" => "GET",
+                "attributes" => []
+            ],
             "handle_error" => [
                 Router::CONFIG_KEY_PATH => "/error/{id}",
                 "controller" => "error",
@@ -193,6 +232,15 @@ $configuration = [
                 "method" => "GET",
                 "attributes" => [
                     "id" => '\d+'
+                ]
+            ],
+            "view_result" => [
+                Router::CONFIG_KEY_PATH => "/results/{offset}",
+                "controller" => "result",
+                "action" => "getAllUserTest",
+                "method" => "GET",
+                "attributes" => [
+                    "offset" => '\d+'
                 ]
             ],
         ]

@@ -34,9 +34,17 @@ class QuizController extends AbstractController
         if ($this->session->get('name') !== null) {
             try {
                 $entities = $this->quizService->getAll($request);
-                return $this->renderer->renderView("admin-quizzes-listing.phtml", ['session' => $this->session, 'entities' => $entities]);
+                if ($this->session->get('role') === 'admin') {
+                    return $this->renderer->renderView("admin-quizzes-listing.phtml", ['session' => $this->session, 'entities' => $entities]);
+                } else {
+                    return $this->renderer->renderView("candidate-quiz-listing.phtml", ['session' => $this->session, 'entities' => $entities]);
+                }
             } catch (NoSuchRowException $e) {
-                return $this->renderer->renderView("admin-quizzes-listing.phtml", ['session' => $this->session]);
+                if ($this->session->get('role') === 'admin') {
+                    return $this->renderer->renderView("admin-quizzes-listing.phtml", ['session' => $this->session]);
+                } else {
+                    return $this->renderer->renderView("candidate-quiz-listing.phtml", ['session' => $this->session]);
+                }
             }
         }
 
@@ -45,7 +53,8 @@ class QuizController extends AbstractController
 
     public function goToAddQuiz(RequestInterface $request)
     {
-        if ($this->session->get('name') !== null) {
+        $role = $this->session->get('role');
+        if ($role !== null && $role === 'admin') {
             $entities = $this->quizService->getType();
             $questionEntities = $this->questionService->selectAll();
 
@@ -65,7 +74,8 @@ class QuizController extends AbstractController
 
     public function addQuiz(RequestInterface $request)
     {
-        if ($this->session->get('name') !== null) {
+        $role = $this->session->get('role');
+        if ($role !== null && $role === 'admin') {
             if ($this->quizService->createEntity($request, $this->session)) {
                 $response = new Response(Stream::createFromString(' '), []);
                 $response = $response->withStatus(301);
@@ -81,7 +91,8 @@ class QuizController extends AbstractController
 
     public function deleteQuiz(RequestInterface $request)
     {
-        if ($this->session->get('name') !== null) {
+        $role = $this->session->get('role');
+        if ($role !== null && $role === 'admin') {
             if ($this->quizService->delete($request)) {
                 $response = new Response(Stream::createFromString(' '), []);
                 $response = $response->withStatus(301);
@@ -97,7 +108,8 @@ class QuizController extends AbstractController
 
     public function getUpdateQuizPage(RequestInterface $request)
     {
-        if ($this->session->get('name') !== null) {
+        $role = $this->session->get('role');
+        if ($role !== null && $role === 'admin') {
             $entity = $this->quizService->getUpdatePageParams($request);
             $entities = $this->quizService->getType();
             $questionEntities = $this->questionService->selectAll();
@@ -115,7 +127,8 @@ class QuizController extends AbstractController
 
     public function updateQuiz(RequestInterface $request)
     {
-        if ($this->session->get('name') !== null) {
+        $role = $this->session->get('role');
+        if ($role !== null && $role === 'admin') {
             if ($this->quizService->updateEntity($request, $this->session)) {
                 $response = new Response(Stream::createFromString(' '), []);
                 $response = $response->withStatus(301);

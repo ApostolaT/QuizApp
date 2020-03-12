@@ -59,6 +59,15 @@ $userService = $container
 $questionService = $container
     ->register(\QuizApp\Services\QuestionService::class, \QuizApp\Services\QuestionService::class)
     ->addTag('service');
+$questionInstanceService = $container
+    ->register(\QuizApp\Services\QuestionInstanceService::class, \QuizApp\Services\QuestionInstanceService::class)
+    ->addTag('service');
+$quizInstanceService = $container
+    ->register(\QuizApp\Services\QuizInstanceService::class, \QuizApp\Services\QuizInstanceService::class)
+    ->addTag('service');
+$resultService = $container
+    ->register(\QuizApp\Services\ResultService::class, \QuizApp\Services\ResultService::class)
+    ->addTag('service');
 
 $container
     ->register(QuizApp\Entities\User::class, QuizApp\Entities\User::class);
@@ -108,6 +117,30 @@ $container
     ->addArgument(QuizApp\Entities\QuizQuestionTemplate::class)
     ->addArgument(new Reference(Hydrator::class))
     ->addTag("repository");
+$container
+    ->register(QuizApp\Repositories\QuestionInstanceRepository::class, QuizApp\Repositories\QuestionInstanceRepository::class)
+    ->addArgument(new Reference(PDO::class))
+    ->addArgument(QuizApp\Entities\QuestionInstance::class)
+    ->addArgument(new Reference(Hydrator::class))
+    ->addTag("repository");
+$container
+    ->register(QuizApp\Repositories\QuizInstanceRepository::class, QuizApp\Repositories\QuizInstanceRepository::class)
+    ->addArgument(new Reference(PDO::class))
+    ->addArgument(QuizApp\Entities\QuizInstance::class)
+    ->addArgument(new Reference(Hydrator::class))
+    ->addTag("repository");
+$container
+    ->register(QuizApp\Repositories\TextInstanceRepository::class, QuizApp\Repositories\TextInstanceRepository::class)
+    ->addArgument(new Reference(PDO::class))
+    ->addArgument(QuizApp\Entities\TextInstance::class)
+    ->addArgument(new Reference(Hydrator::class))
+    ->addTag("repository");
+$container
+    ->register(QuizApp\Repositories\ResultRepository::class, QuizApp\Repositories\ResultRepository::class)
+    ->addArgument(new Reference(PDO::class))
+    ->addArgument(QuizApp\Entities\QuizInstance::class)
+    ->addArgument(new Reference(Hydrator::class))
+    ->addTag("repository");
 
 $userController = $container
     ->register(QuizApp\Controllers\ErrorController::class, QuizApp\Controllers\ErrorController::class)
@@ -127,6 +160,18 @@ $loginController = $container
     ->addTag('controller');
 $questionController = $container
     ->register(QuizApp\Controllers\QuestionController::class, QuizApp\Controllers\QuestionController::class)
+    ->addArgument(new Reference(Framework\Contracts\RendererInterface::class))
+    ->addTag('controller');
+$questionInstanceController = $container
+    ->register(\QuizApp\Controllers\QuestionInstanceController::class, \QuizApp\Controllers\QuestionInstanceController::class)
+    ->addArgument(new Reference(Framework\Contracts\RendererInterface::class))
+    ->addTag('controller');
+$quizInstanceController = $container
+    ->register(\QuizApp\Controllers\QuizInstanceController::class, \QuizApp\Controllers\QuizInstanceController::class)
+    ->addArgument(new Reference(Framework\Contracts\RendererInterface::class))
+    ->addTag('controller');
+$resultController = $container
+    ->register(\QuizApp\Controllers\ResultController::class, \QuizApp\Controllers\ResultController::class)
     ->addArgument(new Reference(Framework\Contracts\RendererInterface::class))
     ->addTag('controller');
 
@@ -156,5 +201,8 @@ $quizController->addMethodCall('setQuizService', [$quizService]);
 $quizController->addMethodCall('setQuestionService', [$questionService]);
 $userController->addMethodCall('setService', [$userService]);
 $questionController->addMethodCall('setService', [$questionService]);
+$quizInstanceController->addMethodCall('setService', [$quizInstanceService]);
+$questionInstanceController->addMethodCall('setService', [$questionInstanceService]);
+$resultController->addMethodCall('setService', [$resultService]);
 
 return new \Framework\DependencyInjection\SymfonyContainer($container);

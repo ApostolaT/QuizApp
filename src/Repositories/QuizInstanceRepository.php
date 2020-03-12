@@ -6,7 +6,7 @@ namespace QuizApp\Repositories;
 
 use ReallyOrm\Repository\AbstractRepository;
 
-class QuestionRepository extends AbstractRepository
+class QuizInstanceRepository extends AbstractRepository
 {
 
 }

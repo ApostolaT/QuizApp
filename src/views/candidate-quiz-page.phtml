@@ -1,0 +1,34 @@
+<?php include "header.phtml"; ?>
+            <li class="breadcrumb-item active" aria-current="page">Quiz page</li>
+        </ol>
+    </nav>
+
+    <div class="container">
+        <!--Page title block-->
+        <div class="text-center">
+            <h1>Quiz name</h1>
+        </div>
+
+        <!--Quiz form-->
+        <div class="">
+            <?php
+                if(isset($questionInstance))
+                {
+                    echo '<p class="font-weight-bold">'.
+                        $questionInstance.
+                        '</p>';
+                }
+            ?>
+            <p class="font-weight-bold">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ac efficitur dolor. Morbi sed dictum felis, ac pharetra nulla. Morbi sit amet sollicitudin tellus, maximus molestie tellus ?</p>
+        </div>
+        <form action="/quiz/text/add" method="POST">
+            <div class="form-group">
+                <textarea name="text" class="form-control" id="questionResponse"><?php if(isset($textInstance)){echo $textInstance;} ?></textarea>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Next</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
