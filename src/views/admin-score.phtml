@@ -1,0 +1,43 @@
+<?php include "header.phtml"; ?>
+            <li class="breadcrumb-item active" aria-current="page">Results</li>
+        </ol>
+    </nav>
+
+    <div class="container">
+        <!--Page title block-->
+        <div class="text-center">
+            <h1>Quiz ...</h1>
+        </div>
+
+        <!--UserController details block-->
+        <div class="user-block mb-3">
+            <span>User: </span>
+            <span class="h5"><?php echo $user; ?></span>
+        </div>
+
+        <!--Quiz block-->
+        <?php
+        $counter = 0;
+        foreach ($questions as $key => $value) {
+
+        echo '<div class="card border-secondary mb-3">
+            <div class="card-header">
+                <p class="mb-1">Question: </p>
+                <span>'.$value->getText().'</span>
+            </div>
+            <div class="card-body">
+                <p class="mb-1">Answer: </p>
+                <span>'.$answers[$counter][0]->getText().'</span>
+            </div>
+        </div>';
+            $counter++;
+        }
+        ?>
+        <form action="/save/result/">
+            <label for="score">Score</label>
+            <input type="text" name="score" id="score">
+            <button class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</body>
+</html>

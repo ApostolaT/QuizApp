@@ -34,4 +34,25 @@ class ResultController extends AbstractController
             return $this->renderer->renderView("admin-results-listing.phtml", ['session' => $this->session]);
         }
     }
+
+    public function getScorePage(RequestInterface $request)
+    {
+        $quizInstanceId = $request->getRequestParameters()['quizId'];
+        $userId = $request->getRequestParameters()['userId'];
+        $questionInstanceEntities = $this->resultService->getQuestionsInstance($quizInstanceId);
+
+        $textInstnaces = [];
+        foreach ($questionInstanceEntities as $key => $value) {
+            $textInstnaces[] = $this->resultService->getTextInstance($value->getId());
+        }
+
+        return $this->renderer->renderView(
+            "admin-score.phtml",
+            [
+                'session' => $this->session,
+                'user' => $userId,
+                'questions' => $questionInstanceEntities,
+                'answers' => $textInstnaces
+            ]);
+    }
 }

@@ -243,6 +243,23 @@ $configuration = [
                     "offset" => '\d+'
                 ]
             ],
+            "view_congrats" => [
+                Router::CONFIG_KEY_PATH => "/congrats",
+                "controller" => "questionInstance",
+                "action" => "getCongrats",
+                "method" => "GET",
+                "attributes" => []
+            ],
+            "score" => [
+                Router::CONFIG_KEY_PATH => "/result/user/{userId}/quiz/{quizId}",
+                "controller" => "result",
+                "action" => "getScorePage",
+                "method" => "GET",
+                "attributes" => [
+                    'userId' => '\d+',
+                    'quizId' => '\d+'
+                ]
+            ],
         ]
     ],
     "render" =>

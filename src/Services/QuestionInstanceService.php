@@ -107,4 +107,11 @@ class QuestionInstanceService extends AbstractService
 
         return $count['COUNT(quizInstanceId)'];
     }
+
+    public function getQuestionsInstance($quizInstanceId)
+    {
+        $textInstanceRepository = $this->repositoryManager->getRepository(QuestionInstanceRepository::class);
+
+        return $textInstanceRepository->findBy(['quizInstanceId' => $quizInstanceId], [], 0, 0);
+    }
 }

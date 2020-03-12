@@ -107,8 +107,27 @@ class QuestionInstanceController extends AbstractController
 
     public function getReviewPage(RequestInterface $request)
     {
+        $quizInstanceId = $this->session->get('quiz');
+        $questionInstanceEntities = $this->questionInstanceService->getQuestionsInstance($quizInstanceId);
+
+        $textInstnaces = [];
+        foreach ($questionInstanceEntities as $key => $value) {
+            $textInstnaces[] = $this->questionInstanceService->getTextInstance($value->getId());
+        }
+
+        return $this->renderer->renderView(
+            "admin-results.phtml",
+            [
+                'session' => $this->session,
+                'questions' => $questionInstanceEntities,
+                'answers' => $textInstnaces
+                ]);
+    }
+
+    public function getCongrats(RequestInterface $request)
+    {
         $this->session->delete('quiz');
         $this->session->delete('offset');
-        return $this->renderer->renderView("quiz-success-page.phtml", ['session' => $this->session]);
+        return $this->renderer->renderView('quiz-success-page.phtml', ['session' => $this->session]);
     }
 }
