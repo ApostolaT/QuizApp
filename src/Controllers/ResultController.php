@@ -44,8 +44,8 @@ class ResultController extends AbstractController
         $textInstances = [];
         foreach ($questionInstanceEntities as $key => $value) {
             $textInstance = $this->resultService->getTextInstance($value->getId());
-            $textInstance->setText($this->codeHighlight->highlight($textInstance->getText()));
-            $textInstances[] = $this->resultService->getTextInstance($value->getId());
+            $textInstance[0]->setText($this->codeHighlight->highlight($textInstance[0]->getText()));
+            $textInstances[] = $textInstance;
         }
 
         return $this->renderer->renderView(
