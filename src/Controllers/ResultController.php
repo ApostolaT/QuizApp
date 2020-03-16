@@ -5,8 +5,6 @@ namespace QuizApp\Controllers;
 
 
 use Framework\Controller\AbstractController;
-use Framework\Http\Response;
-use Framework\Http\Stream;
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Services\AbstractService;
 use ReallyOrm\Exceptions\NoSuchRowException;
