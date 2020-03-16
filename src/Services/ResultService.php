@@ -6,8 +6,10 @@ namespace QuizApp\Services;
 
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Repositories\QuestionInstanceRepository;
+use QuizApp\Repositories\QuizInstanceRepository;
 use QuizApp\Repositories\ResultRepository;
 use QuizApp\Repositories\TextInstanceRepository;
+use ReallyOrm\Exceptions\NoSuchRowException;
 use ReallyOrm\Repository\RepositoryManagerInterface;
 
 class ResultService extends AbstractService
@@ -50,5 +52,18 @@ class ResultService extends AbstractService
         $textInstanceRepository = $this->repositoryManager->getRepository(TextInstanceRepository::class);
 
         return $textInstanceRepository->findBy(['questionInstanceId' => $id], [], 0, 0);
+    }
+
+    public function scoreResult(string $score, string $quizInstanceId): bool
+    {
+        $quizInstanceRepository = $this->repositoryManager->getRepository(QuizInstanceRepository::class);
+
+        try {
+            $quizInstanceEntity = $quizInstanceRepository->find((int)$quizInstanceId);
+            $quizInstanceEntity->setScore($score);
+            return $quizInstanceRepository->insertOnDuplicateKeyUpdate($quizInstanceEntity);
+        } catch (NoSuchRowException $e) {
+            return false;
+        }
     }
 }

@@ -250,7 +250,7 @@ $configuration = [
                 "method" => "GET",
                 "attributes" => []
             ],
-            "score" => [
+            "view_score_page" => [
                 Router::CONFIG_KEY_PATH => "/result/user/{userId}/quiz/{quizId}",
                 "controller" => "result",
                 "action" => "getScorePage",
@@ -260,6 +260,15 @@ $configuration = [
                     'quizId' => '\d+'
                 ]
             ],
+            "score_quiz_instance" => [
+                Router::CONFIG_KEY_PATH => "/result/score/{quizId}",
+                "controller" => "result",
+                "action" => "scoreQuiz",
+                "method" => "POST",
+                "attributes" => [
+                    'quizId' => '\d+'
+                ]
+            ]
         ]
     ],
     "render" =>

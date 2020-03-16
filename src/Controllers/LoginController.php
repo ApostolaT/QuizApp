@@ -5,7 +5,6 @@ namespace QuizApp\Controllers;
 
 use Framework\Controller\AbstractController;
 use Framework\Http\Stream;
-use http\Env\Response;
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Exceptions\userLoginException;
 use QuizApp\Services\AbstractService;

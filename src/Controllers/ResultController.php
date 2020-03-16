@@ -5,6 +5,8 @@ namespace QuizApp\Controllers;
 
 
 use Framework\Controller\AbstractController;
+use Framework\Http\Response;
+use Framework\Http\Stream;
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Services\AbstractService;
 use ReallyOrm\Exceptions\NoSuchRowException;
@@ -51,8 +53,44 @@ class ResultController extends AbstractController
             [
                 'session' => $this->session,
                 'user' => $userId,
+                'quizInstanceId' => $quizInstanceId,
                 'questions' => $questionInstanceEntities,
                 'answers' => $textInstnaces
             ]);
+    }
+
+    public function scoreQuiz(RequestInterface $request)
+    {
+        $role = $this->session->get('role');
+
+        if ($role === null || $role === 'user') {
+            return $this->getErrorResponse();
+        }
+
+        $score = $request->getParameter('score');
+        $quizInstanceId = $request->getRequestParameters()['quizId'];
+        if (!$this->resultService->scoreResult($score, $quizInstanceId)) {
+            return $this->getErrorResponse();
+        }
+
+        return $this->getResultPage();
+    }
+
+    private function getErrorResponse(): Response
+    {
+        $response = new Response(Stream::createFromString(' '), []);
+        $response = $response->withStatus(301);
+        $response = $response->withHeader('Location', 'http://local.quiz.com/error/404');
+
+        return $response;
+    }
+
+    private function getResultPage(): Response
+    {
+        $response = new Response(Stream::createFromString(' '), []);
+        $response = $response->withStatus(301);
+        $response = $response->withHeader('Location', 'http://local.quiz.com/results/1');
+
+        return $response;
     }
 }

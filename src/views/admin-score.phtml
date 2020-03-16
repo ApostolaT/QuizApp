@@ -33,7 +33,7 @@
             $counter++;
         }
         ?>
-        <form action="/save/result/">
+        <form method="POST" <?php echo 'action="/result/score/'.$quizInstanceId.'"'; ?>>
             <label for="score">Score</label>
             <input type="text" name="score" id="score">
             <button class="btn btn-primary">Save</button>
