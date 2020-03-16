@@ -5,13 +5,11 @@ namespace QuizApp\Services;
 
 
 use QuizApp\Entities\QuestionInstance;
+use QuizApp\Entities\QuestionTemplate;
+use QuizApp\Entities\QuizInstance;
+use QuizApp\Entities\QuizQuestionTemplate;
 use QuizApp\Entities\TextInstance;
-use QuizApp\Repositories\QuestionInstanceRepository;
-use QuizApp\Repositories\QuestionRepository;
-use QuizApp\Repositories\QuizInstanceRepository;
-use QuizApp\Repositories\QuizQuestionTemplateRepository;
-use QuizApp\Repositories\TextInstanceRepository;
-use QuizApp\Repositories\TextRepository;
+use QuizApp\Entities\TextTemplate;
 use ReallyOrm\Entity\AbstractEntity;
 use ReallyOrm\Exceptions\NoSuchRowException;
 use ReallyOrm\Repository\RepositoryManagerInterface;
@@ -27,12 +25,12 @@ class QuestionInstanceService extends AbstractService
 
     public function createQuestionInstances(int $quizInstanceId)
     {
-        $quizInstanceRepository = $this->repositoryManager->getRepository(QuizInstanceRepository::class);
-        $quizQuestionTemplateRepository = $this->repositoryManager->getRepository(QuizQuestionTemplateRepository::class);
-        $questionInstanceRepository = $this->repositoryManager->getRepository(QuestionInstanceRepository::class);
-        $questionTemplateRepository = $this->repositoryManager->getRepository(QuestionRepository::class);
-        $textTemplateRepository = $this->repositoryManager->getRepository(TextRepository::class);
-        $textInstanceRepository = $this->repositoryManager->getRepository(TextInstanceRepository::class);
+        $quizInstanceRepository = $this->repositoryManager->getRepository(QuizInstance::class);
+        $quizQuestionTemplateRepository = $this->repositoryManager->getRepository(QuizQuestionTemplate::class);
+        $questionInstanceRepository = $this->repositoryManager->getRepository(QuestionInstance::class);
+        $questionTemplateRepository = $this->repositoryManager->getRepository(QuestionTemplate::class);
+        $textTemplateRepository = $this->repositoryManager->getRepository(TextTemplate::class);
+        $textInstanceRepository = $this->repositoryManager->getRepository(TextInstance::class);
 
         $quizInstance = $quizInstanceRepository->find((int)$quizInstanceId);
         $quizTemplateId = $quizInstance->getQuizTemplateId();
@@ -72,7 +70,7 @@ class QuestionInstanceService extends AbstractService
 
     public function getQuestionInstance(string $id, string $offset): ?array
     {
-        $questionInstanceRepository = $this->repositoryManager->getRepository(QuestionInstanceRepository::class);
+        $questionInstanceRepository = $this->repositoryManager->getRepository(QuestionInstance::class);
 
         try {
             return $questionInstanceRepository->findBy(['quizInstanceId' => $id], [], 1, $offset);
@@ -83,7 +81,7 @@ class QuestionInstanceService extends AbstractService
 
     public function getTextInstance(string $id): ?AbstractEntity
     {
-        $textInstanceRepository = $this->repositoryManager->getRepository(TextInstanceRepository::class);
+        $textInstanceRepository = $this->repositoryManager->getRepository(TextInstance::class);
 
         try {
             return $textInstanceRepository->findOneBy(['questionInstanceId' => $id]);
@@ -94,14 +92,14 @@ class QuestionInstanceService extends AbstractService
 
     public function saveTextInstance(AbstractEntity $entity)
     {
-        $textInstanceRepository = $this->repositoryManager->getRepository(TextInstanceRepository::class);
+        $textInstanceRepository = $this->repositoryManager->getRepository(TextInstance::class);
 
         return $textInstanceRepository->insertOnDuplicateKeyUpdate($entity);
     }
 
     public function countQuestion(string $quizInstanceId)
     {
-        $textInstanceRepository = $this->repositoryManager->getRepository(QuestionInstanceRepository::class);
+        $textInstanceRepository = $this->repositoryManager->getRepository(QuestionInstance::class);
 
         $count = $textInstanceRepository->countInstancesWithQuestionInstance($quizInstanceId);
 
@@ -110,7 +108,7 @@ class QuestionInstanceService extends AbstractService
 
     public function getQuestionsInstance($quizInstanceId)
     {
-        $textInstanceRepository = $this->repositoryManager->getRepository(QuestionInstanceRepository::class);
+        $textInstanceRepository = $this->repositoryManager->getRepository(QuestionInstance::class);
 
         return $textInstanceRepository->findBy(['quizInstanceId' => $quizInstanceId], [], 0, 0);
     }
