@@ -64,33 +64,15 @@ class ResultController extends AbstractController
         $role = $this->session->get('role');
 
         if ($role === null || $role === 'user') {
-            return $this->getErrorResponse();
+            return $this->getRedirectPage('http://local.quiz.com/error/404');
         }
 
         $score = $request->getParameter('score');
         $quizInstanceId = $request->getRequestParameters()['quizId'];
         if (!$this->resultService->scoreResult($score, $quizInstanceId)) {
-            return $this->getErrorResponse();
+            return $this->getRedirectPage('http://local.quiz.com/error/404');
         }
 
-        return $this->getResultPage();
-    }
-
-    private function getErrorResponse(): Response
-    {
-        $response = new Response(Stream::createFromString(' '), []);
-        $response = $response->withStatus(301);
-        $response = $response->withHeader('Location', 'http://local.quiz.com/error/404');
-
-        return $response;
-    }
-
-    private function getResultPage(): Response
-    {
-        $response = new Response(Stream::createFromString(' '), []);
-        $response = $response->withStatus(301);
-        $response = $response->withHeader('Location', 'http://local.quiz.com/results/1');
-
-        return $response;
+        return $this->getRedirectPage('http://local.quiz.com/results/1');
     }
 }

@@ -47,6 +47,11 @@ $container
     ->addArgument('%dbPassword%')
     ->addArgument('%options%');
 
+$tokenizer = $container
+    ->register(\HighlightLib\Tokenizer\Tokenizer::class, \HighlightLib\Tokenizer\Tokenizer::class);
+//$tokenConfigurator = $container
+//    ->register();
+
 $loginService = $container
     ->register(\QuizApp\Services\LoginService::class, \QuizApp\Services\LoginService::class)
     ->addTag('service');

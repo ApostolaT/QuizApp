@@ -127,6 +127,4 @@ class QuestionInstanceController extends AbstractController
         $this->session->delete('offset');
         return $this->renderer->renderView('quiz-success-page.phtml', ['session' => $this->session]);
     }
-
-
 }

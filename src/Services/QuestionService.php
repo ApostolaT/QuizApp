@@ -1,15 +1,10 @@
 <?php
 
-
 namespace QuizApp\Services;
 
-
-use Framework\Controller\AbstractController;
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Entities\QuestionTemplate;
 use QuizApp\Entities\TextTemplate;
-use QuizApp\Repositories\QuestionRepository;
-use QuizApp\Repositories\TextRepository;
 use ReallyOrm\Repository\RepositoryManagerInterface;
 
 class QuestionService extends AbstractService
@@ -23,7 +18,7 @@ class QuestionService extends AbstractService
 
     public function selectAll()
     {
-        $repository = $this->repositoryManager->getRepository(QuestionRepository::class);
+        $repository = $this->repositoryManager->getRepository(QuestionTemplate::class);
 
         return $repository->findBy([], [], 0, 0);
     }
@@ -33,7 +28,7 @@ class QuestionService extends AbstractService
         $page = $request->getRequestParameters();
         $from = ($page['page'] - 1) * 10;
 
-        $repository = $this->repositoryManager->getRepository(QuestionRepository::class);
+        $repository = $this->repositoryManager->getRepository(QuestionTemplate::class);
 
         $entities = $repository->findBy([], [], 10, 0);
 
@@ -42,13 +37,12 @@ class QuestionService extends AbstractService
 
     public function createEntity($request)
     {
-        $questionRepository = $this->repositoryManager->getRepository(QuestionRepository::class);
+        $questionRepository = $this->repositoryManager->getRepository(QuestionTemplate::class);
         $text = $request->getParameter('question');
         $answer = $request->getParameter('answer');
         $type = $request->getParameter('type');
 
-        $repositoryType = "QuizApp\Repositories\\".ucfirst(strtolower($type))."Repository";
-        $textRepository = $this->repositoryManager->getRepository($repositoryType);
+        $textRepository = $this->repositoryManager->getRepository(TextTemplate::class);
 
         // TODO check the answer if empty
 
@@ -69,14 +63,14 @@ class QuestionService extends AbstractService
     }
 
     public function delete($request) {
-        $repository = $this->repositoryManager->getRepository(QuestionRepository::class);
+        $repository = $this->repositoryManager->getRepository(QuestionTemplate::class);
 
         $id = $request->getRequestParameters()['id'];
         $entity = $repository->find((int)$id);
 
         $type = $entity->getType();
-        $repositoryType = "QuizApp\Repositories\\".ucfirst(strtolower($type))."Repository";
-        $textRepository = $this->repositoryManager->getRepository($repositoryType);
+
+        $textRepository = $this->repositoryManager->getRepository(TextTemplate::class);
 
         $answer = $textRepository->findOneBy(["questionTemplateId" => (int)$id]);
 
@@ -86,12 +80,11 @@ class QuestionService extends AbstractService
     public function getUpdatePageParams(RequestInterface $request)
     {
         $id = $request->getRequestParameters()['id'];
-        $repository = $this->repositoryManager->getrepository(QuestionRepository::class);
+        $repository = $this->repositoryManager->getrepository(QuestionTemplate::class);
         $entity = $repository->find((int)$id);
-
         $type = $entity->getType();
-        $repositoryType = "QuizApp\Repositories\\".ucfirst(strtolower($type))."Repository";
-        $textRepository = $this->repositoryManager->getRepository($repositoryType);
+
+        $textRepository = $this->repositoryManager->getRepository(TextTemplate::class);
 
         $answer = $textRepository->findOneBy(["questionTemplateId" => (int)$id]);
 
@@ -101,13 +94,12 @@ class QuestionService extends AbstractService
     public function updateEntity($request, $session)
     {
         //TODO make update in quizzes like here
-        $repository = $this->repositoryManager->getRepository(QuestionRepository::class);
+        $repository = $this->repositoryManager->getRepository(QuestionTemplate::class);
         $id = $request->getRequestParameters()['id'];
         $questionEntity = $repository->find((int)$id);
 
         $type = $questionEntity->getType();
-        $repositoryType = "QuizApp\Repositories\\".ucfirst(strtolower($type))."Repository";
-        $textRepository = $this->repositoryManager->getRepository($repositoryType);
+        $textRepository = $this->repositoryManager->getRepository(TextTemplate::class);
         $answerEntity = $textRepository->findOneBy(["questionTemplateId" => (int)$id]);
 
         $name = $request->getParameter('question');

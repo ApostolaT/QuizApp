@@ -1,15 +1,10 @@
 <?php
 
-
 namespace QuizApp\Services;
-
 
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Entities\QuizQuestionTemplate;
 use QuizApp\Entities\QuizTemplate;
-use QuizApp\Repositories\QuizQuestionTemplateRepository;
-use QuizApp\Repositories\QuizRepository;
-use QuizApp\Repositories\QuizTypeRepository;
 use ReallyOrm\Repository\RepositoryManagerInterface;
 
 class QuizService extends AbstractService
@@ -26,7 +21,7 @@ class QuizService extends AbstractService
         $page = $request->getRequestParameters();
         $from = ($page['page'] - 1) * 10;
 
-        $repository = $this->repositoryManager->getRepository(QuizRepository::class);
+        $repository = $this->repositoryManager->getRepository(QuizTemplate::class);
 
         $entities = $repository->findBy([], [], 10, $from);
 
@@ -35,14 +30,14 @@ class QuizService extends AbstractService
 
     public function selectAll()
     {
-        $repository = $this->repositoryManager->getRepository(QuizRepository::class);
+        $repository = $this->repositoryManager->getRepository(QuizTemplate::class);
 
         return $repository->findBy([], [], 0, 0);
     }
 
     public function getType()
     {
-        $repository = $this->repositoryManager->getRepository(QuizTypeRepository::class);
+        $repository = $this->repositoryManager->getRepository(QuizType::class);
 
         // TODO create a findAll in abstractRepository
         return $repository->findBy([], [], 0, 0);
@@ -50,7 +45,7 @@ class QuizService extends AbstractService
 
     public function createEntity($request, $session)
     {
-        $repository = $this->repositoryManager->getRepository(QuizRepository::class);
+        $repository = $this->repositoryManager->getRepository(QuizTemplate::class);
         $name = $request->getParameter('name');
         $type = $request->getParameter('type');
         $questions = $request->getparameter('questions');
@@ -63,7 +58,7 @@ class QuizService extends AbstractService
 
         $count = 0;
         if ($repository->insertOnDuplicateKeyUpdate($entity)) {
-            $quizQuestionTemplateRepository = $this->repositoryManager->getRepository(QuizQuestionTemplateRepository::class);
+            $quizQuestionTemplateRepository = $this->repositoryManager->getRepository(QuizQuestionTemplate::class);
             $id = $quizQuestionTemplateRepository->getLastInsertedId();
 
             foreach ($questions as $value) {
@@ -84,7 +79,7 @@ class QuizService extends AbstractService
     }
 
     public function delete($request) {
-        $repository = $this->repositoryManager->getRepository(QuizRepository::class);
+        $repository = $this->repositoryManager->getRepository(QuizTemplate::class);
         $id = $request->getRequestParameters()['id'];
 
         $entity = $repository->find((int)$id);
@@ -95,7 +90,7 @@ class QuizService extends AbstractService
     public function getUpdatePageParams(RequestInterface $request)
     {
         $id = $request->getRequestParameters()['id'];
-        $repository = $this->repositoryManager->getrepository(QuizRepository::class);
+        $repository = $this->repositoryManager->getrepository(QuizTemplate::class);
         $entity = $repository->find((int)$id);
 
         return $entity;
@@ -103,7 +98,7 @@ class QuizService extends AbstractService
 
     public function updateEntity($request, $session)
     {
-        $repository = $this->repositoryManager->getRepository(QuizRepository::class);
+        $repository = $this->repositoryManager->getRepository(QuizTemplate::class);
         $name = $request->getParameter('name');
         $type = $request->getParameter('type');
         $id = $request->getRequestParameters()['id'];
@@ -116,7 +111,7 @@ class QuizService extends AbstractService
         if ($repository->insertOnDuplicateKeyUpdate($entity))
         {
             $questions = $request->getparameter('questions');
-            $quizQuestionTemplateRepository = $this->repositoryManager->getRepository(QuizQuestionTemplateRepository::class);
+            $quizQuestionTemplateRepository = $this->repositoryManager->getRepository(QuizQuestionTemplate::class);
             $quizQuestionTemplateRepository->deleteById($id);
             foreach ($questions as $value) {
                 $quizQuestionTemplateEntity = new QuizQuestionTemplate();
