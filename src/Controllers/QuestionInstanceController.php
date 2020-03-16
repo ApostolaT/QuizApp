@@ -1,13 +1,10 @@
 <?php
 
-
 namespace QuizApp\Controllers;
-
 
 use Framework\Controller\AbstractController;
 use Framework\Http\Response;
 use Framework\Http\Stream;
-use http\Env\Request;
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Services\AbstractService;
 
