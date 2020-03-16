@@ -5,6 +5,8 @@ namespace QuizApp\Controllers;
 
 
 use Framework\Controller\AbstractController;
+use Framework\Http\Response;
+use Framework\Http\Stream;
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Services\AbstractService;
 use ReallyOrm\Exceptions\NoSuchRowException;
@@ -51,8 +53,26 @@ class ResultController extends AbstractController
             [
                 'session' => $this->session,
                 'user' => $userId,
+                'quizInstanceId' => $quizInstanceId,
                 'questions' => $questionInstanceEntities,
                 'answers' => $textInstnaces
             ]);
+    }
+
+    public function scoreQuiz(RequestInterface $request)
+    {
+        $role = $this->session->get('role');
+
+        if ($role === null || $role === 'user') {
+            return $this->getRedirectPage('http://local.quiz.com/error/404');
+        }
+
+        $score = $request->getParameter('score');
+        $quizInstanceId = $request->getRequestParameters()['quizId'];
+        if (!$this->resultService->scoreResult($score, $quizInstanceId)) {
+            return $this->getRedirectPage('http://local.quiz.com/error/404');
+        }
+
+        return $this->getRedirectPage('http://local.quiz.com/results/1');
     }
 }

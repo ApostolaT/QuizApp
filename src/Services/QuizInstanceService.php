@@ -4,8 +4,6 @@ namespace QuizApp\Services;
 
 use QuizApp\Entities\QuizInstance;
 use QuizApp\Entities\QuizTemplate;
-use QuizApp\Repositories\QuizInstanceRepository;
-use QuizApp\Repositories\QuizRepository;
 use ReallyOrm\Entity\AbstractEntity;
 use ReallyOrm\Exceptions\NoSuchRowException;
 use ReallyOrm\Repository\RepositoryManagerInterface;
@@ -23,8 +21,8 @@ class QuizInstanceService extends AbstractService
         string $quizTemplateId,
         string $userId)
     : ?int {
-        $quizInstanceRepository = $this->repositoryManager->getRepository(QuizInstanceRepository::class);
-        $quizTemplateRepository = $this->repositoryManager->getRepository(QuizRepository::class);
+        $quizInstanceRepository = $this->repositoryManager->getRepository(QuizInstance::class);
+        $quizTemplateRepository = $this->repositoryManager->getRepository(QuizTemplate::class);
 
         try {
             $quizTemplate = $quizTemplateRepository->find($quizTemplateId);
@@ -51,7 +49,7 @@ class QuizInstanceService extends AbstractService
 
     public function isCreated($quizTemplateId, $userId): ?AbstractEntity
     {
-        $quizInstanceRepository = $this->repositoryManager->getRepository(QuizInstanceRepository::class);
+        $quizInstanceRepository = $this->repositoryManager->getRepository(QuizInstance::class);
 
         try {
             return $quizInstanceRepository->findOneBy(

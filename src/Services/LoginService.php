@@ -4,8 +4,8 @@
 namespace QuizApp\Services;
 
 use Psr\Http\Message\RequestInterface;
+use QuizApp\Entities\User;
 use QuizApp\Exceptions\UserLoginException;
-use QuizApp\Repositories\UserRepository;
 use ReallyOrm\Repository\RepositoryManagerInterface;
 
 class LoginService extends AbstractService
@@ -25,7 +25,7 @@ class LoginService extends AbstractService
         $email = $request->getParameter("email");
         $password = $request->getParameter("password");
 
-        $repository = $this->repositoryManager->getRepository(UserRepository::class);
+        $repository = $this->repositoryManager->getRepository(User::class);
 
         $entity = $repository->findOneBy(['name' => $email]);
         $dbPassword = $entity->getPassword();

@@ -56,3 +56,18 @@ body{
     right: 5px;
     top: 8px;
 }
+
+.atom { color: aquamarine; }
+.bracket { color: darkmagenta; }
+.builtin { color: #107861; }
+.keyword { color: brown; }
+.number { color: darkolivegreen; }
+.punctuation { color: #12c943; }
+.variable { color: dimgrey; }
+
+pre {
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 10px;
+    background: #edebe4;
+}

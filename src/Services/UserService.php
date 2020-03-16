@@ -4,7 +4,6 @@ namespace QuizApp\Services;
 
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Entities\User;
-use QuizApp\Repositories\UserRepository;
 use ReallyOrm\Repository\RepositoryManagerInterface;
 
 class UserService extends AbstractService
@@ -21,7 +20,7 @@ class UserService extends AbstractService
         $page = $request->getRequestParameters();
         $from = ($page['page'] - 1) * 10;
 
-        $repository = $this->repositoryManager->getRepository(UserRepository::class);
+        $repository = $this->repositoryManager->getRepository(User::class);
 
         $entities = $repository->findBy([], [], 10, 0);
 
@@ -30,7 +29,7 @@ class UserService extends AbstractService
 
     public function createEntity($request)
     {
-        $repository = $this->repositoryManager->getRepository(UserRepository::class);
+        $repository = $this->repositoryManager->getRepository(User::class);
         $name = $request->getParameter('email');
         $type = $request->getParameter('role');
         $password = "";
@@ -44,7 +43,7 @@ class UserService extends AbstractService
     }
 
     public function delete($request) {
-        $repository = $this->repositoryManager->getRepository(UserRepository::class);
+        $repository = $this->repositoryManager->getRepository(User::class);
         $id = $request->getRequestParameters()['id'];
 
         $entity = $repository->find((int)$id);
@@ -55,7 +54,7 @@ class UserService extends AbstractService
     public function getUpdatePageParams(RequestInterface $request)
     {
         $id = $request->getRequestParameters()['id'];
-        $repository = $this->repositoryManager->getrepository(UserRepository::class);
+        $repository = $this->repositoryManager->getrepository(User::class);
         $entity = $repository->find((int)$id);
 
         return $entity;
@@ -64,7 +63,7 @@ class UserService extends AbstractService
     public function updateEntity($request, $session)
     {
         //TODO make update in quizzes like here
-        $repository = $this->repositoryManager->getRepository(UserRepository::class);
+        $repository = $this->repositoryManager->getRepository(User::class);
         $id = $request->getRequestParameters()['id'];
         $entity = $repository->find((int)$id);
         $name = $request->getParameter('email');
