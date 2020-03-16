@@ -9,6 +9,7 @@ $MVCconfig = require "MVCConfig.php";
 $suffix = $MVCconfig["dispatcher"]["controller_suffix"];
 $controllerName = $MVCconfig["dispatcher"]["controller_namespace"];
 $baseViewPath = $MVCconfig["render"]["base_path"];
+$tokens = require "Tokens.php";
 
 $dbConfig = require "db_config.php";
 $dsn = "mysql:host={$dbConfig['host']};dbname={$dbConfig['db']};charset={$dbConfig['charset']}";
@@ -21,6 +22,7 @@ $options = [
 ];
 
 $container = new ContainerBuilder();
+
 $container->setParameter("MVCconfig", $MVCconfig);
 $container->setParameter("suffix", $suffix);
 $container->setParameter("controllerName", $controllerName);
@@ -29,6 +31,21 @@ $container->setParameter("dsn", $dsn);
 $container->setParameter("dbUser", $dbUser);
 $container->setParameter("dbPassword", $dbPassword);
 $container->setParameter("options", $options);
+$container->setParameter("tokens", $tokens);
+
+
+$container
+    ->register(\HighlightLib\Tokenizer\Tokenizer::class, \HighlightLib\Tokenizer\Tokenizer::class);
+$container
+    ->register(\HighlightLib\Clasifier\Clasifier::class, \HighlightLib\Clasifier\Clasifier::class)
+    ->addArgument("%tokens%");
+$container
+    ->register(\HighlightLib\Assembler\Assembler::class, \HighlightLib\Assembler\Assembler::class);
+$codeHighLighter = $container
+    ->register(\HighlightLib\CodeHighlight::class, \HighlightLib\CodeHighlight::class)
+    ->addArgument(new Reference(\HighlightLib\Tokenizer\Tokenizer::class))
+    ->addArgument(new Reference(\HighlightLib\Clasifier\Clasifier::class))
+    ->addArgument(new Reference(\HighlightLib\Assembler\Assembler::class));
 
 $session = $container
     ->register(\Framework\Session\Session::class, \Framework\Session\Session::class);
@@ -46,9 +63,6 @@ $container
     ->addArgument('%dbUser%')
     ->addArgument('%dbPassword%')
     ->addArgument('%options%');
-
-$tokenizer = $container
-    ->register(\HighlightLib\Tokenizer\Tokenizer::class, \HighlightLib\Tokenizer\Tokenizer::class);
 
 $loginService = $container
     ->register(\QuizApp\Services\LoginService::class, \QuizApp\Services\LoginService::class)
@@ -196,6 +210,7 @@ foreach ($container->findTaggedServiceIds('service') as $id => $tags) {
 foreach ($container->findTaggedServiceIds('controller') as $id => $tags) {
     $controller = $container->getDefinition($id);
     $controller->addMethodCall('setSession', [$session]);
+    $controller->addMethodCall('setCodeHihgLighter', [$codeHighLighter]);
     $dispatcher->addMethodCall("addController", [$controller]);
 }
 
