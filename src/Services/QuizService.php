@@ -5,6 +5,7 @@ namespace QuizApp\Services;
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Entities\QuizQuestionTemplate;
 use QuizApp\Entities\QuizTemplate;
+use QuizApp\Entities\QuizType;
 use ReallyOrm\Repository\RepositoryManagerInterface;
 
 class QuizService extends AbstractService
