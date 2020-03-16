@@ -98,12 +98,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ApostolaT/mvc-framework-skeleton.git",
-                "reference": "0501691606bb59e39c19d89e9617db4ef02aa492"
+                "reference": "a6706eb0d32b3252fab59fc261f58c362beafa77"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ApostolaT/mvc-framework-skeleton/zipball/0501691606bb59e39c19d89e9617db4ef02aa492",
-                "reference": "0501691606bb59e39c19d89e9617db4ef02aa492",
+                "url": "https://api.github.com/repos/ApostolaT/mvc-framework-skeleton/zipball/a6706eb0d32b3252fab59fc261f58c362beafa77",
+                "reference": "a6706eb0d32b3252fab59fc261f58c362beafa77",
                 "shasum": ""
             },
             "require": {
@@ -130,7 +130,7 @@
             "support": {
                 "source": "https://github.com/ApostolaT/mvc-framework-skeleton/tree/master"
             },
-            "time": "2020-03-16T12:15:29+00:00"
+            "time": "2020-03-16T13:08:07+00:00"
         },
         {
             "name": "myclabs/deep-copy",
