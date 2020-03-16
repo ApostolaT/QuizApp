@@ -41,9 +41,11 @@ class ResultController extends AbstractController
         $userId = $request->getRequestParameters()['userId'];
         $questionInstanceEntities = $this->resultService->getQuestionsInstance($quizInstanceId);
 
-        $textInstnaces = [];
+        $textInstances = [];
         foreach ($questionInstanceEntities as $key => $value) {
-            $textInstnaces[] = $this->resultService->getTextInstance($value->getId());
+            $textInstance = $this->resultService->getTextInstance($value->getId());
+            $textInstance->setText($this->codeHighlight->highlight($textInstance->getText()));
+            $textInstances[] = $this->resultService->getTextInstance($value->getId());
         }
 
         return $this->renderer->renderView(
@@ -53,7 +55,7 @@ class ResultController extends AbstractController
                 'user' => $userId,
                 'quizInstanceId' => $quizInstanceId,
                 'questions' => $questionInstanceEntities,
-                'answers' => $textInstnaces
+                'answers' => $textInstances
             ]);
     }
 

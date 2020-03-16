@@ -210,7 +210,7 @@ foreach ($container->findTaggedServiceIds('service') as $id => $tags) {
 foreach ($container->findTaggedServiceIds('controller') as $id => $tags) {
     $controller = $container->getDefinition($id);
     $controller->addMethodCall('setSession', [$session]);
-    $controller->addMethodCall('setCodeHihgLighter', [$codeHighLighter]);
+    $controller->addMethodCall('setCodeHighLighter', [$codeHighLighter]);
     $dispatcher->addMethodCall("addController", [$controller]);
 }
 

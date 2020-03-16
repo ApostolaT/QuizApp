@@ -107,9 +107,11 @@ class QuestionInstanceController extends AbstractController
         $quizInstanceId = $this->session->get('quiz');
         $questionInstanceEntities = $this->questionInstanceService->getQuestionsInstance($quizInstanceId);
 
-        $textInstnaces = [];
+        $textInstances = [];
         foreach ($questionInstanceEntities as $key => $value) {
-            $textInstnaces[] = $this->questionInstanceService->getTextInstance($value->getId());
+            $textInstance = $this->questionInstanceService->getTextInstance($value->getId());
+            $textInstance->setText($this->codeHighlight->highlight($textInstance->getText()));
+            $textInstances[] = $textInstance;
         }
 
         return $this->renderer->renderView(
@@ -117,7 +119,7 @@ class QuestionInstanceController extends AbstractController
             [
                 'session' => $this->session,
                 'questions' => $questionInstanceEntities,
-                'answers' => $textInstnaces
+                'answers' => $textInstances
                 ]);
     }
 
