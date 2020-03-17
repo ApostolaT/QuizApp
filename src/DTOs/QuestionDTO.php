@@ -3,36 +3,52 @@
 
 namespace QuizApp\DTOs;
 
-
+/**
+ * Class QuestionDTO
+ *
+ * this class is used for data transfer between
+ * controller and admin-score and admin-results
+ * FE pages
+ * @package QuizApp\DTOs
+ */
 class QuestionDTO
 {
-    private $question;
+    /**
+     * The text of the questionInstance
+     * @var string
+     */
+    private $questionText;
 
-    private $answer;
+    /**
+     * The text of the AnswerInstance where
+     * AnswerInstance can be of type TextInstance
+     * @var string
+     */
+    private $answerText;
 
-    public function __construct(string $question, string $answer)
+    public function __construct(string $questionText, string $answerText)
     {
-        $this->question = $question;
-        $this->answer = $answer;
+        $this->questionText = $questionText;
+        $this->answerText = $answerText;
     }
 
-    public function getQuestion()
+    public function getQuestionText()
     {
-        return $this->question;
+        return $this->questionText;
     }
 
-    public function setQuestion(string $question)
+    public function setQuestionText(string $question)
     {
-        $this->question = $question;
+        $this->questionText = $question;
     }
 
-    public function getAnswer()
+    public function getAnswerText()
     {
-        return $this->answer;
+        return $this->answerText;
     }
 
-    public function setAnswer(string $answer)
+    public function setAnswerTexts(string $answer)
     {
-        $this->answer = $answer;
+        $this->answerText = $answer;
     }
 }

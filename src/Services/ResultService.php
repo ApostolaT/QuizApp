@@ -79,7 +79,7 @@ class ResultService extends AbstractService
     {
         $questions = $this->getQuestionsForQuizId($quizInstanceId);
 
-        if ($questions === null) {
+        if (!$questions) {
             return null;
         }
 
@@ -87,16 +87,16 @@ class ResultService extends AbstractService
         foreach ($questions as $question) {
             $answer = $this->getAnswerForQuestionId($question->getId());
 
-            if ($answer === null) {
+            if (!$answer) {
                 return null;
             }
 
-            $answer =
+            $answerText =
                 ($question->getType() === 'code')
                 ? $this->codeHighLighter->highlight($answer->getText())
                 : $answer->getText();
 
-            $questionDTOs[] = new QuestionDTO($question->getText(), $answer);
+            $questionDTOs[] = new QuestionDTO($question->getText(), $answerText);
         }
 
         return $questionDTOs;
