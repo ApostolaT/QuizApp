@@ -83,7 +83,7 @@ class QuestionInstanceController extends AbstractController
             if ($count === (int)$offset) {
                 $response = new Response(Stream::createFromString(' '), []);
                 $response = $response->withStatus(301);
-                $response = $response->withHeader('Location', 'http://local.quiz.com/quiz/completed');
+                $response = $response->withHeader('Location', 'http://local.quiz.com/completed/quiz/'.$quizInstanceId);
 
                 return $response;
             }
@@ -100,27 +100,6 @@ class QuestionInstanceController extends AbstractController
         $response = $response->withHeader('Location', 'http://local.quiz.com/error/404');
 
         return $response;
-    }
-
-    public function getReviewPage(RequestInterface $request)
-    {
-        $quizInstanceId = $this->session->get('quiz');
-        $questionInstanceEntities = $this->questionInstanceService->getQuestionsInstance($quizInstanceId);
-
-        $textInstances = [];
-        foreach ($questionInstanceEntities as $key => $value) {
-            $textInstance = $this->questionInstanceService->getTextInstance($value->getId());
-            $textInstance->setText($this->codeHighlight->highlight($textInstance->getText()));
-            $textInstances[] = $textInstance;
-        }
-
-        return $this->renderer->renderView(
-            "admin-results.phtml",
-            [
-                'session' => $this->session,
-                'questions' => $questionInstanceEntities,
-                'answers' => $textInstances
-                ]);
     }
 
     public function getCongrats(RequestInterface $request)

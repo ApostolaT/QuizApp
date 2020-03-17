@@ -210,7 +210,6 @@ foreach ($container->findTaggedServiceIds('service') as $id => $tags) {
 foreach ($container->findTaggedServiceIds('controller') as $id => $tags) {
     $controller = $container->getDefinition($id);
     $controller->addMethodCall('setSession', [$session]);
-    $controller->addMethodCall('setCodeHighLighter', [$codeHighLighter]);
     $dispatcher->addMethodCall("addController", [$controller]);
 }
 
@@ -222,5 +221,7 @@ $questionController->addMethodCall('setService', [$questionService]);
 $quizInstanceController->addMethodCall('setService', [$quizInstanceService]);
 $questionInstanceController->addMethodCall('setService', [$questionInstanceService]);
 $resultController->addMethodCall('setService', [$resultService]);
+
+$resultService->addMethodCall('setCodeHighLighter', [$codeHighLighter]);
 
 return new \Framework\DependencyInjection\SymfonyContainer($container);

@@ -37,26 +37,36 @@ class ResultController extends AbstractController
 
     public function getScorePage(RequestInterface $request)
     {
-        $quizInstanceId = $request->getRequestParameters()['quizId'];
-        $userId = $request->getRequestParameters()['userId'];
-        $questionInstanceEntities = $this->resultService->getQuestionsInstance($quizInstanceId);
+        $role = $this->session->get('role');
 
-        $textInstances = [];
-        foreach ($questionInstanceEntities as $key => $value) {
-            $textInstance = $this->resultService->getTextInstance($value->getId());
-            $textInstance[0]->setText($this->codeHighlight->highlight($textInstance[0]->getText()));
-            $textInstances[] = $textInstance;
+        if ($role !== null) {
+            $quizInstanceId = $request->getRequestParameters()['quizId'];
+            $questionDTOs = $this->resultService->getQuestionsAnswersForQuizWithId($quizInstanceId);
+
+            if ($questionDTOs === null) {
+                return $this->getRedirectPage("http://local.quiz.com/error/404");
+            }
+
+            if ($role === 'admin') {
+                $userId = $request->getRequestParameters()['userId'];
+                return $this->renderer->renderView(
+                    "admin-score.phtml",
+                    [
+                        'session' => $this->session,
+                        'user' => $userId,
+                        'quizInstanceId' => $quizInstanceId,
+                        'questions' => $questionDTOs
+                    ]);
+            }
+
+            return $this->renderer->renderView(
+                'admin-results.phtml',
+                [
+                    'session' => $this->session,
+                    'questions' => $questionDTOs
+                ]
+            );
         }
-
-        return $this->renderer->renderView(
-            "admin-score.phtml",
-            [
-                'session' => $this->session,
-                'user' => $userId,
-                'quizInstanceId' => $quizInstanceId,
-                'questions' => $questionInstanceEntities,
-                'answers' => $textInstances
-            ]);
     }
 
     public function scoreQuiz(RequestInterface $request)

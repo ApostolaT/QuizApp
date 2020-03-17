@@ -17,16 +17,15 @@
 
         <!--Quiz block-->
         <?php
-        foreach ($questions as $key => $value) {
-
+        foreach ($questions as $question) {
         echo '<div class="card border-secondary mb-3">
             <div class="card-header">
                 <p class="mb-1">Question: </p>
-                <span>'.$value->getText().'</span>
+                <span>'.$question->getQuestion().'</span>
             </div>
             <div class="card-body">
                 <p class="mb-1">Answer: </p>
-                <span>'.$answers[$key]->getText().'</span>
+                <span>'.$question->getAnswer().'</span>
             </div>
         </div>';
         }

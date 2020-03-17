@@ -51,6 +51,7 @@ class QuestionInstanceService extends AbstractService
             $questionInstanceEntity = new QuestionInstance();
             $questionInstanceEntity->setQuizInstanceId($quizInstanceId);
             $questionInstanceEntity->setText($questionTemplate->getText());
+            $questionInstanceEntity->setType($questionTemplate->getType());
 
             if ($questionInstanceRepository->insertOnDuplicateKeyUpdate($questionInstanceEntity)) {
                 $lastInsertedQuestionInstance = $questionInstanceRepository->getLastInsertedId();

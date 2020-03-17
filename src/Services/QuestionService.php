@@ -42,7 +42,7 @@ class QuestionService extends AbstractService
         $answer = $request->getParameter('answer');
         $type = $request->getParameter('type');
 
-        $textRepository = $this->repositoryManager->getRepository(TextTemplate::class);
+        $answerRepository = $this->repositoryManager->getRepository(TextTemplate::class);
 
         // TODO check the answer if empty
 
@@ -56,7 +56,7 @@ class QuestionService extends AbstractService
             $questionType->setText($answer);
             $questionType->setQuestionTemplateId($id);
 
-             return $textRepository->insertOnDuplicateKeyUpdate($questionType);
+             return $answerRepository->insertOnDuplicateKeyUpdate($questionType);
         }
 
         return false;

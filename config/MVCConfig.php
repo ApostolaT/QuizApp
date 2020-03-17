@@ -219,11 +219,13 @@ $configuration = [
                 Router::CONFIG_KEY_ATTRIBUTES => []
             ],
             "get_finish_page" => [
-                Router::CONFIG_KEY_PATH => "/quiz/completed",
-                Router::CONFIG_KEY_CONTROLLER => "questionInstance",
-                Router::CONFIG_KEY_ACTION => "getReviewPage",
+                Router::CONFIG_KEY_PATH => "/completed/quiz/{quizId}",
+                Router::CONFIG_KEY_CONTROLLER => "result",
+                Router::CONFIG_KEY_ACTION => "getScorePage",
                 Router::CONFIG_KEY_METHOD => "GET",
-                Router::CONFIG_KEY_ATTRIBUTES => []
+                Router::CONFIG_KEY_ATTRIBUTES => [
+                    'quizId' => "\d+"
+                ]
             ],
             "handle_error" => [
                 Router::CONFIG_KEY_PATH => "/error/{id}",

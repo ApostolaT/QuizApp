@@ -21,6 +21,11 @@ class QuestionInstance extends AbstractEntity
     /**
      * @ORM
      */
+    private $type;
+
+    /**
+     * @ORM
+     */
     public function getQuizInstanceId()
     {
         return $this->quizInstanceId;
@@ -48,5 +53,21 @@ class QuestionInstance extends AbstractEntity
     public function setText(string $text)
     {
         $this->text = $text;
+    }
+
+    /**
+     * @ORM
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @ORM
+     */
+    public function setType(string $type)
+    {
+        $this->type = $type;
     }
 }
