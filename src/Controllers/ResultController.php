@@ -35,26 +35,53 @@ class ResultController extends AbstractController
         }
     }
 
-    public function getScorePage(RequestInterface $request)
+        public function getUserResultPage(RequestInterface $request)
     {
-        $quizInstanceId = $request->getRequestParameters()['quizId'];
-        $userId = $request->getRequestParameters()['userId'];
-        $questionInstanceEntities = $this->resultService->getQuestionsInstance($quizInstanceId);
+        $role = $this->session->get('role');
 
-        $textInstnaces = [];
-        foreach ($questionInstanceEntities as $key => $value) {
-            $textInstnaces[] = $this->resultService->getTextInstance($value->getId());
+        if ($role !== 'user') {
+            return $this->getRedirectPage("http://local.quiz.com/error/404");
         }
 
-        return $this->renderer->renderView(
-            "admin-score.phtml",
-            [
-                'session' => $this->session,
-                'user' => $userId,
-                'quizInstanceId' => $quizInstanceId,
-                'questions' => $questionInstanceEntities,
-                'answers' => $textInstnaces
-            ]);
+        $quizInstanceId = $request->getRequestParameters()['quizId'];
+        $questionDTOs = $this->resultService->getQuestionsAnswersForQuizWithId($quizInstanceId);
+
+        if ($questionDTOs === null) {
+            return $this->getRedirectPage("http://local.quiz.com/error/404");
+        }
+
+        $viewParams = [
+            'session' => $this->session,
+            'questions' => $questionDTOs
+        ];
+
+        return $this->renderer->renderView('user-results.phtml', $viewParams);
+    }
+
+    public function getAdminResultPage(RequestInterface $request)
+    {
+        $role = $this->session->get('role');
+
+        if ($role !== 'admin') {
+            return $this->getRedirectPage("http://local.quiz.com/error/404");
+        }
+
+        $userId = $request->getRequestParameters()['userId'];
+        $quizInstanceId = $request->getRequestParameters()['quizId'];
+        $questionDTOs = $this->resultService->getQuestionsAnswersForQuizWithId($quizInstanceId);
+
+        if ($questionDTOs === null) {
+            return $this->getRedirectPage("http://local.quiz.com/error/404");
+        }
+
+        $viewParams = [
+            'session' => $this->session,
+            'user' => $userId,
+            'quizInstanceId' => $quizInstanceId,
+            'questions' => $questionDTOs
+        ];
+
+        return $this->renderer->renderView('admin-score.phtml', $viewParams);
     }
 
     public function scoreQuiz(RequestInterface $request)
