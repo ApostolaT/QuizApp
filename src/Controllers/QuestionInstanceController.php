@@ -83,7 +83,7 @@ class QuestionInstanceController extends AbstractController
             if ($count === (int)$offset) {
                 $response = new Response(Stream::createFromString(' '), []);
                 $response = $response->withStatus(301);
-                $response = $response->withHeader('Location', 'http://local.quiz.com/completed/quiz/'.$quizInstanceId);
+                $response = $response->withHeader('Location', 'http://local.quiz.com/user/completed/quiz/'.$quizInstanceId);
 
                 return $response;
             }

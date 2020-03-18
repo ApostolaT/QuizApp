@@ -218,10 +218,10 @@ $configuration = [
                 Router::CONFIG_KEY_METHOD => "POST",
                 Router::CONFIG_KEY_ATTRIBUTES => []
             ],
-            "get_finish_page" => [
-                Router::CONFIG_KEY_PATH => "/completed/quiz/{quizId}",
+            "get_user_review_page" => [
+                Router::CONFIG_KEY_PATH => "/user/completed/quiz/{quizId}",
                 Router::CONFIG_KEY_CONTROLLER => "result",
-                Router::CONFIG_KEY_ACTION => "getScorePage",
+                Router::CONFIG_KEY_ACTION => "getUserResultPage",
                 Router::CONFIG_KEY_METHOD => "GET",
                 Router::CONFIG_KEY_ATTRIBUTES => [
                     'quizId' => "\d+"
@@ -252,10 +252,10 @@ $configuration = [
                 Router::CONFIG_KEY_METHOD => "GET",
                 Router::CONFIG_KEY_ATTRIBUTES => []
             ],
-            "view_score_page" => [
+            "view_admin_score_page" => [
                 Router::CONFIG_KEY_PATH => "/result/user/{userId}/quiz/{quizId}",
                 Router::CONFIG_KEY_CONTROLLER => "result",
-                Router::CONFIG_KEY_ACTION => "getScorePage",
+                Router::CONFIG_KEY_ACTION => "getAdminResultPage",
                 Router::CONFIG_KEY_METHOD => "GET",
                 Router::CONFIG_KEY_ATTRIBUTES => [
                     'userId' => '\d+',

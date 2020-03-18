@@ -14,28 +14,24 @@ include "header.phtml"; ?>
         <!--UserController details block-->
         <div class="user-block mb-3">
             <span>User: </span>
-            <span class="h5"><?php echo $user; ?></span>
+            <span class="h5"><?php echo $session->get('name'); ?></span>
         </div>
+        <!--Quiz block-->
         <?php
         /** @var QuestionDTO $question */
         foreach ($questions as $question): ?>
             <div class="card border-secondary mb-3">
-            <div class="card-header">
-                <p class="mb-1">Question: </p>
-                <span><?php echo $question->getQuestionText(); ?></span>
+                <div class="card-header">
+                    <p class="mb-1">Question: </p>
+                    <span><?php echo $question->getQuestionText(); ?></span>
+                </div>
+                <div class="card-body">
+                    <p class="mb-1">Answer: </p>
+                    <span><?php echo $question->getAnswerText(); ?></span>
+                </div>
             </div>
-            <div class="card-body">
-                <p class="mb-1">Answer: </p>
-                <span><?php echo $question->getAnswerText(); ?></span>
-            </div>
-        </div>
         <?php endforeach; ?>
-
-        <form method="POST" action="/result/score/<?php echo $quizInstanceId;?>">
-            <label for="score">Score</label>
-            <input type="text" name="score" id="score">
-            <button class="btn btn-primary">Save</button>
-        </form>
+                <a class="btn btn-primary" href="/congrats">Save</a>
     </div>
 </body>
 </html>
