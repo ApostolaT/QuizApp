@@ -46,26 +46,25 @@
                     <!--Sorting arrow are displayed using the 'asc','dsc' classes-->
                     <th scope="col" class="sorting-header asc dsc">ID</th>
                     <th scope="col">User</th>
-                    <th scope="col">Quiz</th>
-                    <!--Sorting arrow are displayed using the 'asc','dsc' classes-->
-                    <th scope="col" class="sorting-header asc dsc">Score</th>
+                    <th scope="col">Quiz Name</th>
+                    <th scope="col">Quiz Template Id</th>
+                    <th scope="col">Score</th>
                     <th scope="col">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-
-                    <?php if(isset($results)) {
-                        foreach ($results as $key => $result) {
-                            echo '<tr><th scope="row">'.$result->getId().'</th>
-                                    <td>'.$result->getUserId().'</td>
-                                    <td>'.$result->getQuizTemplateId().'</td>
-                                    <td>'.$result->getScore().'</td>
-                                    <td class="text-center">
-<a class="btn btn-primary py-1" href="/result/user/'.$result->getUserId().'/quiz/'.$result->getId().'">View</a>
-                                    </td></tr>';
-                        }
-                    } ?>
-
+                    <?php if(isset($quizzes)):
+                        foreach ($quizzes as $quiz): ?>
+                             <tr>
+                                 <th scope="row"><?php echo $quiz->getId(); ?></th>
+                                 <td><?php echo $quiz->getUserName(); ?></td>
+                                 <td><?php echo $quiz->getQuizName(); ?></td>
+                                 <td><?php echo $quiz->getQuizTemplateId(); ?></td>
+                                 <td><?php echo $quiz->getScore(); ?></td>
+                                 <td class="text-center">
+<a class="btn btn-primary py-1" href="/result/user/<?php echo $quiz->getUserId(); ?>/quiz/<?php echo $quiz->getId(); ?>">View</a>
+                                    </td></tr>
+                    <?php endforeach; endif; ?>
                 </tbody>
             </table>
         </div>

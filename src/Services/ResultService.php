@@ -1,18 +1,25 @@
 <?php
 
-
 namespace QuizApp\Services;
-
 
 use HighlightLib\CodeHighlight;
 use Psr\Http\Message\RequestInterface;
 use QuizApp\DTOs\QuestionDTO;
+use QuizApp\DTOs\QuizInstanceDTO;
 use QuizApp\Entities\QuestionInstance;
 use QuizApp\Entities\QuizInstance;
 use QuizApp\Entities\TextInstance;
+use QuizApp\Entities\User;
 use ReallyOrm\Exceptions\NoSuchRowException;
 use ReallyOrm\Repository\RepositoryManagerInterface;
 
+/**
+ * Class ResultService
+ * serves ResultController for getting Data from data base
+ * and populating the corresponding Data Transfer Objects or
+ * with saving data to DataBase
+ * @package QuizApp\Services
+ */
 class ResultService extends AbstractService
 {
     private $repositoryManager;
@@ -29,37 +36,11 @@ class ResultService extends AbstractService
         $this->repositoryManager = $repositoryManager;
     }
 
-    public function getAllUserTests(RequestInterface $request)
+    public function getAllUserTests(array $page): array
     {
-        $page = $request->getRequestParameters();
         $from = ($page['offset'] - 1) * 10;
 
-        $resultRepository = $this->repositoryManager->getRepository(QuizInstance::class);
-
-        return $resultRepository->findBy([], [], 10, $from);
-    }
-
-    public function countQuestion(string $quizInstanceId)
-    {
-        $textInstanceRepository = $this->repositoryManager->getRepository(QuestionInstance::class);
-
-        $count = $textInstanceRepository->countInstancesWithQuestionInstance($quizInstanceId);
-
-        return $count['COUNT(quizInstanceId)'];
-    }
-
-    public function getQuestionsInstance($quizInstanceId)
-    {
-        $textInstanceRepository = $this->repositoryManager->getRepository(QuestionInstance::class);
-
-        return $textInstanceRepository->findBy(['quizInstanceId' => $quizInstanceId], [], 0, 0);
-    }
-
-    public function getTextInstance($id)
-    {
-        $textInstanceRepository = $this->repositoryManager->getRepository(TextInstance::class);
-
-        return $textInstanceRepository->findOneBy(['questionInstanceId' => $id]);
+        return $this->getQuizInstanceDTOsWithOffset($from);
     }
 
     public function scoreResult(string $score, string $quizInstanceId): bool
@@ -121,5 +102,32 @@ class ResultService extends AbstractService
         } catch (NoSuchRowException $e) {
             return null;
         }
+    }
+
+    //TODO you can think about a small "caching" mechanism here if you want.
+    //you might perform this query too many times with the same id
+    private function getQuizInstanceDTOsWithOffset(string $offset): array
+    {
+        $resultRepository = $this->repositoryManager->getRepository(QuizInstance::class);
+        $userRepository = $this->repositoryManager->getRepository(User::class);
+
+        $quizInstances = $resultRepository->findBy([], [], 10, $offset);
+        $quizInstanceDTOs = [];
+        foreach ($quizInstances as $quizInstance) {
+            $userEntity = $userRepository->find($quizInstance->getUserId());
+            $score = $quizInstance->getScore();
+            $quizInstanceDTO = new QuizInstanceDTO(
+                $quizInstance->getId(),
+                $quizInstance->getName(),
+                $quizInstance->getUserId(),
+                $quizInstance->getQuizTemplateId(),
+                $userEntity->getName(),
+                $score ?? ""
+            );
+
+            $quizInstanceDTOs[] = $quizInstanceDTO;
+        }
+
+        return $quizInstanceDTOs;
     }
 }
