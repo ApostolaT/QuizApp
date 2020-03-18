@@ -46,22 +46,23 @@
                     <!--Sorting arrow are displayed using the 'asc','dsc' classes-->
                     <th scope="col" class="sorting-header asc dsc">ID</th>
                     <th scope="col">User</th>
-                    <th scope="col">Quiz</th>
-                    <!--Sorting arrow are displayed using the 'asc','dsc' classes-->
-                    <th scope="col" class="sorting-header asc dsc">Score</th>
+                    <th scope="col">QuizName</th>
+                    <th scope="col">QuizTemplateId</th>
+                    <th scope="col">Score</th>
                     <th scope="col">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
 
-                    <?php if(isset($results)) {
-                        foreach ($results as $key => $result) {
-                            echo '<tr><th scope="row">'.$result->getId().'</th>
-                                    <td>'.$result->getUserId().'</td>
-                                    <td>'.$result->getQuizTemplateId().'</td>
-                                    <td>'.$result->getScore().'</td>
+                    <?php if(isset($quizzes)) {
+                        foreach ($quizzes as $quiz) {
+                            echo '<tr><th scope="row">'.$quiz->getId().'</th>
+                                    <td>'.$quiz->getUserName().'</td>
+                                    <td>'.$quiz->getQuizName().'</td>
+                                    <td>'.$quiz->getQuizTemplateId().'</td>
+                                    <td>'.$quiz->getScore().'</td>
                                     <td class="text-center">
-<a class="btn btn-primary py-1" href="/result/user/'.$result->getUserId().'/quiz/'.$result->getId().'">View</a>
+<a class="btn btn-primary py-1" href="/result/user/'.$quiz->getUserId().'/quiz/'.$quiz->getId().'">View</a>
                                     </td></tr>';
                         }
                     } ?>
