@@ -3,21 +3,16 @@
 namespace QuizApp\Controllers;
 
 use Framework\Controller\AbstractController;
+use Framework\Http\Response;
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Services\AbstractService;
 use ReallyOrm\Exceptions\NoSuchRowException;
 
 /**
- * Class ResultController is responsible for:
- *  1) creating a response listing all the quizzes taken by users,
- *  2) creating a response containing all the answered questions by
- * the user for the review
- *  3) creating a response containing all the answered questions by
- * a user for admin scoring
- *  4) for creating a response for when an admin scores a quiz of any
- * users.
+ * Class ResultController
  * @package QuizApp\Controllers
  */
+//TODO local.quiz.com/results?page=1
 class ResultController extends AbstractController
 {
     private $resultService;
@@ -33,9 +28,9 @@ class ResultController extends AbstractController
      * userName, quizName, and the Score of the user taken quiz.
      * if the process is successful, the Renderer gets those DTOs, else
      * the rendered will just display and empty results page
-     * @return \Framework\Http\Response
+     * @return Response
      */
-    public function getAllUserTest(RequestInterface $request)
+    public function getAllUserTest(RequestInterface $request): Response
     {
         $role = $this->session->get('role');
 
@@ -47,7 +42,8 @@ class ResultController extends AbstractController
         //We need session for the Header
         $viewParams = ['session' => $this->session];
         try {
-            $viewParams['quizzes'] = $this->resultService->getAllUserTests($request);;
+            $page = $request->getRequestParameters();
+            $viewParams['quizzes'] = $this->resultService->getAllUserTests($page);
             return $this->renderer->renderView("admin-results-listing.phtml", $viewParams);
         } catch (NoSuchRowException $e) {
             return $this->renderer->renderView("admin-results-listing.phtml", $viewParams);
@@ -59,9 +55,9 @@ class ResultController extends AbstractController
      * from quiz and presses Next. The Review page will be displayed on his screen.
      * This function calls the ResultService for all the QuestionDTOs related to the
      * taken quiz. QuestionDTOs contains pairs of questionText and answerText.
-     * @return \Framework\Http\Response
+     * @return Response
      */
-    public function getUserResultPage(RequestInterface $request)
+    public function getUserResultPage(RequestInterface $request): Response
     {
         $role = $this->session->get('role');
 
@@ -86,12 +82,12 @@ class ResultController extends AbstractController
     }
 
     /**
-     * This function is called when an admin wants to the answered questions
+     * This function is called when an admin wants to see the answered questions
      * from a quiz taken by any user. The functionality is the same
      * as for the getUserResultPage() function.
-     * @return \Framework\Http\Response
+     * @return Response
      */
-    public function getAdminResultPage(RequestInterface $request)
+    public function getAdminResultPage(RequestInterface $request): Response
     {
         $role = $this->session->get('role');
 
@@ -121,9 +117,9 @@ class ResultController extends AbstractController
     /**
      * This function is called to score a quiz given by any user. It calls the scoreResult
      * method from resultService class with the provided score and the id of the quiz.
-     * @return \Framework\Http\Response
+     * @return Response
      */
-    public function scoreQuiz(RequestInterface $request)
+    public function scoreQuiz(RequestInterface $request): Response
     {
         $role = $this->session->get('role');
 

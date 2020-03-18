@@ -36,9 +36,8 @@ class ResultService extends AbstractService
         $this->repositoryManager = $repositoryManager;
     }
 
-    public function getAllUserTests(RequestInterface $request): array
+    public function getAllUserTests(array $page): array
     {
-        $page = $request->getRequestParameters();
         $from = ($page['offset'] - 1) * 10;
 
         return $this->getQuizInstanceDTOsWithOffset($from);
@@ -105,13 +104,15 @@ class ResultService extends AbstractService
         }
     }
 
+    //TODO you can think about a small "caching" mechanism here if you want.
+    //you might perform this query too many times with the same id
     private function getQuizInstanceDTOsWithOffset(string $offset): array
     {
         $resultRepository = $this->repositoryManager->getRepository(QuizInstance::class);
-        $quizInstances = $resultRepository->findBy([], [], 10, $offset);
-
-        $quizInstanceDTOs = [];
         $userRepository = $this->repositoryManager->getRepository(User::class);
+
+        $quizInstances = $resultRepository->findBy([], [], 10, $offset);
+        $quizInstanceDTOs = [];
         foreach ($quizInstances as $quizInstance) {
             $userEntity = $userRepository->find($quizInstance->getUserId());
             $score = $quizInstance->getScore();
@@ -121,7 +122,7 @@ class ResultService extends AbstractService
                 $quizInstance->getUserId(),
                 $quizInstance->getQuizTemplateId(),
                 $userEntity->getName(),
-                (!$score) ? "": $score
+                $score ?? ""
             );
 
             $quizInstanceDTOs[] = $quizInstanceDTO;

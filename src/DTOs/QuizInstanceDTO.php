@@ -10,11 +10,35 @@ namespace QuizApp\DTOs;
  */
 class QuizInstanceDTO
 {
+    /**
+     * id from QuizInstanceEntity
+     * @var string
+     */
     private $id;
+    /**
+     * userId from QuizInstanceEntity
+     * @var string
+     */
     private $userId;
+    /**
+     * quizTemplateId from QuizInstanceEntity
+     * @var string
+     */
     private $quizTemplateId;
+    /**
+     * quizName from QuizInstanceEntity
+     * @var string
+     */
     private $quizName;
+    /**
+     * name from User
+     * @var string
+     */
     private $userName;
+    /**
+     * score from QuizInstanceEntity
+     * @var string
+     */
     private $score;
 
     public function __construct(
