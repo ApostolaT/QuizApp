@@ -5,9 +5,13 @@ namespace QuizApp\Services;
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Entities\User;
 use ReallyOrm\Repository\RepositoryManagerInterface;
+use ReallyOrm\Test\Repository\RepositoryManager;
 
 class UserService extends AbstractService
 {
+    /**
+     * @var RepositoryManager
+     */
     private $repositoryManager;
 
     public function setRepositoryManager(RepositoryManagerInterface $repositoryManager)
@@ -15,16 +19,22 @@ class UserService extends AbstractService
         $this->repositoryManager = $repositoryManager;
     }
 
-    public function getAll(RequestInterface $request)
+    public function getAll(int $page)
     {
-        $page = $request->getRequestParameters();
-        $from = ($page['page'] - 1) * 10;
+        $offset = ($page - 1) * 10;
 
         $repository = $this->repositoryManager->getRepository(User::class);
 
-        $entities = $repository->findBy([], [], 10, 0);
+        $entities = $repository->findBy([], [], 10, $offset);
 
         return $entities;
+    }
+
+    public function countRows()
+    {
+        $userRepository = $this->repositoryManager->getRepository(User::class);
+
+        return $userRepository->countRows();
     }
 
     public function createEntity($request)

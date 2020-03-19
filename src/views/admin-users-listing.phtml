@@ -51,7 +51,7 @@
                    
                     <td class="text-center">
                         <a class="btn btn-primary py-1" href="/user/add/' . $values->getId() . '">Edit</a>
-                        <a class="btn btn-danger py-1" href="delete/' . $values->getId() . '">Delete</a>
+                        <a class="btn btn-danger py-1" href="/user/delete/' . $values->getId() . '">Delete</a>
                     </td>
                 </tr>';
                     }
@@ -62,16 +62,30 @@
         </div>
 
         <!--Pagination block-->
+        <?php
+        $currentPage = $paginator->getCurrentPage();
+        $nrOfPages = $paginator->getTotalpages();
+        $nextPage = $paginator->getNextPage();
+        $previousPage = $paginator->getPreviousPage();
+        ?>
+
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+
+                <li class="page-item <?php if ($currentPage === 1): echo "disabled"; endif;?>">
+                    <a class="page-link" href="<?php if ($previousPage): echo "http://local.quiz.com/user?page=".$previousPage; endif;?>" tabindex="-1" aria-disabled="true">Previous</a>
                 </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item active"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
+
+                <?php
+                $page = 1;
+                while ($page <= $nrOfPages):
+                    ?>
+                    <li class="page-item <?php if($page === $currentPage): echo "active"; endif;?>"><a class="page-link" href="http://local.quiz.com/user?page=<?php echo $page;?>"><?php echo $page;?></a></li>
+                    <?php
+                    $page++;
+                endwhile;?>
+                <li class="page-item <?php if ($currentPage === $nrOfPages): echo "disabled"; endif;?>">
+                    <a class="page-link" href="<?php if ($nextPage): echo "http://local.quiz.com/user?page=".$nextPage; endif;?>">Next</a>
                 </li>
             </ul>
         </nav>
