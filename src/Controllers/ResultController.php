@@ -6,6 +6,7 @@ use Framework\Controller\AbstractController;
 use Framework\Http\Response;
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Services\AbstractService;
+use QuizApp\Services\ResultService;
 use ReallyOrm\Exceptions\NoSuchRowException;
 
 /**
@@ -15,6 +16,9 @@ use ReallyOrm\Exceptions\NoSuchRowException;
 //TODO local.quiz.com/results?page=1
 class ResultController extends AbstractController
 {
+    /**
+     * @var ResultService
+     */
     private $resultService;
 
     public function setService(AbstractService $resultService)
