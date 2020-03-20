@@ -91,9 +91,10 @@ class UserService extends AbstractService
         $repository = $this->repositoryManager->getRepository(User::class);
         $id = $request->getRequestParameters()['id'];
 
+        //TODO add try catch like in ResultsService
         $entity = $repository->find((int)$id);
 
-        return $entity->remove();;
+        return $entity->remove();
     }
 
     /**
@@ -107,6 +108,7 @@ class UserService extends AbstractService
         $id = $request->getRequestParameters()['id'];
         $repository = $this->repositoryManager->getrepository(User::class);
 
+        //TODO add try catch like in ResultsService
         return $repository->find((int)$id);
     }
     /**
@@ -123,6 +125,7 @@ class UserService extends AbstractService
         $role = $request->getParameter('role');
 
         $id = $request->getRequestParameters()['id'];
+        //TODO add try catch like in ResultsService
         $entity = $repository->find((int)$id);
 
         $entity->setName($name);

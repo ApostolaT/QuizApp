@@ -10,6 +10,8 @@ use QuizApp\Services\AbstractService;
 use QuizApp\Services\UserService;
 use QuizApp\Utils\Paginator;
 
+//TODO create an abstract Controller that will contain the paginator functionality
+//TODO redirect using the getRedirectPage
 class UserController extends Controller\AbstractController
 {
     /**
