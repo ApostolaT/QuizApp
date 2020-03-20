@@ -88,7 +88,7 @@ class UserController extends Controller\AbstractController
             return $response;
         }
 
-        $message = ($this->userService->createEntity($request)) ?
+        $message = ($this->userService->addNewUser($request)) ?
             "Success." : "User addition failed!";
         $this->session->set('message', $message);
         $response = new Response(Stream::createFromString(' '), []);
