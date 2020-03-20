@@ -4,7 +4,6 @@ namespace QuizApp\Controllers;
 
 use Framework\Http\Response;
 use Psr\Http\Message\RequestInterface;
-
 /**
  * Class ResultController
  * @package QuizApp\Controllers

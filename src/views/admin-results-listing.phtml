@@ -40,6 +40,7 @@
         </div>
         <!--Quiz listing table-->
         <div class="table-responsive my-4">
+<!--            Create a message div-->
             <table class="table table-bordered">
                 <thead>
                 <tr>
@@ -78,21 +79,19 @@
 
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
-
                 <li class="page-item <?php if ($currentPage === 1): echo "disabled"; endif;?>">
-                    <a class="page-link" href="<?php if ($previousPage): echo "http://local.quiz.com/user?page=".$previousPage; endif;?>" tabindex="-1" aria-disabled="true">Previous</a>
+                    <a class="page-link" href="<?php if ($previousPage): echo "http://local.quiz.com/result?page=".$previousPage; endif;?>" tabindex="-1" aria-disabled="true">Previous</a>
                 </li>
-
                 <?php
                 $page = 1;
                 while ($page <= $nrOfPages):
                     ?>
-                    <li class="page-item <?php if($page === $currentPage): echo "active"; endif;?>"><a class="page-link" href="http://local.quiz.com/user?page=<?php echo $page;?>"><?php echo $page;?></a></li>
+                    <li class="page-item <?php if($page === $currentPage): echo "active"; endif;?>"><a class="page-link" href="http://local.quiz.com/result?page=<?php echo $page;?>"><?php echo $page;?></a></li>
                     <?php
                     $page++;
                 endwhile;?>
                 <li class="page-item <?php if ($currentPage === $nrOfPages): echo "disabled"; endif;?>">
-                    <a class="page-link" href="<?php if ($nextPage): echo "http://local.quiz.com/user?page=".$nextPage; endif;?>">Next</a>
+                    <a class="page-link" href="<?php if ($nextPage): echo "http://local.quiz.com/result?page=".$nextPage; endif;?>">Next</a>
                 </li>
             </ul>
         </nav>
