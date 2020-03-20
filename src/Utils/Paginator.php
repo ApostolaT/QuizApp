@@ -2,15 +2,34 @@
 
 namespace QuizApp\Utils;
 
+/**
+ * Class Paginator
+ * @package QuizApp\Utils
+ */
 class Paginator
 {
+    /**
+     * @var int
+     */
     private $totalResults;
+    /**
+     * @var int
+     */
     private $totalPages;
+    /**
+     * @var int
+     */
     private $currentPage;
+    /**
+     * @var int
+     */
     private $resultsPerPage;
-    public function __construct(int $totalResults, int $currentPage = 1,
-                                int $resultsPerPage = 10)
-    {
+
+    public function __construct(
+        int $totalResults,
+        int $currentPage = 1,
+        int $resultsPerPage = 10
+    ) {
         $this->totalResults = $totalResults;
         $this->setCurrentPage($currentPage);
         $this->setResultsPerPage($resultsPerPage);
@@ -33,9 +52,10 @@ class Paginator
      * @param int $totalResults
      * @param int $resultsPerPage
      */
-    private function setTotalPages(int $totalResults, int
-    $resultsPerPage)
-    {
+    private function setTotalPages(
+        int $totalResults,
+        int $resultsPerPage
+    ) {
         $this->totalPages = ceil($totalResults / $resultsPerPage);
     }
     /**
@@ -46,7 +66,7 @@ class Paginator
      */
     public function setCurrentPage(int $currentPage)
     {
-        $this->currentPage = $currentPage <= 0 ? 0 : $currentPage;
+        $this->currentPage = ($currentPage <= 1 || $this->totalPages < $currentPage) ? 1 : $currentPage;
     }
     /**
      * Returns the next page number or null if there are no more pages
@@ -54,15 +74,20 @@ class Paginator
      *
      * @return int|null
      */
-    public function getNextPage()
+    public function getNextPage(): ?int
     {
         if ($this->currentPage < $this->totalPages) {
             return $this->currentPage + 1;
         }
         return null;
     }
-
-    public function getPreviousPage()
+    /**
+     * Returns the previous page number or null if there are no more pages
+    available.
+     *
+     * @return int|null
+     */
+    public function getPreviousPage(): ?int
     {
         if ($this->currentPage > 1) {
             return $this->currentPage - 1;

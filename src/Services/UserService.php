@@ -4,6 +4,7 @@ namespace QuizApp\Services;
 
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Entities\User;
+use ReallyOrm\Exceptions\NoSuchRowException;
 use ReallyOrm\Repository\RepositoryManagerInterface;
 use ReallyOrm\Test\Repository\RepositoryManager;
 
@@ -19,13 +20,17 @@ class UserService extends AbstractService
         $this->repositoryManager = $repositoryManager;
     }
 
-    public function getAll(int $page)
+    public function getAll(int $page): ?array
     {
         $offset = ($page - 1) * 10;
 
         $repository = $this->repositoryManager->getRepository(User::class);
 
-        $entities = $repository->findBy([], [], 10, $offset);
+        try {
+            $entities = $repository->findBy([], [], 10, $offset);
+        } catch (NoSuchRowException $e) {
+            $entities = null;
+        }
 
         return $entities;
     }
@@ -70,7 +75,7 @@ class UserService extends AbstractService
         return $entity;
     }
 
-    public function updateEntity($request, $session)
+    public function updateEntity($request)
     {
         //TODO make update in quizzes like here
         $repository = $this->repositoryManager->getRepository(User::class);

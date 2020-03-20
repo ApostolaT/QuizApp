@@ -29,6 +29,11 @@
 
         <!--Quiz listing table-->
         <div class="table-responsive my-4">
+            <?php if(isset($message)): ?>
+                <div class="alert alert-info">
+                    <strong>Info!</strong> <?php echo $message ?>
+                </div>
+            <?php endif;?>
             <table class="table table-bordered">
                 <thead>
                 <tr>
@@ -41,22 +46,19 @@
                 </thead>
                 <tbody>
                 <?php
-                if (isset($entities)) {
-                    foreach ($entities as $key => $values) {
-                        ;
-                        echo '<tr>
-                    <th scope="row">' . $values->getId() . '</th>
-                    <td>' . $values->getName() . '</td>
-                    <td>' . $values->getRole() . '</td>
+                if ($entities):
+                    foreach ($entities as $key => $values): ?>
+                        <tr>
+                    <td scope="row"><?php echo $values->getId(); ?></td>
+                    <td><?php echo $values->getName(); ?></td>
+                    <td><?php echo $values->getRole(); ?></td>
                    
                     <td class="text-center">
-                        <a class="btn btn-primary py-1" href="/user/add/' . $values->getId() . '">Edit</a>
-                        <a class="btn btn-danger py-1" href="/user/delete/' . $values->getId() . '">Delete</a>
+                        <a class="btn btn-primary py-1" href="/user/add/<?php echo $values->getId(); ?>">Edit</a>
+                        <a class="btn btn-danger py-1" href="/user/delete/<?php echo $values->getId(); ?>">Delete</a>
                     </td>
-                </tr>';
-                    }
-                }
-                ?>
+                </tr>
+                 <?php endforeach; endif;?>
                 </tbody>
             </table>
         </div>
