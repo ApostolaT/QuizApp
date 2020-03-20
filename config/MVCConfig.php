@@ -83,13 +83,11 @@ $configuration = [
                 ]
             ],
             "list_all_users" => [
-                Router::CONFIG_KEY_PATH => "/user/{page}",
+                Router::CONFIG_KEY_PATH => "/user",
                 Router::CONFIG_KEY_CONTROLLER => "user",
                 Router::CONFIG_KEY_ACTION => "listAll",
                 Router::CONFIG_KEY_METHOD => "GET",
-                Router::CONFIG_KEY_ATTRIBUTES => [
-                    "page" => "\d+"
-                ]
+                Router::CONFIG_KEY_ATTRIBUTES => []
             ],
             "view_add_user" => [
                 Router::CONFIG_KEY_PATH => "/user/add",

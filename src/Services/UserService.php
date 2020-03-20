@@ -4,74 +4,130 @@ namespace QuizApp\Services;
 
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Entities\User;
+use ReallyOrm\Exceptions\NoSuchRowException;
 use ReallyOrm\Repository\RepositoryManagerInterface;
+use ReallyOrm\Test\Repository\RepositoryManager;
 
 class UserService extends AbstractService
 {
+    /**
+     * Constant for pagination.
+     */
+    private const RESULTS_PER_PAGE = 10;
+    /**
+     * @var RepositoryManager
+     */
     private $repositoryManager;
-
+    /**
+     * Sets the repositoryManager.
+     * @param RepositoryManagerInterface $repositoryManager
+     */
     public function setRepositoryManager(RepositoryManagerInterface $repositoryManager)
     {
         $this->repositoryManager = $repositoryManager;
     }
-
-    public function getAll(RequestInterface $request)
+    /**
+     * Extracts from repository $this::RESULTS_PER_PAGE users entities
+     * with the offset equal to page - 1 * $this::RESULTS_PER_PAGE.
+     * If no results found, it will return null.
+     * @param int $page
+     * @return array|null
+     * @throws \Exception
+     */
+    public function getAll(int $page): ?array
     {
-        $page = $request->getRequestParameters();
-        $from = ($page['page'] - 1) * 10;
+        $offset = ($page - 1) * $this::RESULTS_PER_PAGE;
 
         $repository = $this->repositoryManager->getRepository(User::class);
 
-        $entities = $repository->findBy([], [], 10, 0);
+        try {
+            $entities = $repository->findBy([], [], $this::RESULTS_PER_PAGE, $offset);
+        } catch (NoSuchRowException $e) {
+            $entities = null;
+        }
 
         return $entities;
     }
-
-    public function createEntity($request)
+    /**
+     * Counts how many user entities the Repository has.
+     * @return mixed
+     * @throws \Exception
+     */
+    public function countRows()
     {
-        $repository = $this->repositoryManager->getRepository(User::class);
+        $userRepository = $this->repositoryManager->getRepository(User::class);
+
+        return $userRepository->countRows();
+    }
+    /**
+     * This function returns true if a user is inserted into
+     * the Repository or false on fail.
+     * @param $request
+     * @return bool
+     */
+    public function addNewUser($request)
+    {
         $name = $request->getParameter('email');
         $type = $request->getParameter('role');
         $password = "";
 
         $entity = new User();
+        $entity->setRepositoryManager($this->repositoryManager);
         $entity->setName($name);
         $entity->setPassword($password);
         $entity->setRole($type);
 
-        return $repository->insertOnDuplicateKeyUpdate($entity);
+        return $entity->save();
     }
 
+    /**
+     * This function returns true if a user is deleted from
+     * the Repository or null on fail.
+     * @param $request
+     * @return bool
+     * @throws \Exception
+     */
     public function delete($request) {
         $repository = $this->repositoryManager->getRepository(User::class);
         $id = $request->getRequestParameters()['id'];
 
         $entity = $repository->find((int)$id);
 
-        return $repository->delete($entity);
+        return $entity->remove();;
     }
 
+    /**
+     * This function returns the entity of the user with the provided id.
+     * @param RequestInterface $request
+     * @return \ReallyOrm\Entity\EntityInterface|null
+     * @throws \Exception
+     */
     public function getUpdatePageParams(RequestInterface $request)
     {
         $id = $request->getRequestParameters()['id'];
         $repository = $this->repositoryManager->getrepository(User::class);
-        $entity = $repository->find((int)$id);
 
-        return $entity;
+        return $repository->find((int)$id);
     }
-
-    public function updateEntity($request, $session)
+    /**
+     * This function update info about the user with provided id.
+     * true is returned if the user is updated, false if failed.
+     * @param $request
+     * @return bool
+     * @throws \Exception
+     */
+    public function updateEntity($request)
     {
-        //TODO make update in quizzes like here
         $repository = $this->repositoryManager->getRepository(User::class);
-        $id = $request->getRequestParameters()['id'];
-        $entity = $repository->find((int)$id);
         $name = $request->getParameter('email');
         $role = $request->getParameter('role');
+
+        $id = $request->getRequestParameters()['id'];
+        $entity = $repository->find((int)$id);
 
         $entity->setName($name);
         $entity->setRole($role);
 
-        return $repository->insertOnDuplicateKeyUpdate($entity);
+        return $entity->save();
     }
 }
