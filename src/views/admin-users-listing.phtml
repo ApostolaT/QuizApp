@@ -49,15 +49,14 @@
                 if ($entities):
                     foreach ($entities as $key => $values): ?>
                         <tr>
-                    <td scope="row"><?php echo $values->getId(); ?></td>
-                    <td><?php echo $values->getName(); ?></td>
-                    <td><?php echo $values->getRole(); ?></td>
-                   
-                    <td class="text-center">
-                        <a class="btn btn-primary py-1" href="/user/add/<?php echo $values->getId(); ?>">Edit</a>
-                        <a class="btn btn-danger py-1" href="/user/delete/<?php echo $values->getId(); ?>">Delete</a>
-                    </td>
-                </tr>
+                            <td><?php echo $values->getId(); ?></td>
+                            <td><?php echo $values->getName(); ?></td>
+                            <td><?php echo $values->getRole(); ?></td>
+                            <td class="text-center">
+                                <a class="btn btn-primary py-1" href="/user/add/<?php echo $values->getId(); ?>">Edit</a>
+                                <a class="btn btn-danger py-1" href="/user/delete/<?php echo $values->getId(); ?>">Delete</a>
+                            </td>
+                        </tr>
                  <?php endforeach; endif;?>
                 </tbody>
             </table>

@@ -10,6 +10,7 @@ use ReallyOrm\Test\Repository\RepositoryManager;
 
 class UserService extends AbstractService
 {
+    private const RESULTS_PER_PAGE = 10;
     /**
      * @var RepositoryManager
      */
@@ -22,7 +23,7 @@ class UserService extends AbstractService
 
     public function getAll(int $page): ?array
     {
-        $offset = ($page - 1) * 10;
+        $offset = ($page - 1) * $this::RESULTS_PER_PAGE;
 
         $repository = $this->repositoryManager->getRepository(User::class);
 
