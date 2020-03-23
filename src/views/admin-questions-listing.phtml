@@ -43,21 +43,18 @@
                 </thead>
                 <tbody>
                 <?php
-                if (isset($entities)) {
-                    foreach ($entities as $key => $values) {
-                        ;
-                        echo '<tr>
-                    <th scope="row">' . $values->getId() . '</th>
-                    <td>' . $values->getText() . '</td>
-                    <td>' . $values->getType() . '</td>
-                    <td class="text-center">
-                        <a class="btn btn-primary py-1" href="/question/add/' . $values->getId() . '">Edit</a>
-                        <a class="btn btn-danger py-1" href="/question/delete/' . $values->getId() . '">Delete</a>
-                    </td>
-                </tr>';
-                    }
-                }
-                ?>
+                if (isset($entities)):
+                    foreach ($entities as $key => $values): ?>
+                        <tr>
+                            <th scope="row"><?php echo $values->getId();?></th>
+                            <td><?php echo $values->getText();?></td>
+                            <td><?php echo $values->getType();?></td>
+                            <td class="text-center">
+                                <a class="btn btn-primary py-1" href="/question/add/<?php echo $values->getId();?>">Edit</a>
+                                <a class="btn btn-danger py-1" href="/question/delete/<?php echo $values->getId();?>">Delete</a>
+                            </td>
+                        </tr>
+                <?php endforeach; endif;?>
                 </tbody>
             </table>
         </div>
@@ -65,14 +62,19 @@
         <!--Pagination block-->
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                <li class="page-item <?php if ($paginator->getCurrentPage() === 1): echo "disabled"; endif;?>">
+                    <a class="page-link" href="<?php if ($paginator->getPreviousPage()): echo "http://local.quiz.com/question?page=".$paginator->getPreviousPage(); endif;?>" tabindex="-1" aria-disabled="true">Previous</a>
                 </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item active"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
+                <?php
+                $page = 1;
+                while ($page <= $paginator->getTotalpages()):
+                    ?>
+                    <li class="page-item <?php if($page === $paginator->getCurrentPage()): echo "active"; endif;?>"><a class="page-link" href="http://local.quiz.com/question?page=<?php echo $page;?>"><?php echo $page;?></a></li>
+                    <?php
+                    $page++;
+                endwhile;?>
+                <li class="page-item <?php if ($paginator->getCurrentPage() === $paginator->getTotalpages()): echo "disabled"; endif;?>">
+                    <a class="page-link" href="<?php if ($paginator->getNextPage()): echo "http://local.quiz.com/question?page=".$paginator->getNextPage();; endif;?>">Next</a>
                 </li>
             </ul>
         </nav>
