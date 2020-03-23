@@ -3,32 +3,65 @@
 namespace QuizApp\Services;
 
 use Psr\Http\Message\RequestInterface;
+use QuizApp\Entities\QuizInstance;
 use QuizApp\Entities\QuizQuestionTemplate;
 use QuizApp\Entities\QuizTemplate;
 use QuizApp\Entities\QuizType;
+use ReallyOrm\Exceptions\NoSuchRowException;
 use ReallyOrm\Repository\RepositoryManagerInterface;
+use ReallyOrm\Test\Repository\RepositoryManager;
 
 class QuizService extends AbstractService
 {
+    /**
+     * Constant for pagination.
+     */
+    private const RESULTS_PER_PAGE = 10;
+    /**
+     * @var RepositoryManager
+     */
     private $repositoryManager;
-
+    /**
+     * This setter is injected in Container file
+     * @param RepositoryManagerInterface $repositoryManager
+     */
     public function setRepositoryManager(RepositoryManagerInterface $repositoryManager)
     {
         $this->repositoryManager = $repositoryManager;
     }
-
-    public function getAll(RequestInterface $request)
+    /**
+     * Gets all the Quizzes templates from the system
+     * @return array|null
+     * @throws \Exception
+     */
+    public function getAll(int $page): ?array
     {
-        $page = $request->getRequestParameters();
-        $from = ($page['page'] - 1) * 10;
-
+        $from = ($page - 1) * $this::RESULTS_PER_PAGE;
         $repository = $this->repositoryManager->getRepository(QuizTemplate::class);
-
-        $entities = $repository->findBy([], [], 10, $from);
-
+        try {
+            $entities = $repository->findBy([], [], $this::RESULTS_PER_PAGE, $from);
+        } catch (NoSuchRowException $e) {
+            $entities = null;
+        }
         return $entities;
     }
+    /**
+     * Counts how many quiz entities the Repository has.
+     * @return mixed
+     * @throws \Exception
+     */
+    public function countRows()
+    {
+        $quizInstanceRepository = $this->repositoryManager->getRepository(QuizTemplate::class);
 
+        return $quizInstanceRepository->countRows();
+    }
+
+    /**
+     * Gets all the entities from the repository
+     * @return array|\ReallyOrm\Entity\EntityInterface[]
+     * @throws \Exception
+     */
     public function selectAll()
     {
         $repository = $this->repositoryManager->getRepository(QuizTemplate::class);
@@ -36,6 +69,11 @@ class QuizService extends AbstractService
         return $repository->findBy([], [], 0, 0);
     }
 
+    /**
+     * Get all quiz types. This function is called to display the types on quiz add/edit page
+     * @return array|\ReallyOrm\Entity\EntityInterface[]
+     * @throws \Exception
+     */
     public function getType()
     {
         $repository = $this->repositoryManager->getRepository(QuizType::class);
@@ -44,6 +82,13 @@ class QuizService extends AbstractService
         return $repository->findBy([], [], 0, 0);
     }
 
+    /**
+     * Creates a quiz template entity in repository
+     * @param $request
+     * @param $session
+     * @return bool
+     * @throws \Exception
+     */
     public function createEntity($request, $session)
     {
         $repository = $this->repositoryManager->getRepository(QuizTemplate::class);
@@ -78,7 +123,12 @@ class QuizService extends AbstractService
 
         return $repository->insertOnDuplicateKeyUpdate($entity);
     }
-
+    /**
+     * Deletes an entity from repository by id
+     * @param $request
+     * @return bool
+     * @throws \Exception
+     */
     public function delete($request) {
         $repository = $this->repositoryManager->getRepository(QuizTemplate::class);
         $id = $request->getRequestParameters()['id'];
@@ -88,6 +138,12 @@ class QuizService extends AbstractService
         return $repository->delete($entity);
     }
 
+    /**
+     * Gets entity info from repository by quiz id
+     * @param RequestInterface $request
+     * @return \ReallyOrm\Entity\EntityInterface|null
+     * @throws \Exception
+     */
     public function getUpdatePageParams(RequestInterface $request)
     {
         $id = $request->getRequestParameters()['id'];
@@ -97,6 +153,15 @@ class QuizService extends AbstractService
         return $entity;
     }
 
+    /**
+     * this function is called when an entity is being edited.
+     * It inserts the new info about entity in the same place in repository
+     * by id
+     * @param $request
+     * @param $session
+     * @return bool
+     * @throws \Exception
+     */
     public function updateEntity($request, $session)
     {
         $repository = $this->repositoryManager->getRepository(QuizTemplate::class);
