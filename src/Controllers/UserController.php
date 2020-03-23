@@ -2,7 +2,7 @@
 
 namespace QuizApp\Controllers;
 
-use Framework\Controller;
+use Framework\Controller\AbstractController;
 use Framework\Http\Response;
 use Framework\Http\Stream;
 use Psr\Http\Message\RequestInterface;
@@ -12,7 +12,7 @@ use QuizApp\Utils\Paginator;
 
 //TODO create an abstract Controller that will contain the paginator functionality
 //TODO redirect using the getRedirectPage
-class UserController extends Controller\AbstractController
+class UserController extends AbstractController
 {
     /**
      * @var UserService

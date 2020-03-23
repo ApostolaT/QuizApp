@@ -2,14 +2,31 @@
 
 namespace QuizApp\Controllers;
 
+use Framework\Controller\AbstractController;
 use Framework\Http\Response;
 use Psr\Http\Message\RequestInterface;
+use QuizApp\Services\AbstractService;
+use QuizApp\Utils\PaginatorTrait;
+
 /**
  * Class ResultController
  * @package QuizApp\Controllers
  */
-class ResultController extends AbstractPaginatorController
+class ResultController extends AbstractController
 {
+    use PaginatorTrait;
+    /**
+     * @var AbstractService
+     */
+    protected $resultService;
+    /**
+     * This function sets the resultService
+     * @param AbstractService $service
+     */
+    public function setService(AbstractService $service)
+    {
+        $this->resultService = $service;
+    }
     /**
      * This function renders for admin all the quizzes that've been taken by users.
      * It calls the resultService for QuizInstanceDTOs which contains
@@ -25,14 +42,14 @@ class ResultController extends AbstractPaginatorController
             return $this->getRedirectPage("http://local.quiz.com/error/404");
         }
 
-        $paginator = $this->createPaginationForRequest($request);
+        $paginator = $this->createPaginationForRequestWithService($request, $this->resultService);
         $renderParams = [
             'session' => $this->session,
             //message is for the future messages that will be displayed
             //on admin-results-listing.phtml page
             'message' => $this->session->get('message'),
             'paginator' => $paginator,
-            'quizzes' =>  $this->service->getAllUserTests($paginator->getCurrentPage())
+            'quizzes' =>  $this->resultService->getAllUserTests($paginator->getCurrentPage())
         ];
         $this->session->delete('message');
 
@@ -57,7 +74,7 @@ class ResultController extends AbstractPaginatorController
         }
 
         $quizInstanceId = $request->getRequestParameters()['quizId'];
-        $questionDTOs = $this->service->getQuestionsAnswersForQuizWithId($quizInstanceId);
+        $questionDTOs = $this->resultService->getQuestionsAnswersForQuizWithId($quizInstanceId);
 
         if ($questionDTOs === null) {
             return $this->getRedirectPage("http://local.quiz.com/error/404");
@@ -87,7 +104,7 @@ class ResultController extends AbstractPaginatorController
         }
 
         $quizInstanceId = $request->getRequestParameters()['quizId'];
-        $questionDTOs = $this->service->getQuestionsAnswersForQuizWithId($quizInstanceId);
+        $questionDTOs = $this->resultService->getQuestionsAnswersForQuizWithId($quizInstanceId);
 
         if ($questionDTOs === null) {
             return $this->getRedirectPage("http://local.quiz.com/error/404");
@@ -106,7 +123,7 @@ class ResultController extends AbstractPaginatorController
 
     /**
      * This function is called to score a quiz given by any user. It calls the scoreResult
-     * method from service class with the provided score and the id of the quiz.
+     * method from resultService class with the provided score and the id of the quiz.
      * @param RequestInterface $request
      * @return Response
      */
@@ -121,7 +138,7 @@ class ResultController extends AbstractPaginatorController
 
         $score = $request->getParameter('score');
         $quizInstanceId = $request->getRequestParameters()['quizId'];
-        if (!$this->service->scoreResult($score, $quizInstanceId)) {
+        if (!$this->resultService->scoreResult($score, $quizInstanceId)) {
             return $this->getRedirectPage('http://local.quiz.com/error/404');
         }
 
