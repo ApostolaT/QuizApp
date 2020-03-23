@@ -37,10 +37,8 @@ class Paginator
     /**
      * Sets the number of results that should be displayed on a page
      * and updates the number of available pages accordingly.
-     *
      * @param int $resultsPerPage
      */
-
     public function setResultsPerPage(int $resultsPerPage)
     {
         $this->resultsPerPage = $resultsPerPage;

@@ -235,13 +235,11 @@ $configuration = [
                 ]
             ],
             "view_result" => [
-                Router::CONFIG_KEY_PATH => "/results/{offset}",
+                Router::CONFIG_KEY_PATH => "/result",
                 Router::CONFIG_KEY_CONTROLLER => "result",
                 Router::CONFIG_KEY_ACTION => "getAllUserTest",
                 Router::CONFIG_KEY_METHOD => "GET",
-                Router::CONFIG_KEY_ATTRIBUTES => [
-                    "offset" => '\d+'
-                ]
+                Router::CONFIG_KEY_ATTRIBUTES => []
             ],
             "view_congrats" => [
                 Router::CONFIG_KEY_PATH => "/congrats",

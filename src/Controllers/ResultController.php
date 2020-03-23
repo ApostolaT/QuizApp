@@ -6,48 +6,54 @@ use Framework\Controller\AbstractController;
 use Framework\Http\Response;
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Services\AbstractService;
-use ReallyOrm\Exceptions\NoSuchRowException;
+use QuizApp\Utils\PaginatorTrait;
 
 /**
  * Class ResultController
  * @package QuizApp\Controllers
  */
-//TODO local.quiz.com/results?page=1
 class ResultController extends AbstractController
 {
-    private $resultService;
-
-    public function setService(AbstractService $resultService)
+    use PaginatorTrait;
+    /**
+     * @var AbstractService
+     */
+    protected $resultService;
+    /**
+     * This function sets the resultService
+     * @param AbstractService $service
+     */
+    public function setService(AbstractService $service)
     {
-        $this->resultService = $resultService;
+        $this->resultService = $service;
     }
-
     /**
      * This function renders for admin all the quizzes that've been taken by users.
-     * It calls the resultService for QuizInstanceDTOs which contain
+     * It calls the resultService for QuizInstanceDTOs which contains
      * userName, quizName, and the Score of the user taken quiz.
      * if the process is successful, the Renderer gets those DTOs, else
      * the rendered will just display and empty results page
+     * @param RequestInterface $request
      * @return Response
      */
     public function getAllUserTest(RequestInterface $request): Response
     {
-        $role = $this->session->get('role');
-
-        //Only admins ca see all ever taken quizzes
-        if ($role !== 'admin') {
+        if ($this->session->get('role') !== 'admin') {
             return $this->getRedirectPage("http://local.quiz.com/error/404");
         }
 
-        //We need session for the Header
-        $viewParams = ['session' => $this->session];
-        try {
-            $page = $request->getRequestParameters();
-            $viewParams['quizzes'] = $this->resultService->getAllUserTests($page);
-            return $this->renderer->renderView("admin-results-listing.phtml", $viewParams);
-        } catch (NoSuchRowException $e) {
-            return $this->renderer->renderView("admin-results-listing.phtml", $viewParams);
-        }
+        $paginator = $this->createPaginationForRequestWithService($request, $this->resultService);
+        $renderParams = [
+            'session' => $this->session,
+            //message is for the future messages that will be displayed
+            //on admin-results-listing.phtml page
+            'message' => $this->session->get('message'),
+            'paginator' => $paginator,
+            'quizzes' =>  $this->resultService->getAllUserTests($paginator->getCurrentPage())
+        ];
+        $this->session->delete('message');
+
+        return $this->renderer->renderView("admin-results-listing.phtml", $renderParams);
     }
 
     /**
@@ -55,6 +61,7 @@ class ResultController extends AbstractController
      * from quiz and presses Next. The Review page will be displayed on his screen.
      * This function calls the ResultService for all the QuestionDTOs related to the
      * taken quiz. QuestionDTOs contains pairs of questionText and answerText.
+     * @param RequestInterface $request
      * @return Response
      */
     public function getUserResultPage(RequestInterface $request): Response
@@ -77,7 +84,6 @@ class ResultController extends AbstractController
             'session' => $this->session,
             'questions' => $questionDTOs
         ];
-
         return $this->renderer->renderView('user-results.phtml', $viewParams);
     }
 
@@ -85,6 +91,7 @@ class ResultController extends AbstractController
      * This function is called when an admin wants to see the answered questions
      * from a quiz taken by any user. The functionality is the same
      * as for the getUserResultPage() function.
+     * @param RequestInterface $request
      * @return Response
      */
     public function getAdminResultPage(RequestInterface $request): Response
@@ -117,6 +124,7 @@ class ResultController extends AbstractController
     /**
      * This function is called to score a quiz given by any user. It calls the scoreResult
      * method from resultService class with the provided score and the id of the quiz.
+     * @param RequestInterface $request
      * @return Response
      */
     public function scoreQuiz(RequestInterface $request): Response
