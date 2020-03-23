@@ -1,28 +1,46 @@
 <?php
 
-
 namespace QuizApp\Controllers;
-
 
 use Framework\Controller\AbstractController;
 use Framework\Http\Response;
 use Framework\Http\Stream;
-use phpDocumentor\Reflection\Location;
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Services\AbstractService;
+use QuizApp\Services\QuestionService;
+use QuizApp\Services\QuizService;
+use QuizApp\Utils\PaginatorTrait;
 use ReallyOrm\Exceptions\NoSuchRowException;
 
-
+/**
+ * Class QuizController
+ * @package QuizApp\Controllers
+ */
 class QuizController extends AbstractController
 {
+    use PaginatorTrait;
+    /**
+     * @var QuizService
+     */
     private $quizService;
+    /**
+     * @var QuestionService
+     */
     private $questionService;
-
+    /**
+     * Setter Injection by Container
+     * This function sets the $quizService
+     * @param AbstractService $quizService
+     */
     public function setQuizService(AbstractService $quizService)
     {
         $this->quizService = $quizService;
     }
-
+    /**
+     * Setter Injection by Container
+     * This function sets the $questionService
+     * @param AbstractService $questionService
+     */
     public function setQuestionService(AbstractService $questionService)
     {
         $this->questionService = $questionService;
@@ -30,21 +48,12 @@ class QuizController extends AbstractController
 
     public function listAll(RequestInterface $request)
     {
-        // TODO create a check function for session
         if ($this->session->get('name') !== null) {
+            $path = ($this->session->get('role') === 'admin') ? "admin-quizzes-listing.phtml" : "candidate-quiz-listing.phtml";
             try {
                 $entities = $this->quizService->getAll($request);
-                if ($this->session->get('role') === 'admin') {
-                    return $this->renderer->renderView("admin-quizzes-listing.phtml", ['session' => $this->session, 'entities' => $entities]);
-                } else {
-                    return $this->renderer->renderView("candidate-quiz-listing.phtml", ['session' => $this->session, 'entities' => $entities]);
-                }
             } catch (NoSuchRowException $e) {
-                if ($this->session->get('role') === 'admin') {
-                    return $this->renderer->renderView("admin-quizzes-listing.phtml", ['session' => $this->session]);
-                } else {
-                    return $this->renderer->renderView("candidate-quiz-listing.phtml", ['session' => $this->session]);
-                }
+
             }
         }
 
