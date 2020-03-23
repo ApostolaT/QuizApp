@@ -7,8 +7,8 @@ use QuizApp\Services\AbstractService;
 
 trait PaginatorTrait {
     /**
-     * This function is called to create a paginator for
-     * all users page.
+     * This function is called within controllers to create
+     * a paginator for all pages that will need it.
      * @param RequestInterface $request
      * @param AbstractService $service
      * @return Paginator
