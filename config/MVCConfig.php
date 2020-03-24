@@ -33,13 +33,11 @@ $configuration = [
                 Router::CONFIG_KEY_ATTRIBUTES => []
             ],
             "list_all_quizzes" => [
-                Router::CONFIG_KEY_PATH => "/quiz/{page}",
+                Router::CONFIG_KEY_PATH => "/quiz",
                 Router::CONFIG_KEY_CONTROLLER => "quiz",
                 Router::CONFIG_KEY_ACTION => "listAll",
                 Router::CONFIG_KEY_METHOD => "GET",
-                Router::CONFIG_KEY_ATTRIBUTES => [
-                    "page" => "\d+"
-                ]
+                Router::CONFIG_KEY_ATTRIBUTES => []
             ],
              "view_add_quiz" => [
                 Router::CONFIG_KEY_PATH => "/quiz/add",
