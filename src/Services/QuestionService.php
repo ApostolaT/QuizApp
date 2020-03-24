@@ -23,11 +23,11 @@ class QuestionService extends AbstractService
         $this->repositoryManager = $repositoryManager;
     }
     /**
-     * Counts how many user entities the Repository has.
+     * Counts how many question entities the Repository has.
      * @return mixed
      * @throws \Exception
      */
-    public function countRows()
+    public function countRows(): array
     {
         $quizInstanceRepository = $this->repositoryManager->getRepository(QuestionTemplate::class);
 
@@ -44,9 +44,9 @@ class QuestionService extends AbstractService
     /**
      * Gets all the question from the specified page
      * @param int $page
-     * @return |null
+     * @return array|null
      */
-    public function getAll(int $page)
+    public function getAll(int $page): ?array
     {
         $from = ($page - 1) * $this::RESULTS_PER_PAGE;
         $repository = $this->repositoryManager->getRepository(QuestionTemplate::class);
