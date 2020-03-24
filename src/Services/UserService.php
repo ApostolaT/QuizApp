@@ -59,6 +59,20 @@ class UserService extends AbstractService
 
         return $userRepository->countRows();
     }
+
+    /**
+     * This function counts all the user entities from the user repository
+     * that have the role like $role
+     * @param string $role
+     * @return array
+     * @throws \Exception
+     */
+    public function countRowsLike(string $role): array
+    {
+        $userRepository = $this->repositoryManager->getRepository(User::class);
+
+        return $userRepository->countAllLike($role);
+    }
     /**
      * This function returns true if a user is inserted into
      * the Repository or false on fail.
@@ -79,7 +93,6 @@ class UserService extends AbstractService
 
         return $entity->save();
     }
-
     /**
      * This function returns true if a user is deleted from
      * the Repository or null on fail.
@@ -87,6 +100,7 @@ class UserService extends AbstractService
      * @return bool
      * @throws \Exception
      */
+    //TODO PSR!!!
     public function delete($request) {
         $repository = $this->repositoryManager->getRepository(User::class);
         $id = $request->getRequestParameters()['id'];
@@ -96,7 +110,6 @@ class UserService extends AbstractService
 
         return $entity->remove();
     }
-
     /**
      * This function returns the entity of the user with the provided id.
      * @param RequestInterface $request
@@ -132,5 +145,25 @@ class UserService extends AbstractService
         $entity->setRole($role);
 
         return $entity->save();
+    }
+    /**
+     * This function gets the $page page of user entities from user repository
+     * for all the users with the role like $role. If no entities exist, it return null.
+     * @param string $role
+     * @param int $page
+     * @return mixed
+     * @throws \Exception
+     */
+    public function selectAllLikeFromPage(string $role, int $page): ?array
+    {
+        $repository = $this->repositoryManager->getRepository(User::class);
+
+        try {
+            $entities = $repository->selectAllLikeAndFrom($role, $page, $this::RESULTS_PER_PAGE);
+        } catch (NoSuchRowException $e) {
+            $entities = null;
+        }
+
+        return $entities;
     }
 }

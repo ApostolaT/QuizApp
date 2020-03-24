@@ -10,7 +10,6 @@ use QuizApp\Services\AbstractService;
 use QuizApp\Services\UserService;
 use QuizApp\Utils\Paginator;
 
-//TODO create an abstract Controller that will contain the paginator functionality
 //TODO redirect using the getRedirectPage
 class UserController extends AbstractController
 {
@@ -26,32 +25,22 @@ class UserController extends AbstractController
     {
         $this->userService = $userService;
     }
+
     /**
      * This function if called by an admin displays the current page
      * with all the users from the system. If a user calls to see all
      * the users, he is redirected to a login page;
      * @param RequestInterface $request
      * @return \Framework\Http\Message|Response|\Psr\Http\Message\MessageInterface
+     * @throws \Exception
      */
     public function listAll(RequestInterface $request)
     {
         if ($this->session->get('role') !== 'admin') {
-            $response = new Response(Stream::createFromString(' '), []);
-            $response = $response->withStatus(301);
-            $response = $response->withHeader('Location', 'http://local.quiz.com/');
-
-            return $response;
+            return $this->getRedirectPage('http://local.quiz.com/');
         }
 
-        $paginator = $this->createPaginationForRequest($request);
-        $renderParams = [
-            'message' => $this->session->get('message'),
-            'session' => $this->session,
-            'paginator' => $paginator,
-            'entities' => $this->userService->getAll($paginator->getCurrentPage())
-        ];
-        $this->session->delete('message');
-
+        $renderParams = $this->getRenderParams($request);
         return $this->renderer->renderView('admin-users-listing.phtml', $renderParams);
     }
     /**
@@ -99,7 +88,6 @@ class UserController extends AbstractController
 
         return $response;
     }
-
     /**
      * This function if called by an admin deletes a user,
      * else it will redirect the user to login.
@@ -150,7 +138,6 @@ class UserController extends AbstractController
         ];
         return $this->renderer->renderView('admin-user-details.phtml', $renderParams);
     }
-
     /**
      * This function is called when an admin edits a user from the system.
      * If not an admin calls the function, he is redirected to login.
@@ -178,22 +165,95 @@ class UserController extends AbstractController
 
         return $response;
     }
+    /**
+     * This function constructs the render parameters based on role.
+     * If the role is empty or "all" it will extract all user entities from repo.
+     * Else it will extract all "user" entities or "admin" entities.
+     * Also the paginator depends on the role.
+     * @param RequestInterface $request
+     * @return array
+     * @throws \Exception
+     */
+    private function getRenderParams(RequestInterface $request): array
+    {
+        $paginator = $this->createPaginationForRequest($request);
+        $renderParams = [
+            'message' => $this->session->get('message'),
+            'session' => $this->session,
+            'role' => $request->getParameter('role'),
+            'paginator' => $paginator
+        ];
+        $this->session->delete('message');
 
+        if($request->getParameter('role') !== 'admin' && $request->getParameter('role') !== 'user') {
+            $renderParams['entities'] = $this->userService->getAll($paginator->getCurrentPage());
+            return $renderParams;
+        }
+
+        $renderParams['entities'] =
+            $this->getRenderParamsBasedOnRoleAndPage(
+                $request->getParameter('role'),
+                $paginator->getCurrentPage()
+            );
+
+        return $renderParams;
+    }
+    /**
+     * This function extracts from Repository the user entities calling
+     * the selectAllLikeFromPage function associated to the userService,
+     * passing the role value and the page value
+     * @param string $role
+     * @param int $currentPage
+     * @return array|null
+     * @throws \Exception
+     */
+    private function getRenderParamsBasedOnRoleAndPage(string $role, int $currentPage): ?array
+    {
+        if ($role === 'admin') {
+            return $this->userService->selectAllLikeFromPage($role, $currentPage);
+        }
+
+        return $this->userService->selectAllLikeFromPage('user', $currentPage);
+    }
     /**
      * This function is called to create a paginator for
-     * all users page.
+     * all users page based on role. If roll is different from
+     * user or admin, then the paginator is created for all users.
+     * Else a paginator for users or admins is created by calling the
+     * getPaginatorBasedOnRoleAndPage() function.
      * @param RequestInterface $request
      * @return Paginator
+     * @throws \Exception
      */
     private function createPaginationForRequest(RequestInterface $request): Paginator
     {
-        $page = $request->getParameter('page');
+        $page = ($request->getParameter('page')) ?? 1;
+        $role = $request->getParameter('role');
 
-        $totalResults = $this->userService->countRows()['rows'];
-        $paginator = new Paginator($totalResults);
-        if ($page) {
+        if ($role !== 'admin' && $role !== 'user') {
+            $totalResults = $this->userService->countRows()['rows'];
+            $paginator = new Paginator($totalResults);
             $paginator->setCurrentPage($page);
+
+            return $paginator;
         }
+
+        return $this->getPaginatorBasedOnRoleAndPage($page, $role);
+    }
+    /**
+     * This function calls the function countRowsLike($role) from user
+     * service to see how many users with user role or admin role exist.
+     * This is done to create a paginator for current role with the currentPage
+     * equal to $page.
+     * @param int $page
+     * @param string $role
+     * @return Paginator
+     */
+    private function getPaginatorBasedOnRoleAndPage(int $page, string $role): Paginator
+    {
+        $totalResults = $this->userService->countRowsLike($role)['rows'];
+        $paginator = new Paginator($totalResults);
+        $paginator->setCurrentPage($page);
 
         return $paginator;
     }
