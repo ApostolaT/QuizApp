@@ -12,15 +12,12 @@
         <!--Table actions block-->
         <div class="row">
             <div class="col-12 col-md-6">
-                <form action="">
-                    <div class="form-group">
-                        <label for="roleSearch">User role select</label>
-                        <select class="form-control" id="roleSearch">
-                            <option>admin</option>
-                            <option>user</option>
-                        </select>
-                    </div>
-                </form>
+                <label for="roleSearch">User role select</label>
+                <select class="form-control" id="roleSearch" onchange="location = this.value">
+                    <option value="user" selected>all</option>
+                    <option value="user?role=admin">admin</option>
+                    <option value="user?role=user">user</option>
+                </select>
             </div>
             <div class="col-12 col-md-6 d-flex align-items-end justify-content-end">
                 <a class="btn btn-primary py-1 mb-3" href="/user/add">Add new user</a>
