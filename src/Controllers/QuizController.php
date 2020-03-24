@@ -46,20 +46,39 @@ class QuizController extends AbstractController
         $this->questionService = $questionService;
     }
 
+    /**
+     * Gets all the entities and displays them on them either on
+     * admin quizzes page or on user quizzes page
+     * Depending on what user is requesting this info
+     * @param RequestInterface $request
+     * @return Response
+     * @throws \Exception
+     */
     public function listAll(RequestInterface $request)
     {
-        if ($this->session->get('name') !== null) {
-            $path = ($this->session->get('role') === 'admin') ? "admin-quizzes-listing.phtml" : "candidate-quiz-listing.phtml";
-            try {
-                $entities = $this->quizService->getAll($request);
-            } catch (NoSuchRowException $e) {
-
-            }
+        if ($this->session->get('name') === null) {
+            return $this->getRedirectPage("http://local.quiz.com/error/404");
         }
 
-        return $this->renderer->renderView("login.phtml", []);
-    }
+        $path = ($this->session->get('role') === 'admin') ? "admin-quizzes-listing.phtml" : "candidate-quiz-listing.phtml";
 
+        $paginator = $this->createPaginationForRequestWithService($request, $this->quizService);
+        $entities = $this->quizService->getAll($paginator->getCurrentPage());
+        $renderParams = [
+            'session' => $this->session,
+            'message' => $this->session->get('message'),
+            'paginator' => $paginator,
+            'entities' => $entities
+        ];
+
+        return $this->renderer->renderView($path, $renderParams);
+    }
+    /**
+     * Creates a response with the page of quiz addition
+     * @param RequestInterface $request
+     * @return Response
+     * @throws \Exception
+     */
     public function goToAddQuiz(RequestInterface $request)
     {
         $role = $this->session->get('role');
@@ -81,6 +100,13 @@ class QuizController extends AbstractController
         return $this->renderer->renderView("login.phtml", $request->getRequestParameters());
     }
 
+    /**
+     * Gets the input from phtml's form and calls a function from service to
+     * insert the quiz info into the repo
+     * @param RequestInterface $request
+     * @return \Framework\Http\Message|Response|\Psr\Http\Message\MessageInterface
+     * @throws \Exception
+     */
     public function addQuiz(RequestInterface $request)
     {
         $role = $this->session->get('role');
@@ -88,7 +114,7 @@ class QuizController extends AbstractController
             if ($this->quizService->createEntity($request, $this->session)) {
                 $response = new Response(Stream::createFromString(' '), []);
                 $response = $response->withStatus(301);
-                $response = $response->withHeader('Location', 'http://local.quiz.com/quiz/1');
+                $response = $response->withHeader('Location', 'http://local.quiz.com/quiz');
 
                 return $response;
             }
@@ -98,6 +124,12 @@ class QuizController extends AbstractController
         return $this->renderer->renderView("login.phtml", $request->getRequestParameters());
     }
 
+    /**
+     * Calls the delete function from repo to delete the quiz entity from repo
+     * @param RequestInterface $request
+     * @return \Framework\Http\Message|Response|\Psr\Http\Message\MessageInterface
+     * @throws \Exception
+     */
     public function deleteQuiz(RequestInterface $request)
     {
         $role = $this->session->get('role');
@@ -105,7 +137,7 @@ class QuizController extends AbstractController
             if ($this->quizService->delete($request)) {
                 $response = new Response(Stream::createFromString(' '), []);
                 $response = $response->withStatus(301);
-                $response = $response->withHeader('Location', 'http://local.quiz.com/quiz/1');
+                $response = $response->withHeader('Location', 'http://local.quiz.com/quiz');
 
                 return $response;
             }
@@ -115,6 +147,12 @@ class QuizController extends AbstractController
         return $this->renderer->renderView("login.phtml", $request->getRequestParameters());
     }
 
+    /**
+     * A function that renders the update page for a quiz
+     * @param RequestInterface $request
+     * @return Response
+     * @throws \Exception
+     */
     public function getUpdateQuizPage(RequestInterface $request)
     {
         $role = $this->session->get('role');
@@ -134,6 +172,13 @@ class QuizController extends AbstractController
         return $this->renderer->renderView("login.phtml", $request->getRequestParameters());
     }
 
+    /**
+     * This function takes the input from phtml's form and calls the service to update the entity
+     * in the repo
+     * @param RequestInterface $request
+     * @return \Framework\Http\Message|Response|\Psr\Http\Message\MessageInterface
+     * @throws \Exception
+     */
     public function updateQuiz(RequestInterface $request)
     {
         $role = $this->session->get('role');
