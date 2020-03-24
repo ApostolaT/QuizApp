@@ -131,13 +131,11 @@ $configuration = [
                 ]
             ],
             "list_all_questions" => [
-                Router::CONFIG_KEY_PATH => "/question/{page}",
+                Router::CONFIG_KEY_PATH => "/question",
                 Router::CONFIG_KEY_CONTROLLER => "question",
                 Router::CONFIG_KEY_ACTION => "listAll",
                 Router::CONFIG_KEY_METHOD => "GET",
-                Router::CONFIG_KEY_ATTRIBUTES => [
-                    "page" => "\d+"
-                ]
+                Router::CONFIG_KEY_ATTRIBUTES => []
             ],
             "view_add_question" => [
                 Router::CONFIG_KEY_PATH => "/question/add",

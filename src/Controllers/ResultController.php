@@ -18,6 +18,7 @@ class ResultController extends AbstractController
     /**
      * @var AbstractService
      */
+    //TODO change to private
     protected $resultService;
     /**
      * This function sets the resultService

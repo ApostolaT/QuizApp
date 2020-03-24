@@ -4,16 +4,34 @@ namespace QuizApp\Services;
 
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Entities\QuestionTemplate;
+use QuizApp\Entities\QuizInstance;
 use QuizApp\Entities\TextTemplate;
+use ReallyOrm\Exceptions\NoSuchRowException;
 use ReallyOrm\Repository\RepositoryManagerInterface;
 
 class QuestionService extends AbstractService
 {
+    /**
+     * Constant for pagination.
+     */
+    private const RESULTS_PER_PAGE = 10;
+
     private $repositoryManager;
 
     public function setRepositoryManager(RepositoryManagerInterface $repositoryManager)
     {
         $this->repositoryManager = $repositoryManager;
+    }
+    /**
+     * Counts how many question entities the Repository has.
+     * @return mixed
+     * @throws \Exception
+     */
+    public function countRows(): array
+    {
+        $quizInstanceRepository = $this->repositoryManager->getRepository(QuestionTemplate::class);
+
+        return $quizInstanceRepository->countRows();
     }
 
     public function selectAll()
@@ -23,15 +41,20 @@ class QuestionService extends AbstractService
         return $repository->findBy([], [], 0, 0);
     }
 
-    public function getAll(RequestInterface $request)
+    /**
+     * Gets all the question from the specified page
+     * @param int $page
+     * @return array|null
+     */
+    public function getAll(int $page): ?array
     {
-        $page = $request->getRequestParameters();
-        $from = ($page['page'] - 1) * 10;
-
+        $from = ($page - 1) * $this::RESULTS_PER_PAGE;
         $repository = $this->repositoryManager->getRepository(QuestionTemplate::class);
-
-        $entities = $repository->findBy([], [], 10, 0);
-
+        try {
+            $entities = $repository->findBy([], [], $this::RESULTS_PER_PAGE, $from);
+        } catch (NoSuchRowException $e) {
+            $entities = null;
+        }
         return $entities;
     }
 
