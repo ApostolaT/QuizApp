@@ -14,9 +14,9 @@
             <div class="col-12 col-md-6">
                 <label for="roleSearch">User role select</label>
                 <select class="form-control" id="roleSearch" onchange="location = this.value">
-                    <option value="user" selected>all</option>
-                    <option value="user?role=admin">admin</option>
-                    <option value="user?role=user">user</option>
+                    <option value="user" <?php if($role !== 'admin' && $role !== 'user') echo "selected";?>>all</option>
+                    <option value="user?role=admin" <?php if($role === 'admin') echo "selected";?>>admin</option>
+                    <option value="user?role=user" <?php if($role === 'user') echo "selected";?>>user</option>
                 </select>
             </div>
             <div class="col-12 col-md-6 d-flex align-items-end justify-content-end">
@@ -60,30 +60,21 @@
         </div>
 
         <!--Pagination block-->
-        <?php
-        $currentPage = $paginator->getCurrentPage();
-        $nrOfPages = $paginator->getTotalpages();
-        $nextPage = $paginator->getNextPage();
-        $previousPage = $paginator->getPreviousPage();
-        ?>
-
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
-
-                <li class="page-item <?php if ($currentPage === 1): echo "disabled"; endif;?>">
-                    <a class="page-link" href="<?php if ($previousPage): echo "http://local.quiz.com/user?page=".$previousPage; endif;?>" tabindex="-1" aria-disabled="true">Previous</a>
+                <li class="page-item <?php if ($paginator->getCurrentPage() === 1): echo "disabled"; endif;?>">
+                    <a class="page-link" href="http://local.quiz.com/user?page=<?php if ($paginator->getPreviousPage()): echo $paginator->getPreviousPage(); endif; if($role): echo "&role=".$role; endif;?>" tabindex="-1" aria-disabled="true">Previous</a>
                 </li>
-
                 <?php
                 $page = 1;
-                while ($page <= $nrOfPages):
+                while ($page <= $paginator->getTotalpages()):
                     ?>
-                    <li class="page-item <?php if($page === $currentPage): echo "active"; endif;?>"><a class="page-link" href="http://local.quiz.com/user?page=<?php echo $page;?>"><?php echo $page;?></a></li>
+                    <li class="page-item <?php if($page === $paginator->getCurrentPage()): echo "active"; endif;?>"><a class="page-link" href="http://local.quiz.com/user?page=<?php echo $page; if($role): echo "&role=".$role; endif;?>"><?php echo $page;?></a></li>
                     <?php
                     $page++;
                 endwhile;?>
-                <li class="page-item <?php if ($currentPage === $nrOfPages): echo "disabled"; endif;?>">
-                    <a class="page-link" href="<?php if ($nextPage): echo "http://local.quiz.com/user?page=".$nextPage; endif;?>">Next</a>
+                <li class="page-item <?php if ($paginator->getCurrentPage() === $paginator->getTotalpages()): echo "disabled"; endif;?>">
+                    <a class="page-link" href="<?php if ($paginator->getNextPage()): echo "http://local.quiz.com/user?page=".$paginator->getNextPage(); endif;if($role): echo "&role=".$role; endif;?>">Next</a>
                 </li>
             </ul>
         </nav>

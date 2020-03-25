@@ -10,7 +10,6 @@ use QuizApp\Services\AbstractService;
 use QuizApp\Services\UserService;
 use QuizApp\Utils\Paginator;
 
-//TODO create an abstract Controller that will contain the paginator functionality
 //TODO redirect using the getRedirectPage
 class UserController extends AbstractController
 {
@@ -26,6 +25,7 @@ class UserController extends AbstractController
     {
         $this->userService = $userService;
     }
+
     /**
      * This function if called by an admin displays the current page
      * with all the users from the system. If a user calls to see all
@@ -36,21 +36,24 @@ class UserController extends AbstractController
     public function listAll(RequestInterface $request)
     {
         if ($this->session->get('role') !== 'admin') {
-            $response = new Response(Stream::createFromString(' '), []);
-            $response = $response->withStatus(301);
-            $response = $response->withHeader('Location', 'http://local.quiz.com/');
-
-            return $response;
+            return $this->getRedirectPage('http://local.quiz.com/');
         }
 
-        $paginator = $this->createPaginationForRequest($request);
         $renderParams = [
             'message' => $this->session->get('message'),
+            //TODO Extract needed params like message
             'session' => $this->session,
-            'paginator' => $paginator,
-            'entities' => $this->userService->getAll($paginator->getCurrentPage())
+            'role' => $request->getParameter('role'),
         ];
         $this->session->delete('message');
+
+        $filterParams = ($request->getParameter('role')) ? ['role' => $request->getParameter('role')] : [];
+        $totalResults = $this->userService->countRows($filterParams);
+        $paginator = new Paginator($totalResults);
+        $paginator->setCurrentPage((int)$request->getParameter('page'));
+
+        $renderParams['paginator'] = $paginator;
+        $renderParams['entities'] = $this->userService->getAll($paginator->getCurrentPage(), $filterParams);
 
         return $this->renderer->renderView('admin-users-listing.phtml', $renderParams);
     }
@@ -99,7 +102,6 @@ class UserController extends AbstractController
 
         return $response;
     }
-
     /**
      * This function if called by an admin deletes a user,
      * else it will redirect the user to login.
@@ -150,7 +152,6 @@ class UserController extends AbstractController
         ];
         return $this->renderer->renderView('admin-user-details.phtml', $renderParams);
     }
-
     /**
      * This function is called when an admin edits a user from the system.
      * If not an admin calls the function, he is redirected to login.
@@ -177,24 +178,5 @@ class UserController extends AbstractController
         $response = $response->withHeader('Location', 'http://local.quiz.com/user');
 
         return $response;
-    }
-
-    /**
-     * This function is called to create a paginator for
-     * all users page.
-     * @param RequestInterface $request
-     * @return Paginator
-     */
-    private function createPaginationForRequest(RequestInterface $request): Paginator
-    {
-        $page = $request->getParameter('page');
-
-        $totalResults = $this->userService->countRows()['rows'];
-        $paginator = new Paginator($totalResults);
-        if ($page) {
-            $paginator->setCurrentPage($page);
-        }
-
-        return $paginator;
     }
 }

@@ -4,6 +4,7 @@ namespace QuizApp\Services;
 
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Entities\User;
+use ReallyOrm\Exceptions\NoSuchRepositoryException;
 use ReallyOrm\Exceptions\NoSuchRowException;
 use ReallyOrm\Repository\RepositoryManagerInterface;
 use ReallyOrm\Test\Repository\RepositoryManager;
@@ -31,17 +32,21 @@ class UserService extends AbstractService
      * with the offset equal to page - 1 * $this::RESULTS_PER_PAGE.
      * If no results found, it will return null.
      * @param int $page
+     * @param array $filters
      * @return array|null
-     * @throws \Exception
      */
-    public function getAll(int $page): ?array
+    public function getAll(int $page, array $filters = []): ?array
     {
         $offset = ($page - 1) * $this::RESULTS_PER_PAGE;
 
-        $repository = $this->repositoryManager->getRepository(User::class);
+        try {
+            $repository = $this->repositoryManager->getRepository(User::class);
+        } catch (NoSuchRepositoryException $e) {
+            return null;
+        }
 
         try {
-            $entities = $repository->findBy([], [], $this::RESULTS_PER_PAGE, $offset);
+            $entities = $repository->findBy($filters, [], $this::RESULTS_PER_PAGE, $offset);
         } catch (NoSuchRowException $e) {
             $entities = null;
         }
@@ -49,15 +54,20 @@ class UserService extends AbstractService
         return $entities;
     }
     /**
-     * Counts how many user entities the Repository has.
-     * @return mixed
-     * @throws \Exception
+     * This function counts all the user entities from the user repository
+     * that match the filters
+     * @param string $role
+     * @return array
      */
-    public function countRows()
+    public function countRows(array $role = []): int
     {
-        $userRepository = $this->repositoryManager->getRepository(User::class);
+        try {
+            $userRepository = $this->repositoryManager->getRepository(User::class);
+        } catch (NoSuchRepositoryException $e) {
+            return 0;
+        }
 
-        return $userRepository->countRows();
+        return $userRepository->countRowsBy($role);
     }
     /**
      * This function returns true if a user is inserted into
@@ -79,7 +89,6 @@ class UserService extends AbstractService
 
         return $entity->save();
     }
-
     /**
      * This function returns true if a user is deleted from
      * the Repository or null on fail.
@@ -87,6 +96,7 @@ class UserService extends AbstractService
      * @return bool
      * @throws \Exception
      */
+    //TODO PSR!!!
     public function delete($request) {
         $repository = $this->repositoryManager->getRepository(User::class);
         $id = $request->getRequestParameters()['id'];
@@ -96,7 +106,6 @@ class UserService extends AbstractService
 
         return $entity->remove();
     }
-
     /**
      * This function returns the entity of the user with the provided id.
      * @param RequestInterface $request
