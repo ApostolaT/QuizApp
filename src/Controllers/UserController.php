@@ -39,17 +39,20 @@ class UserController extends AbstractController
             return $this->getRedirectPage('http://local.quiz.com/');
         }
 
-        $paginator = $this->createPaginationForRequest($request);
         $renderParams = [
             'message' => $this->session->get('message'),
             //TODO Extract needed params like message
             'session' => $this->session,
             'role' => $request->getParameter('role'),
-            'paginator' => $paginator
         ];
         $this->session->delete('message');
 
         $filterParams = ($request->getParameter('role')) ? ['role' => $request->getParameter('role')] : [];
+        $totalResults = $this->userService->countRows($filterParams);
+        $paginator = new Paginator($totalResults);
+        $paginator->setCurrentPage((int)$request->getParameter('page'));
+
+        $renderParams['paginator'] = $paginator;
         $renderParams['entities'] = $this->userService->getAll($paginator->getCurrentPage(), $filterParams);
 
         return $this->renderer->renderView('admin-users-listing.phtml', $renderParams);
@@ -175,30 +178,5 @@ class UserController extends AbstractController
         $response = $response->withHeader('Location', 'http://local.quiz.com/user');
 
         return $response;
-    }
-    /**
-     * This function is called to create a paginator for
-     * all users page based on role.
-     * @param RequestInterface $request
-     * @return Paginator
-     */
-    private function createPaginationForRequest(RequestInterface $request): Paginator
-    {
-        $page = ($request->getParameter('page')) ?? 1;
-        $role = $request->getParameter('role');
-
-        if ($role !== 'admin' && $role !== 'user') {
-            $totalResults = $this->userService->countRows()['rows'];
-            $paginator = new Paginator($totalResults);
-            $paginator->setCurrentPage($page);
-
-            return $paginator;
-        }
-
-        $totalResults = $this->userService->countRows(['role' => $role])['rows'];
-        $paginator = new Paginator($totalResults);
-        $paginator->setCurrentPage($page);
-
-        return $paginator;
     }
 }

@@ -59,12 +59,12 @@ class UserService extends AbstractService
      * @param string $role
      * @return array
      */
-    public function countRows(array $role = []): array
+    public function countRows(array $role = []): int
     {
         try {
             $userRepository = $this->repositoryManager->getRepository(User::class);
         } catch (NoSuchRepositoryException $e) {
-            return ['rows' => 0];
+            return 0;
         }
 
         return $userRepository->countRowsBy($role);
