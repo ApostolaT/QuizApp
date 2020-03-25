@@ -165,14 +165,11 @@ class UserController extends AbstractController
 
         return $response;
     }
+
     /**
      * This function constructs the render parameters based on role.
-     * If the role is empty or "all" it will extract all user entities from repo.
-     * Else it will extract all "user" entities or "admin" entities.
-     * Also the paginator depends on the role.
      * @param RequestInterface $request
      * @return array
-     * @throws \Exception
      */
     private function getRenderParams(RequestInterface $request): array
     {
@@ -190,40 +187,15 @@ class UserController extends AbstractController
             return $renderParams;
         }
 
-        $renderParams['entities'] =
-            $this->getRenderParamsBasedOnRoleAndPage(
-                $request->getParameter('role'),
-                $paginator->getCurrentPage()
-            );
+        $renderParams['entities'] = $this->userService->findWildCard('user', $paginator->getCurrentPage());
 
         return $renderParams;
     }
     /**
-     * This function extracts from Repository the user entities calling
-     * the selectAllLikeFromPage function associated to the userService,
-     * passing the role value and the page value
-     * @param string $role
-     * @param int $currentPage
-     * @return array|null
-     * @throws \Exception
-     */
-    private function getRenderParamsBasedOnRoleAndPage(string $role, int $currentPage): ?array
-    {
-        if ($role === 'admin') {
-            return $this->userService->selectAllLikeFromPage($role, $currentPage);
-        }
-
-        return $this->userService->selectAllLikeFromPage('user', $currentPage);
-    }
-    /**
      * This function is called to create a paginator for
-     * all users page based on role. If roll is different from
-     * user or admin, then the paginator is created for all users.
-     * Else a paginator for users or admins is created by calling the
-     * getPaginatorBasedOnRoleAndPage() function.
+     * all users page based on role.
      * @param RequestInterface $request
      * @return Paginator
-     * @throws \Exception
      */
     private function createPaginationForRequest(RequestInterface $request): Paginator
     {
@@ -238,19 +210,6 @@ class UserController extends AbstractController
             return $paginator;
         }
 
-        return $this->getPaginatorBasedOnRoleAndPage($page, $role);
-    }
-    /**
-     * This function calls the function countRowsLike($role) from user
-     * service to see how many users with user role or admin role exist.
-     * This is done to create a paginator for current role with the currentPage
-     * equal to $page.
-     * @param int $page
-     * @param string $role
-     * @return Paginator
-     */
-    private function getPaginatorBasedOnRoleAndPage(int $page, string $role): Paginator
-    {
         $totalResults = $this->userService->countRowsLike($role)['rows'];
         $paginator = new Paginator($totalResults);
         $paginator->setCurrentPage($page);

@@ -4,6 +4,7 @@ namespace QuizApp\Services;
 
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Entities\User;
+use ReallyOrm\Exceptions\NoSuchRepositoryException;
 use ReallyOrm\Exceptions\NoSuchRowException;
 use ReallyOrm\Repository\RepositoryManagerInterface;
 use ReallyOrm\Test\Repository\RepositoryManager;
@@ -32,13 +33,16 @@ class UserService extends AbstractService
      * If no results found, it will return null.
      * @param int $page
      * @return array|null
-     * @throws \Exception
      */
     public function getAll(int $page): ?array
     {
         $offset = ($page - 1) * $this::RESULTS_PER_PAGE;
 
-        $repository = $this->repositoryManager->getRepository(User::class);
+        try {
+            $repository = $this->repositoryManager->getRepository(User::class);
+        } catch (NoSuchRepositoryException $e) {
+            return null;
+        }
 
         try {
             $entities = $repository->findBy([], [], $this::RESULTS_PER_PAGE, $offset);
@@ -51,11 +55,14 @@ class UserService extends AbstractService
     /**
      * Counts how many user entities the Repository has.
      * @return mixed
-     * @throws \Exception
      */
     public function countRows()
     {
-        $userRepository = $this->repositoryManager->getRepository(User::class);
+        try {
+            $userRepository = $this->repositoryManager->getRepository(User::class);
+        } catch (NoSuchRepositoryException $e) {
+            return ['rows' => 0];
+        }
 
         return $userRepository->countRows();
     }
@@ -65,13 +72,16 @@ class UserService extends AbstractService
      * that have the role like $role
      * @param string $role
      * @return array
-     * @throws \Exception
      */
     public function countRowsLike(string $role): array
     {
-        $userRepository = $this->repositoryManager->getRepository(User::class);
+        try {
+            $userRepository = $this->repositoryManager->getRepository(User::class);
+        } catch (NoSuchRepositoryException $e) {
+            return ['rows' => 0];
+        }
 
-        return $userRepository->countAllLike($role);
+        return $userRepository->countRowsBy(['role' => $role]);
     }
     /**
      * This function returns true if a user is inserted into
@@ -152,14 +162,18 @@ class UserService extends AbstractService
      * @param string $role
      * @param int $page
      * @return mixed
-     * @throws \Exception
      */
-    public function selectAllLikeFromPage(string $role, int $page): ?array
+    public function findWildCard(string $role, int $page): ?array
     {
-        $repository = $this->repositoryManager->getRepository(User::class);
-
         try {
-            $entities = $repository->selectAllLikeAndFrom($role, $page, $this::RESULTS_PER_PAGE);
+            $repository = $this->repositoryManager->getRepository(User::class);
+        } catch (NoSuchRepositoryException $e) {
+            return null;
+        }
+
+        $page = ($page - 1) * $this::RESULTS_PER_PAGE;
+        try {
+            $entities = $repository->findBy(['role' => $role], [], $this::RESULTS_PER_PAGE, $page);
         } catch (NoSuchRowException $e) {
             $entities = null;
         }
