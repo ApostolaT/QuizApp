@@ -14,7 +14,7 @@
             <div class="col-12 col-md-6">
                 <label for="roleSearch">User role select</label>
                 <select class="form-control" id="roleSearch" onchange="location = this.value">
-                    <option value="user?role=all" <?php if($role !== 'admin' && $role !== 'user') echo "selected";?>>all</option>
+                    <option value="user" <?php if($role !== 'admin' && $role !== 'user') echo "selected";?>>all</option>
                     <option value="user?role=admin" <?php if($role === 'admin') echo "selected";?>>admin</option>
                     <option value="user?role=user" <?php if($role === 'user') echo "selected";?>>user</option>
                 </select>

@@ -32,9 +32,10 @@ class UserService extends AbstractService
      * with the offset equal to page - 1 * $this::RESULTS_PER_PAGE.
      * If no results found, it will return null.
      * @param int $page
+     * @param array $filters
      * @return array|null
      */
-    public function getAll(int $page): ?array
+    public function getAll(int $page, array $filters = []): ?array
     {
         $offset = ($page - 1) * $this::RESULTS_PER_PAGE;
 
@@ -45,7 +46,7 @@ class UserService extends AbstractService
         }
 
         try {
-            $entities = $repository->findBy([], [], $this::RESULTS_PER_PAGE, $offset);
+            $entities = $repository->findBy($filters, [], $this::RESULTS_PER_PAGE, $offset);
         } catch (NoSuchRowException $e) {
             $entities = null;
         }
@@ -53,27 +54,12 @@ class UserService extends AbstractService
         return $entities;
     }
     /**
-     * Counts how many user entities the Repository has.
-     * @return mixed
-     */
-    public function countRows()
-    {
-        try {
-            $userRepository = $this->repositoryManager->getRepository(User::class);
-        } catch (NoSuchRepositoryException $e) {
-            return ['rows' => 0];
-        }
-
-        return $userRepository->countRows();
-    }
-
-    /**
      * This function counts all the user entities from the user repository
-     * that have the role like $role
+     * that match the filters
      * @param string $role
      * @return array
      */
-    public function countRowsLike(string $role): array
+    public function countRows(array $role = []): array
     {
         try {
             $userRepository = $this->repositoryManager->getRepository(User::class);
@@ -81,7 +67,7 @@ class UserService extends AbstractService
             return ['rows' => 0];
         }
 
-        return $userRepository->countRowsBy(['role' => $role]);
+        return $userRepository->countRowsBy($role);
     }
     /**
      * This function returns true if a user is inserted into
@@ -155,29 +141,5 @@ class UserService extends AbstractService
         $entity->setRole($role);
 
         return $entity->save();
-    }
-    /**
-     * This function gets the $page page of user entities from user repository
-     * for all the users with the role like $role. If no entities exist, it return null.
-     * @param string $role
-     * @param int $page
-     * @return mixed
-     */
-    public function findWildCard(string $role, int $page): ?array
-    {
-        try {
-            $repository = $this->repositoryManager->getRepository(User::class);
-        } catch (NoSuchRepositoryException $e) {
-            return null;
-        }
-
-        $page = ($page - 1) * $this::RESULTS_PER_PAGE;
-        try {
-            $entities = $repository->findBy(['role' => $role], [], $this::RESULTS_PER_PAGE, $page);
-        } catch (NoSuchRowException $e) {
-            $entities = null;
-        }
-
-        return $entities;
     }
 }

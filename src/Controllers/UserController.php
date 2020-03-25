@@ -39,7 +39,19 @@ class UserController extends AbstractController
             return $this->getRedirectPage('http://local.quiz.com/');
         }
 
-        $renderParams = $this->getRenderParams($request);
+        $paginator = $this->createPaginationForRequest($request);
+        $renderParams = [
+            'message' => $this->session->get('message'),
+            //TODO Extract needed params like message
+            'session' => $this->session,
+            'role' => $request->getParameter('role'),
+            'paginator' => $paginator
+        ];
+        $this->session->delete('message');
+
+        $filterParams = ($request->getParameter('role')) ? ['role' => $request->getParameter('role')] : [];
+        $renderParams['entities'] = $this->userService->getAll($paginator->getCurrentPage(), $filterParams);
+
         return $this->renderer->renderView('admin-users-listing.phtml', $renderParams);
     }
     /**
@@ -164,32 +176,6 @@ class UserController extends AbstractController
 
         return $response;
     }
-
-    /**
-     * This function constructs the render parameters based on role.
-     * @param RequestInterface $request
-     * @return array
-     */
-    private function getRenderParams(RequestInterface $request): array
-    {
-        $paginator = $this->createPaginationForRequest($request);
-        $renderParams = [
-            'message' => $this->session->get('message'),
-            'session' => $this->session,
-            'role' => $request->getParameter('role'),
-            'paginator' => $paginator
-        ];
-        $this->session->delete('message');
-
-        if($request->getParameter('role') !== 'admin' && $request->getParameter('role') !== 'user') {
-            $renderParams['entities'] = $this->userService->getAll($paginator->getCurrentPage());
-            return $renderParams;
-        }
-
-        $renderParams['entities'] = $this->userService->findWildCard('user', $paginator->getCurrentPage());
-
-        return $renderParams;
-    }
     /**
      * This function is called to create a paginator for
      * all users page based on role.
@@ -209,7 +195,7 @@ class UserController extends AbstractController
             return $paginator;
         }
 
-        $totalResults = $this->userService->countRowsLike($role)['rows'];
+        $totalResults = $this->userService->countRows(['role' => $role])['rows'];
         $paginator = new Paginator($totalResults);
         $paginator->setCurrentPage($page);
 
