@@ -32,7 +32,6 @@ class UserController extends AbstractController
      * the users, he is redirected to a login page;
      * @param RequestInterface $request
      * @return \Framework\Http\Message|Response|\Psr\Http\Message\MessageInterface
-     * @throws \Exception
      */
     public function listAll(RequestInterface $request)
     {
