@@ -40,7 +40,7 @@ class ResultController extends AbstractController
     public function getAllUserTest(RequestInterface $request): Response
     {
         if ($this->session->get('role') !== 'admin') {
-            return $this->getRedirectPage("http://local.quiz.com/error/404");
+            return $this->getRedirectPage("/error/404");
         }
 
         $paginator = $this->createPaginationForRequestWithService($request, $this->resultService);
@@ -71,14 +71,14 @@ class ResultController extends AbstractController
 
         //Just the user that've given the quiz can see his current quiz review
         if ($role !== 'user') {
-            return $this->getRedirectPage("http://local.quiz.com/error/404");
+            return $this->getRedirectPage("/error/404");
         }
 
         $quizInstanceId = $request->getRequestParameters()['quizId'];
         $questionDTOs = $this->resultService->getQuestionsAnswersForQuizWithId($quizInstanceId);
 
         if ($questionDTOs === null) {
-            return $this->getRedirectPage("http://local.quiz.com/error/404");
+            return $this->getRedirectPage("/error/404");
         }
 
         $viewParams = [
@@ -101,14 +101,14 @@ class ResultController extends AbstractController
 
         //Only an admin can see the score page-
         if ($role !== 'admin') {
-            return $this->getRedirectPage("http://local.quiz.com/error/404");
+            return $this->getRedirectPage("/error/404");
         }
 
         $quizInstanceId = $request->getRequestParameters()['quizId'];
         $questionDTOs = $this->resultService->getQuestionsAnswersForQuizWithId($quizInstanceId);
 
         if ($questionDTOs === null) {
-            return $this->getRedirectPage("http://local.quiz.com/error/404");
+            return $this->getRedirectPage("/error/404");
         }
 
         $userId = $request->getRequestParameters()['userId'];
@@ -134,15 +134,15 @@ class ResultController extends AbstractController
 
         //Only an admin can score a quiz
         if ($role !== 'admin') {
-            return $this->getRedirectPage('http://local.quiz.com/error/404');
+            return $this->getRedirectPage('/error/404');
         }
 
         $score = $request->getParameter('score');
         $quizInstanceId = $request->getRequestParameters()['quizId'];
         if (!$this->resultService->scoreResult($score, $quizInstanceId)) {
-            return $this->getRedirectPage('http://local.quiz.com/error/404');
+            return $this->getRedirectPage('/error/404');
         }
 
-        return $this->getRedirectPage('http://local.quiz.com/results/1');
+        return $this->getRedirectPage('/result');
     }
 }

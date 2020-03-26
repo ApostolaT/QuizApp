@@ -53,7 +53,7 @@
                                 <td><?php echo $values->getCreatedBy();?></td>
                                 <td class="text-center">
                                     <a class="btn btn-primary py-1" href="/quiz/add/<?php echo $values->getId();?>">Edit</a>
-                                    <a class="btn btn-danger py-1" href="delete/<?php echo $values->getId();?>">Delete</a>
+                                    <a class="btn btn-danger py-1" href="/quiz/delete/<?php echo $values->getId();?>">Delete</a>
                                 </td>
                             </tr>
                 <?php  endforeach; endif; ?>

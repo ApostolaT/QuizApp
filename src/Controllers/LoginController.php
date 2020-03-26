@@ -41,7 +41,7 @@ class LoginController extends AbstractController
             if ($this->session->get('role') === 'user') {
                 $response = new \Framework\Http\Response(Stream::createFromString(' '), []);
                 $response = $response->withStatus(301);
-                $response = $response->withHeader('Location', 'http://local.quiz.com/quiz');
+                $response = $response->withHeader('Location', '/quiz');
 
                 return $response;
             }

@@ -36,7 +36,7 @@ class UserController extends AbstractController
     public function listAll(RequestInterface $request)
     {
         if ($this->session->get('role') !== 'admin') {
-            return $this->getRedirectPage('http://local.quiz.com/');
+            return $this->getRedirectPage('/');
         }
 
         $renderParams = [
@@ -68,7 +68,7 @@ class UserController extends AbstractController
         if ($this->session->get('role') !== 'admin') {
             $response = new Response(Stream::createFromString(' '), []);
             $response = $response->withStatus(301);
-            $response = $response->withHeader('Location', 'http://local.quiz.com/');
+            $response = $response->withHeader('Location', '/');
 
             return $response;
         }
@@ -88,7 +88,7 @@ class UserController extends AbstractController
         if ($this->session->get('role') !== 'admin') {
             $response = new Response(Stream::createFromString(' '), []);
             $response = $response->withStatus(301);
-            $response = $response->withHeader('Location', 'http://local.quiz.com/');
+            $response = $response->withHeader('Location', '/');
 
             return $response;
         }
@@ -98,7 +98,7 @@ class UserController extends AbstractController
         $this->session->set('message', $message);
         $response = new Response(Stream::createFromString(' '), []);
         $response = $response->withStatus(301);
-        $response = $response->withHeader('Location', 'http://local.quiz.com/user');
+        $response = $response->withHeader('Location', '/user');
 
         return $response;
     }
@@ -115,7 +115,7 @@ class UserController extends AbstractController
         if ($this->session->get('role') !== 'admin') {
             $response = new Response(Stream::createFromString(' '), []);
             $response = $response->withStatus(301);
-            $response = $response->withHeader('Location', 'http://local.quiz.com/');
+            $response = $response->withHeader('Location', '/');
 
             return $response;
         }
@@ -125,7 +125,7 @@ class UserController extends AbstractController
         $this->session->set('message', $message);
         $response = new Response(Stream::createFromString(' '), []);
         $response = $response->withStatus(301);
-        $response = $response->withHeader('Location', 'http://local.quiz.com/user');
+        $response = $response->withHeader('Location', '/user');
 
         return $response;
     }
@@ -141,7 +141,7 @@ class UserController extends AbstractController
         if ($this->session->get('role') !== 'admin') {
             $response = new Response(Stream::createFromString(' '), []);
             $response = $response->withStatus(301);
-            $response = $response->withHeader('Location', 'http://local.quiz.com/');
+            $response = $response->withHeader('Location', '/');
 
             return $response;
         }
@@ -165,7 +165,7 @@ class UserController extends AbstractController
         if ($this->session->get('role') !== 'admin') {
             $response = new Response(Stream::createFromString(' '), []);
             $response = $response->withStatus(301);
-            $response = $response->withHeader('Location', 'http://local.quiz.com/');
+            $response = $response->withHeader('Location', '/');
 
             return $response;
         }
@@ -175,7 +175,7 @@ class UserController extends AbstractController
         $this->session->set('message', $message);
         $response = new Response(Stream::createFromString(' '), []);
         $response = $response->withStatus(301);
-        $response = $response->withHeader('Location', 'http://local.quiz.com/user');
+        $response = $response->withHeader('Location', '/user');
 
         return $response;
     }

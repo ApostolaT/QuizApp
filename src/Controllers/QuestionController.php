@@ -37,7 +37,7 @@ class QuestionController extends AbstractController
     public function listAll(RequestInterface $request)
     {
         if ($this->session->get('role') !== 'admin') {
-            return $this->getRedirectPage("http://local.quiz.com/error/404");
+            return $this->getRedirectPage("/error/404");
         }
         $paginator = $this->createPaginationForRequestWithService($request, $this->questionService);
         $renderParams = [
@@ -60,7 +60,7 @@ class QuestionController extends AbstractController
         }
         $response = new Response(Stream::createFromString(' '), []);
         $response = $response->withStatus(301);
-        $response = $response->withHeader('Location', 'http://local.quiz.com');
+        $response = $response->withHeader('Location', '/');
 
         return $response;
     }
@@ -71,7 +71,7 @@ class QuestionController extends AbstractController
             if ($this->questionService->createEntity($request)) {
                 $response = new Response(Stream::createFromString(' '), []);
                 $response = $response->withStatus(301);
-                $response = $response->withHeader('Location', 'http://local.quiz.com/question');
+                $response = $response->withHeader('Location', '/question');
 
                 return $response;
             }
@@ -79,7 +79,7 @@ class QuestionController extends AbstractController
         }
         $response = new Response(Stream::createFromString(' '), []);
         $response = $response->withStatus(301);
-        $response = $response->withHeader('Location', 'http://local.quiz.com');
+        $response = $response->withHeader('Location', '/');
 
         return $response;
     }
@@ -90,7 +90,7 @@ class QuestionController extends AbstractController
             if ($this->questionService->delete($request)) {
                 $response = new Response(Stream::createFromString(' '), []);
                 $response = $response->withStatus(301);
-                $response = $response->withHeader('Location', 'http://local.quiz.com/question');
+                $response = $response->withHeader('Location', '/question');
 
                 return $response;
             }
@@ -99,7 +99,7 @@ class QuestionController extends AbstractController
         }
         $response = new Response(Stream::createFromString(' '), []);
         $response = $response->withStatus(301);
-        $response = $response->withHeader('Location', 'http://local.quiz.com');
+        $response = $response->withHeader('Location', '/');
 
         return $response;
     }
@@ -113,7 +113,7 @@ class QuestionController extends AbstractController
         }
         $response = new Response(Stream::createFromString(' '), []);
         $response = $response->withStatus(301);
-        $response = $response->withHeader('Location', 'http://local.quiz.com');
+        $response = $response->withHeader('Location', '/');
 
         return $response;
     }
@@ -124,7 +124,7 @@ class QuestionController extends AbstractController
             if ($this->questionService->updateEntity($request, $this->session)) {
                 $response = new Response(Stream::createFromString(' '), []);
                 $response = $response->withStatus(301);
-                $response = $response->withHeader('Location', 'http://local.quiz.com/question');
+                $response = $response->withHeader('Location', '/question');
 
                 return $response;
             }

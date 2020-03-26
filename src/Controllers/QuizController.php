@@ -57,7 +57,7 @@ class QuizController extends AbstractController
     public function listAll(RequestInterface $request)
     {
         if ($this->session->get('name') === null) {
-            return $this->getRedirectPage("http://local.quiz.com/error/404");
+            return $this->getRedirectPage("/error/404");
         }
 
         $path = ($this->session->get('role') === 'admin') ? "admin-quizzes-listing.phtml" : "candidate-quiz-listing.phtml";
@@ -114,7 +114,7 @@ class QuizController extends AbstractController
             if ($this->quizService->createEntity($request, $this->session)) {
                 $response = new Response(Stream::createFromString(' '), []);
                 $response = $response->withStatus(301);
-                $response = $response->withHeader('Location', 'http://local.quiz.com/quiz');
+                $response = $response->withHeader('Location', '/quiz');
 
                 return $response;
             }
@@ -137,7 +137,7 @@ class QuizController extends AbstractController
             if ($this->quizService->delete($request)) {
                 $response = new Response(Stream::createFromString(' '), []);
                 $response = $response->withStatus(301);
-                $response = $response->withHeader('Location', 'http://local.quiz.com/quiz');
+                $response = $response->withHeader('Location', '/quiz');
 
                 return $response;
             }
@@ -186,7 +186,7 @@ class QuizController extends AbstractController
             if ($this->quizService->updateEntity($request, $this->session)) {
                 $response = new Response(Stream::createFromString(' '), []);
                 $response = $response->withStatus(301);
-                $response = $response->withHeader('Location', 'http://local.quiz.com/quiz/1');
+                $response = $response->withHeader('Location', '/quiz');
 
                 return $response;
             }

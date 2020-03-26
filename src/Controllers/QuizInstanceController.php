@@ -32,8 +32,7 @@ class QuizInstanceController extends AbstractController
                 $response = new Response(Stream::createFromString(' '), []);
                 $response = $response->withStatus(301);
                 $response = $response->withHeader(
-                    'Location',
-                    'http://local.quiz.com/quiz/question/0'
+                    'Location', '/quiz/question/0'
                 );
                 return $response;
             }
@@ -45,14 +44,14 @@ class QuizInstanceController extends AbstractController
                 $response = $response->withStatus(301);
                 $response = $response->withHeader(
                     'Location',
-                    'http://local.quiz.com/questionInstance/add'
+                    '/questionInstance/add'
                 );
                 return $response;
             }
         }
         $response = new Response(Stream::createFromString(' '), []);
         $response = $response->withStatus(301);
-        $response = $response->withHeader('Location', 'http://local.quiz.com/error/404');
+        $response = $response->withHeader('Location', '/error/404');
 
         return $response;
     }
