@@ -29,8 +29,8 @@
         "ext-pdo": "*"
     },
     "autoload": {
-    "psr-4": {
-        "QuizApp\\": "src/"
+        "psr-4": {
+            "QuizApp\\": "src/"
+        }
     }
-}
 }

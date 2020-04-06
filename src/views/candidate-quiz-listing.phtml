@@ -34,18 +34,18 @@
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
                 <li class="page-item <?php if ($paginator->getCurrentPage() === 1): echo "disabled"; endif;?>">
-                    <a class="page-link" href="<?php if ($paginator->getPreviousPage()): echo "http://local.quiz.com/result?quiz=".$paginator->getPreviousPage(); endif;?>" tabindex="-1" aria-disabled="true">Previous</a>
+                    <a class="page-link" href="<?php if ($paginator->getPreviousPage()): echo "/quiz?page=".$paginator->getPreviousPage(); endif;?>" tabindex="-1" aria-disabled="true">Previous</a>
                 </li>
                 <?php
                 $page = 1;
                 while ($page <= $paginator->getTotalpages()):
                     ?>
-                    <li class="page-item <?php if($page === $paginator->getCurrentPage()): echo "active"; endif;?>"><a class="page-link" href="http://local.quiz.com/quiz?page=<?php echo $page;?>"><?php echo $page;?></a></li>
+                    <li class="page-item <?php if($page === $paginator->getCurrentPage()): echo "active"; endif;?>"><a class="page-link" href="/quiz?page=<?php echo $page;?>"><?php echo $page;?></a></li>
                     <?php
                     $page++;
                 endwhile;?>
                 <li class="page-item <?php if ($paginator->getCurrentPage() === $paginator->getTotalpages()): echo "disabled"; endif;?>">
-                    <a class="page-link" href="<?php if ($paginator->getNextPage()): echo "http://local.quiz.com/result?quiz=".$paginator->getNextPage(); endif;?>">Next</a>
+                    <a class="page-link" href="<?php if ($paginator->getNextPage()): echo "/quiz?page=".$paginator->getNextPage(); endif;?>">Next</a>
                 </li>
             </ul>
         </nav>

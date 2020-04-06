@@ -266,7 +266,7 @@ $configuration = [
         ]
     ],
     "render" =>
-        ["base_path" => "/var/www/QuizApp/src/views"]
+        ["base_path" => "../src/views"]
 ];
 
 return $configuration;
