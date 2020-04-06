@@ -35,7 +35,7 @@ class UserService extends AbstractService
      * @param array $filters
      * @return array|null
      */
-    public function getAll(int $page, array $filters = []): ?array
+    public function getAll(int $page, array $filters = [], array $searchParams = []): ?array
     {
         $offset = ($page - 1) * $this::RESULTS_PER_PAGE;
 
@@ -43,6 +43,10 @@ class UserService extends AbstractService
             $repository = $this->repositoryManager->getRepository(User::class);
         } catch (NoSuchRepositoryException $e) {
             return null;
+        }
+
+        foreach ($searchParams as $key => $value) {
+            $filters[$key] = $value;
         }
 
         try {
@@ -53,13 +57,15 @@ class UserService extends AbstractService
 
         return $entities;
     }
+
     /**
      * This function counts all the user entities from the user repository
      * that match the filters
-     * @param string $role
-     * @return array
+     * @param array $role
+     * @param array $searchParams
+     * @return int
      */
-    public function countRows(array $role = []): int
+    public function countRows(array $role = [], array $searchParams = []): int
     {
         try {
             $userRepository = $this->repositoryManager->getRepository(User::class);
@@ -67,7 +73,7 @@ class UserService extends AbstractService
             return 0;
         }
 
-        return $userRepository->countRowsBy($role);
+        return $userRepository->countRowsBy($role, $searchParams);
     }
     /**
      * This function returns true if a user is inserted into
