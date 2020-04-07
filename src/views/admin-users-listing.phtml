@@ -88,18 +88,18 @@
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
                 <li class="page-item <?php if ($paginator->getCurrentPage() === 1): echo "disabled"; endif;?>">
-                    <a class="page-link" href="/user?page=<?php if ($paginator->getPreviousPage()): echo $paginator->getPreviousPage(); endif; if($role): echo "&role=".$role; endif;?>" tabindex="-1" aria-disabled="true">Previous</a>
+                    <a class="page-link" href="/user?page=<?php if ($paginator->getPreviousPage()): echo $paginator->getPreviousPage(); endif; if($role): echo "&role=".$role; endif; if($email): echo "&email=".$email; endif;?>" tabindex="-1" aria-disabled="true">Previous</a>
                 </li>
                 <?php
                 $page = 1;
                 while ($page <= $paginator->getTotalpages()):
                     ?>
-                    <li class="page-item <?php if($page === $paginator->getCurrentPage()): echo "active"; endif;?>"><a class="page-link" href="/user?page=<?php echo $page; if($role): echo "&role=".$role; endif;?>"><?php echo $page;?></a></li>
+                    <li class="page-item <?php if($page === $paginator->getCurrentPage()): echo "active"; endif;?>"><a class="page-link" href="/user?page=<?php echo $page; if($role): echo "&role=".$role; endif; if($email): echo "&email=".$email; endif;?>"><?php echo $page;?></a></li>
                     <?php
                     $page++;
                 endwhile;?>
                 <li class="page-item <?php if ($paginator->getCurrentPage() === $paginator->getTotalpages()): echo "disabled"; endif;?>">
-                    <a class="page-link" href="<?php if ($paginator->getNextPage()): echo "/user?page=".$paginator->getNextPage(); endif;if($role): echo "&role=".$role; endif;?>">Next</a>
+                    <a class="page-link" href="<?php if ($paginator->getNextPage()): echo "/user?page=".$paginator->getNextPage(); endif;if($role): echo "&role=".$role; endif; if($email): echo "&email=".$email; endif;?>">Next</a>
                 </li>
             </ul>
         </nav>

@@ -37,7 +37,7 @@ class UserService extends AbstractService
      * @param string $searchValue
      * @return array|null
      */
-    public function getAll(int $page, array $filters = [], string $searchValue): ?array
+    public function getAll(int $page, array $filters = [], string $searchValue = ""): ?array
     {
         $offset = ($page - 1) * $this::RESULTS_PER_PAGE;
 
@@ -47,13 +47,16 @@ class UserService extends AbstractService
             return null;
         }
 
-        $search = $this->getSearchableFields();
-        foreach ($search as $key => $value) {
-            $search[$key] = $searchValue;
+        $search = [];
+        if ($searchValue != "") {
+            $search = $this->getSearchableFields();
+            foreach ($search as $key => $value) {
+                $search[$key] = "%".$searchValue."%";
+            }
         }
 
         try {
-            $entities = $repository->findBy($filters, $search, [], $this::RESULTS_PER_PAGE, $offset);
+            $entities = $repository->findBy($filters, $search, [], self::RESULTS_PER_PAGE, $offset);
         } catch (NoSuchRowException $e) {
             $entities = null;
         }
@@ -76,9 +79,12 @@ class UserService extends AbstractService
             return 0;
         }
 
-        $search = $this->getSearchableFields();
-        foreach ($search as $key => $value) {
-            $search[$key] = $searchValue;
+        $search = [];
+        if ($searchValue !== "") {
+            $search = $this->getSearchableFields();
+            foreach ($search as $key => $value) {
+                $search[$key] = "%".$searchValue."%";
+            }
         }
 
         return $userRepository->countRowsBy($role, $search);
