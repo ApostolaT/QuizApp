@@ -49,7 +49,7 @@ class UserService extends AbstractService
 
         $search = [];
         if ($searchValue != "") {
-            $search = $this->getSearchableFields();
+            $search = $repository->getSearchableFields();
             foreach ($search as $key => $value) {
                 $search[$key] = "%".$searchValue."%";
             }
@@ -81,7 +81,7 @@ class UserService extends AbstractService
 
         $search = [];
         if ($searchValue !== "") {
-            $search = $this->getSearchableFields();
+            $search = $userRepository->getSearchableFields();
             foreach ($search as $key => $value) {
                 $search[$key] = "%".$searchValue."%";
             }
@@ -161,14 +161,5 @@ class UserService extends AbstractService
         $entity->setRole($role);
 
         return $entity->save();
-    }
-
-    /**
-     * This functions returns all the searchable fields from the user table
-     * @return array
-     */
-    private function getSearchableFields(): array
-    {
-        return ["name" => ""];
     }
 }
