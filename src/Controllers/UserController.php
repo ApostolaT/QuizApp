@@ -50,7 +50,7 @@ class UserController extends AbstractController
         $this->session->delete('message');
 
         $filterParams = ($request->getParameter('role')) ? ['role' => $request->getParameter('role')] : [];
-        $searchParams = ($request->getParameter('email')) ? ['name' => $request->getParameter('email')] : [];
+        $searchParams = ($request->getParameter('email')) ? $request->getParameter('email') : "";
         $totalResults = $this->userService->countRows($filterParams, $searchParams);
         $paginator = new Paginator($totalResults);
         $paginator->setCurrentPage((int)$request->getParameter('page'));
