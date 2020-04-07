@@ -12,6 +12,6 @@ class UserRepository extends AbstractRepository
      */
     public function getSearchableFields(): array
     {
-        return ["name" => ""];
+        return ["name"];
     }
 }
