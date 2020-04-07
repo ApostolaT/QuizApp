@@ -13,6 +13,6 @@ class QuestionRepository extends AbstractRepository
      */
     public function getSearchableFields(): array
     {
-        // TODO: Implement getSearchableFields() method.
+        return ["text"];
     }
 }

@@ -35,7 +35,7 @@ class QuestionInstanceService extends AbstractService
         $quizInstance = $quizInstanceRepository->find((int)$quizInstanceId);
         $quizTemplateId = $quizInstance->getQuizTemplateId();
 
-        $questions = $quizQuestionTemplateRepository->findBy(['quizTemplateId' => $quizTemplateId], [], 0, 0);
+        $questions = $quizQuestionTemplateRepository->findBy(['quizTemplateId' => $quizTemplateId], "", [], 0, 0);
 
         $count = 0;
         foreach ($questions as $key => $value) {
@@ -74,7 +74,7 @@ class QuestionInstanceService extends AbstractService
         $questionInstanceRepository = $this->repositoryManager->getRepository(QuestionInstance::class);
 
         try {
-            return $questionInstanceRepository->findBy(['quizInstanceId' => $id], [], 1, $offset);
+            return $questionInstanceRepository->findBy(['quizInstanceId' => $id], "", [], 1, $offset);
         } catch (NoSuchRowException $e) {
             return null;
         }
@@ -111,6 +111,6 @@ class QuestionInstanceService extends AbstractService
     {
         $textInstanceRepository = $this->repositoryManager->getRepository(QuestionInstance::class);
 
-        return $textInstanceRepository->findBy(['quizInstanceId' => $quizInstanceId], [], 0, 0);
+        return $textInstanceRepository->findBy(['quizInstanceId' => $quizInstanceId], "", [], 0, 0);
     }
 }

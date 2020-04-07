@@ -13,6 +13,6 @@ class QuizTypeRepository extends AbstractRepository
      */
     public function getSearchableFields(): array
     {
-        // TODO: Implement getSearchableFields() method.
+        return ["name"];
     }
 }

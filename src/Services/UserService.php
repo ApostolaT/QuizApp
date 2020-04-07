@@ -136,7 +136,6 @@ class UserService extends AbstractService
         $repository = $this->repositoryManager->getRepository(User::class);
         $name = $request->getParameter('email');
         $role = $request->getParameter('role');
-
         $id = $request->getRequestParameters()['id'];
         //TODO add try catch like in ResultsService
         $entity = $repository->find((int)$id);

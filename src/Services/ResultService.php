@@ -177,7 +177,7 @@ class ResultService extends AbstractService
         $resultRepository = $this->repositoryManager->getRepository(QuizInstance::class);
         $userRepository = $this->repositoryManager->getRepository(User::class);
 
-        $quizInstances = $resultRepository->findBy([], [], $this::RESULTS_PER_PAGE, $offset);
+        $quizInstances = $resultRepository->findBy([], "", [], $this::RESULTS_PER_PAGE, $offset);
         $quizInstanceDTOs = [];
         foreach ($quizInstances as $quizInstance) {
             $userEntity = ($quizInstance->getUserId())
