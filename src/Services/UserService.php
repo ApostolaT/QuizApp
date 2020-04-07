@@ -47,16 +47,8 @@ class UserService extends AbstractService
             return null;
         }
 
-        $search = [];
-        if ($searchValue !== "") {
-            $searchFields = $repository->getSearchableFields();
-            foreach ($searchFields as $columnName) {
-                $search[$columnName] = "%".$searchValue."%";
-            }
-        }
-
         try {
-            $entities = $repository->findBy($filters, $search, [], self::RESULTS_PER_PAGE, $offset);
+            $entities = $repository->findBy($filters, $searchValue, [], self::RESULTS_PER_PAGE, $offset);
         } catch (NoSuchRowException $e) {
             $entities = null;
         }
@@ -79,15 +71,7 @@ class UserService extends AbstractService
             return 0;
         }
 
-        $search = [];
-        if ($searchValue !== "") {
-            $searchFields = $userRepository->getSearchableFields();
-            foreach ($searchFields as $columnName) {
-                $search[$columnName] = "%".$searchValue."%";
-            }
-        }
-
-        return $userRepository->countRowsBy($role, $search);
+        return $userRepository->countRowsBy($role, $searchValue);
     }
     /**
      * This function returns true if a user is inserted into

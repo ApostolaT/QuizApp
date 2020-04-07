@@ -30,4 +30,11 @@ class QuizQuestionTemplateRepository extends AbstractRepository
 
         return $query;
     }
+    /**
+     * @inheritDoc
+     */
+    public function getSearchableFields(): array
+    {
+        // TODO: Implement getSearchableFields() method.
+    }
 }

@@ -17,4 +17,12 @@ class QuestionInstanceRepository extends AbstractRepository
 
         return $query->fetch();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSearchableFields(): array
+    {
+        // TODO: Implement getSearchableFields() method.
+    }
 }
