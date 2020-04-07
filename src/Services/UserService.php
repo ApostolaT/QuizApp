@@ -81,9 +81,9 @@ class UserService extends AbstractService
 
         $search = [];
         if ($searchValue !== "") {
-            $search = $userRepository->getSearchableFields();
-            foreach ($search as $key => $value) {
-                $search[$key] = "%".$searchValue."%";
+            $searchFields = $userRepository->getSearchableFields();
+            foreach ($searchFields as $columnName) {
+                $search[$columnName] = "%".$searchValue."%";
             }
         }
 
