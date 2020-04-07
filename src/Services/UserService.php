@@ -45,12 +45,8 @@ class UserService extends AbstractService
             return null;
         }
 
-        foreach ($searchParams as $key => $value) {
-            $filters[$key] = $value;
-        }
-
         try {
-            $entities = $repository->findBy($filters, [], $this::RESULTS_PER_PAGE, $offset);
+            $entities = $repository->findBy($filters, $searchParams, [], $this::RESULTS_PER_PAGE, $offset);
         } catch (NoSuchRowException $e) {
             $entities = null;
         }

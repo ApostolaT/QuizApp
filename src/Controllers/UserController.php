@@ -44,7 +44,8 @@ class UserController extends AbstractController
             //TODO Extract needed params like message
             'session' => $this->session,
             'role' => $request->getParameter('role'),
-            'email' => $request->getParameter('email')
+            'email' => $request->getParameter('email'),
+            'sort' => $request->getParameter('sort')
         ];
         $this->session->delete('message');
 
