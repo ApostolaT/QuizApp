@@ -39,7 +39,7 @@ class QuizService extends AbstractService
         $from = ($page - 1) * $this::RESULTS_PER_PAGE;
         $repository = $this->repositoryManager->getRepository(QuizTemplate::class);
         try {
-            $entities = $repository->findBy([], [], $this::RESULTS_PER_PAGE, $from);
+            $entities = $repository->findBy([], "", [], $this::RESULTS_PER_PAGE, $from);
         } catch (NoSuchRowException $e) {
             $entities = null;
         }
@@ -66,7 +66,7 @@ class QuizService extends AbstractService
     {
         $repository = $this->repositoryManager->getRepository(QuizTemplate::class);
 
-        return $repository->findBy([], [], 0, 0);
+        return $repository->findBy([], "", [], 0, 0);
     }
 
     /**
@@ -79,7 +79,7 @@ class QuizService extends AbstractService
         $repository = $this->repositoryManager->getRepository(QuizType::class);
 
         // TODO create a findAll in abstractRepository
-        return $repository->findBy([], [], 0, 0);
+        return $repository->findBy([], "", [], 0, 0);
     }
 
     /**

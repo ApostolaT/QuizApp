@@ -44,16 +44,19 @@ class UserController extends AbstractController
             //TODO Extract needed params like message
             'session' => $this->session,
             'role' => $request->getParameter('role'),
+            'email' => $request->getParameter('email'),
+            'sort' => $request->getParameter('sort')
         ];
         $this->session->delete('message');
 
         $filterParams = ($request->getParameter('role')) ? ['role' => $request->getParameter('role')] : [];
-        $totalResults = $this->userService->countRows($filterParams);
+        $searchParam = ($request->getParameter('email')) ? $request->getParameter('email') : "";
+        $totalResults = $this->userService->countRows($filterParams, $searchParam);
         $paginator = new Paginator($totalResults);
         $paginator->setCurrentPage((int)$request->getParameter('page'));
 
         $renderParams['paginator'] = $paginator;
-        $renderParams['entities'] = $this->userService->getAll($paginator->getCurrentPage(), $filterParams);
+        $renderParams['entities'] = $this->userService->getAll($paginator->getCurrentPage(), $filterParams, $searchParam);
 
         return $this->renderer->renderView('admin-users-listing.phtml', $renderParams);
     }

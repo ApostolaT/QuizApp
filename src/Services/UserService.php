@@ -27,15 +27,17 @@ class UserService extends AbstractService
     {
         $this->repositoryManager = $repositoryManager;
     }
+
     /**
      * Extracts from repository $this::RESULTS_PER_PAGE users entities
      * with the offset equal to page - 1 * $this::RESULTS_PER_PAGE.
      * If no results found, it will return null.
      * @param int $page
      * @param array $filters
+     * @param string $searchValue
      * @return array|null
      */
-    public function getAll(int $page, array $filters = []): ?array
+    public function getAll(int $page, array $filters = [], string $searchValue = ""): ?array
     {
         $offset = ($page - 1) * $this::RESULTS_PER_PAGE;
 
@@ -46,20 +48,22 @@ class UserService extends AbstractService
         }
 
         try {
-            $entities = $repository->findBy($filters, [], $this::RESULTS_PER_PAGE, $offset);
+            $entities = $repository->findBy($filters, $searchValue, [], self::RESULTS_PER_PAGE, $offset);
         } catch (NoSuchRowException $e) {
             $entities = null;
         }
 
         return $entities;
     }
+
     /**
      * This function counts all the user entities from the user repository
      * that match the filters
-     * @param string $role
-     * @return array
+     * @param array $role
+     * @param string $searchValue
+     * @return int
      */
-    public function countRows(array $role = []): int
+    public function countRows(array $role = [], string $searchValue = ""): int
     {
         try {
             $userRepository = $this->repositoryManager->getRepository(User::class);
@@ -67,7 +71,7 @@ class UserService extends AbstractService
             return 0;
         }
 
-        return $userRepository->countRowsBy($role);
+        return $userRepository->countRowsBy($role, $searchValue);
     }
     /**
      * This function returns true if a user is inserted into
@@ -132,7 +136,6 @@ class UserService extends AbstractService
         $repository = $this->repositoryManager->getRepository(User::class);
         $name = $request->getParameter('email');
         $role = $request->getParameter('role');
-
         $id = $request->getRequestParameters()['id'];
         //TODO add try catch like in ResultsService
         $entity = $repository->find((int)$id);

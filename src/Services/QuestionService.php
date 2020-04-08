@@ -38,7 +38,7 @@ class QuestionService extends AbstractService
     {
         $repository = $this->repositoryManager->getRepository(QuestionTemplate::class);
 
-        return $repository->findBy([], [], 0, 0);
+        return $repository->findBy([], "", [], 0, 0);
     }
 
     /**
@@ -51,7 +51,7 @@ class QuestionService extends AbstractService
         $from = ($page - 1) * $this::RESULTS_PER_PAGE;
         $repository = $this->repositoryManager->getRepository(QuestionTemplate::class);
         try {
-            $entities = $repository->findBy([], [], $this::RESULTS_PER_PAGE, $from);
+            $entities = $repository->findBy([], "", [], $this::RESULTS_PER_PAGE, $from);
         } catch (NoSuchRowException $e) {
             $entities = null;
         }

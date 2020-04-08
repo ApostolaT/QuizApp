@@ -3,6 +3,17 @@
         </ol>
     </nav>
 
+<div class="container-fluid">
+    <div style="
+        float: right;
+        position: -webkit-sticky; /* Safari */
+        position: sticky;
+        margin-top: 56px;
+        margin-right: 220px;
+        top: 150px;"
+    >
+        <a class="btn btn-primary py-1 mb-3" href="/user">Reset Search</a>
+    </div>
     <div class="container">
         <!--Page title block-->
         <div class="text-center">
@@ -11,16 +22,31 @@
 
         <!--Table actions block-->
         <div class="row">
+            <div class="col-12 col-md-12 d-flex align-items-end justify-content-end">
+                <a class="btn btn-primary py-1 mb-3" href="/user/add">Add new user</a>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-12 col-md-6">
                 <label for="roleSearch">User role select</label>
                 <select class="form-control" id="roleSearch" onchange="location = this.value">
-                    <option value="user" <?php if($role !== 'admin' && $role !== 'user') echo "selected";?>>all</option>
-                    <option value="user?role=admin" <?php if($role === 'admin') echo "selected";?>>admin</option>
-                    <option value="user?role=user" <?php if($role === 'user') echo "selected";?>>user</option>
+                    <option value="user<?php if($email) echo "?email=$email"?>" <?php if($role !== 'admin' && $role !== 'user') echo "selected";?>>all</option>
+                    <option value="user?role=admin<?php if($email) echo "&email=$email"?>" <?php if($role === 'admin') echo "selected";?>>admin</option>
+                    <option value="user?role=user<?php if($email) echo "&email=$email"?>" <?php if($role === 'user') echo "selected";?>>user</option>
                 </select>
             </div>
-            <div class="col-12 col-md-6 d-flex align-items-end justify-content-end">
-                <a class="btn btn-primary py-1 mb-3" href="/user/add">Add new user</a>
+            <div class="col-12 col-md-6">
+                <form action="user" method="GET">
+                    <label for="emailSearch">Email search</label>
+                    <div class="input-group">
+                        <input type="text" id="emailSearch" class="form-control" name="email" placeholder="user@domain.something">
+                        <div class="input-group-append">
+                            <button class="btn btn-secondary" type="submit">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -58,26 +84,26 @@
                 </tbody>
             </table>
         </div>
-
         <!--Pagination block-->
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
                 <li class="page-item <?php if ($paginator->getCurrentPage() === 1): echo "disabled"; endif;?>">
-                    <a class="page-link" href="/user?page=<?php if ($paginator->getPreviousPage()): echo $paginator->getPreviousPage(); endif; if($role): echo "&role=".$role; endif;?>" tabindex="-1" aria-disabled="true">Previous</a>
+                    <a class="page-link" href="/user?page=<?php if ($paginator->getPreviousPage()): echo $paginator->getPreviousPage(); endif; if($role): echo "&role=".$role; endif; if($email): echo "&email=".$email; endif;?>" tabindex="-1" aria-disabled="true">Previous</a>
                 </li>
                 <?php
                 $page = 1;
                 while ($page <= $paginator->getTotalpages()):
                     ?>
-                    <li class="page-item <?php if($page === $paginator->getCurrentPage()): echo "active"; endif;?>"><a class="page-link" href="/user?page=<?php echo $page; if($role): echo "&role=".$role; endif;?>"><?php echo $page;?></a></li>
+                    <li class="page-item <?php if($page === $paginator->getCurrentPage()): echo "active"; endif;?>"><a class="page-link" href="/user?page=<?php echo $page; if($role): echo "&role=".$role; endif; if($email): echo "&email=".$email; endif;?>"><?php echo $page;?></a></li>
                     <?php
                     $page++;
                 endwhile;?>
                 <li class="page-item <?php if ($paginator->getCurrentPage() === $paginator->getTotalpages()): echo "disabled"; endif;?>">
-                    <a class="page-link" href="<?php if ($paginator->getNextPage()): echo "/user?page=".$paginator->getNextPage(); endif;if($role): echo "&role=".$role; endif;?>">Next</a>
+                    <a class="page-link" href="<?php if ($paginator->getNextPage()): echo "/user?page=".$paginator->getNextPage(); endif;if($role): echo "&role=".$role; endif; if($email): echo "&email=".$email; endif;?>">Next</a>
                 </li>
             </ul>
         </nav>
     </div>
+</div>
 </body>
 </html>
