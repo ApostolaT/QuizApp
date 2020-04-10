@@ -30,9 +30,9 @@
             <div class="col-12 col-md-6">
                 <label for="roleSearch">User role select</label>
                 <select class="form-control" id="roleSearch" onchange="location = this.value">
-                    <option value="user<?php if($email) echo "?email=$email"?>" <?php if($role !== 'admin' && $role !== 'user') echo "selected";?>>all</option>
-                    <option value="user?role=admin<?php if($email) echo "&email=$email"?>" <?php if($role === 'admin') echo "selected";?>>admin</option>
-                    <option value="user?role=user<?php if($email) echo "&email=$email"?>" <?php if($role === 'user') echo "selected";?>>user</option>
+                    <option value="user<?php echo $urlHelper->getUrlForFilter("role", "all");?>" <?php if($urlHelper->getValue("role") !== 'admin' && $urlHelper->getValue("role") !== 'user') echo "selected";?>>all</option>
+                    <option value="user<?php echo $urlHelper->getUrlForFilter("role", "admin");?>" <?php if($urlHelper->getValue("role") === 'admin') echo "selected";?>>admin</option>
+                    <option value="user<?php echo $urlHelper->getUrlForFilter("role", "user");?>" <?php if($urlHelper->getValue("role") === 'user') echo "selected";?>>user</option>
                 </select>
             </div>
             <div class="col-12 col-md-6">
@@ -61,8 +61,14 @@
                 <thead>
                 <tr>
                     <!--Sorting arrow are displayed using the 'asc','dsc' classes-->
-                    <th scope="col" class="sorting-header asc dsc">ID</th>
-                    <th scope="col">Email</th>
+                    <th>ID</th>
+                    <th scope="col" class="sorting-header <?php
+                        if ($urlHelper->getValue("sort") === "asc"): echo "asc"; endif;
+                        if ($urlHelper->getValue("sort") === "dsc"): echo "dsc"; endif;
+                        if (!$urlHelper->keyExists("sort")): echo "asc dsc"; endif;
+                    ?>">
+                        <a style="display: block; width: 100%; height: 100%;" href="/user<?php echo $urlHelper->getNextSortStateUrl();?>">Email</a>
+                    </th>
                     <th scope="col">Role</th>
                     <th scope="col">Actions</th>
                 </tr>
@@ -88,18 +94,19 @@
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
                 <li class="page-item <?php if ($paginator->getCurrentPage() === 1): echo "disabled"; endif;?>">
-                    <a class="page-link" href="/user?page=<?php if ($paginator->getPreviousPage()): echo $paginator->getPreviousPage(); endif; if($role): echo "&role=".$role; endif; if($email): echo "&email=".$email; endif;?>" tabindex="-1" aria-disabled="true">Previous</a>
+                    <a class="page-link" href="/user<?php echo $urlHelper->getPreviousPageUrl();?>" tabindex="-1" aria-disabled="true">Previous</a>
                 </li>
                 <?php
                 $page = 1;
                 while ($page <= $paginator->getTotalpages()):
                     ?>
-                    <li class="page-item <?php if($page === $paginator->getCurrentPage()): echo "active"; endif;?>"><a class="page-link" href="/user?page=<?php echo $page; if($role): echo "&role=".$role; endif; if($email): echo "&email=".$email; endif;?>"><?php echo $page;?></a></li>
+                    <li class="page-item <?php
+                    if($page === $paginator->getCurrentPage()): echo "active"; endif;?>"><a class="page-link" href="/user<?php echo $urlHelper->getUrlForPage($page);?>"><?php echo $page;?></a></li>
                     <?php
                     $page++;
                 endwhile;?>
-                <li class="page-item <?php if ($paginator->getCurrentPage() === $paginator->getTotalpages()): echo "disabled"; endif;?>">
-                    <a class="page-link" href="<?php if ($paginator->getNextPage()): echo "/user?page=".$paginator->getNextPage(); endif;if($role): echo "&role=".$role; endif; if($email): echo "&email=".$email; endif;?>">Next</a>
+                <li class="page-item <?php if ($paginator->getCurrentPage() === $paginator->getTotalPages()): echo "disabled"; endif;?>">
+                    <a class="page-link" href="user<?php echo $urlHelper->getNextPageUrl();?>">Next</a>
                 </li>
             </ul>
         </nav>

@@ -33,7 +33,8 @@ $container->setParameter("dbPassword", $dbPassword);
 $container->setParameter("options", $options);
 $container->setParameter("tokens", $tokens);
 
-
+$container
+    ->register(\QuizApp\Utils\UrlHelper::class, \QuizApp\Utils\UrlHelper::class);
 $container
     ->register(\HighlightLib\Tokenizer\Tokenizer::class, \HighlightLib\Tokenizer\Tokenizer::class);
 $container
@@ -212,6 +213,7 @@ foreach ($container->findTaggedServiceIds('service') as $id => $tags) {
 
 foreach ($container->findTaggedServiceIds('controller') as $id => $tags) {
     $controller = $container->getDefinition($id);
+    $controller->addMethodCall('setUrlHelper', [$container->findDefinition(\QuizApp\Utils\UrlHelper::class)]);
     $controller->addMethodCall('setSession', [$session]);
     $dispatcher->addMethodCall("addController", [$controller]);
 }

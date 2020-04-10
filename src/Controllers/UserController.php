@@ -35,30 +35,45 @@ class UserController extends AbstractController
      */
     public function listAll(RequestInterface $request)
     {
+        // Check if user has permission
         if ($this->session->get('role') !== 'admin') {
             return $this->getRedirectPage('/');
         }
 
         $renderParams = [
             'message' => $this->session->get('message'),
-            //TODO Extract needed params like message
             'session' => $this->session,
-            'role' => $request->getParameter('role'),
-            'email' => $request->getParameter('email'),
-            'sort' => $request->getParameter('sort')
         ];
         $this->session->delete('message');
 
+        $sortParam = ($request->getParameter('sort')) ?? "";
         $filterParams = ($request->getParameter('role')) ? ['role' => $request->getParameter('role')] : [];
         $searchParam = ($request->getParameter('email')) ? $request->getParameter('email') : "";
+        //Create paginator based on filters and searchParams
         $totalResults = $this->userService->countRows($filterParams, $searchParam);
         $paginator = new Paginator($totalResults);
         $paginator->setCurrentPage((int)$request->getParameter('page'));
-
         $renderParams['paginator'] = $paginator;
-        $renderParams['entities'] = $this->userService->getAll($paginator->getCurrentPage(), $filterParams, $searchParam);
+        //Set the urlHelper with paginator and requestParams
+        $this->urlHelper->setParameters($this->createUrlParameters($filterParams, $sortParam, $searchParam));
+        $this->urlHelper->setPaginator($paginator);
+        $renderParams['urlHelper'] = $this->urlHelper;
+        //Perform the DB query
+        $renderParams['entities'] = $this->userService->getAll($paginator->getCurrentPage(), $filterParams, $searchParam, $sortParam);
 
         return $this->renderer->renderView('admin-users-listing.phtml', $renderParams);
+    }
+    private function createUrlParameters(array $filterParams, string $sortParam, string $searchParam): array
+    {
+        $urlParams = $filterParams;
+        if ($sortParam !== "") {
+            $urlParams['sort'] = $sortParam;
+        }
+        if ($searchParam !== "") {
+            $urlParams["email"] = $searchParam;
+        }
+
+        return $urlParams;
     }
     /**
      * This function is called to return a

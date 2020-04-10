@@ -35,20 +35,21 @@ class UserService extends AbstractService
      * @param int $page
      * @param array $filters
      * @param string $searchValue
+     * @param string $sortParams
      * @return array|null
      */
-    public function getAll(int $page, array $filters = [], string $searchValue = ""): ?array
+    public function getAll(int $page, array $filters = [], string $searchValue = "", $sortParams = ""): ?array
     {
         $offset = ($page - 1) * $this::RESULTS_PER_PAGE;
+        $orderParams = ($sortParams !== "") ? ["name" => ($sortParams === "asc") ? "ASC" : "DESC"] : [];
 
         try {
             $repository = $this->repositoryManager->getRepository(User::class);
         } catch (NoSuchRepositoryException $e) {
             return null;
         }
-
         try {
-            $entities = $repository->findBy($filters, $searchValue, [], self::RESULTS_PER_PAGE, $offset);
+            $entities = $repository->findBy($filters, $searchValue, $orderParams, self::RESULTS_PER_PAGE, $offset);
         } catch (NoSuchRowException $e) {
             $entities = null;
         }
