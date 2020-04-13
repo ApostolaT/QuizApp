@@ -43,7 +43,7 @@ class ResultController extends AbstractController
             return $this->getRedirectPage("/error/404");
         }
 
-        $paginator = $this->createPaginationForRequestWithService($request, $this->resultService);
+        $paginator = $this->createFromRequest($request, $this->resultService);
         $renderParams = [
             'session' => $this->session,
             //message is for the future messages that will be displayed

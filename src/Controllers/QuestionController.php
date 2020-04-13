@@ -39,7 +39,7 @@ class QuestionController extends AbstractController
         if ($this->session->get('role') !== 'admin') {
             return $this->getRedirectPage("/error/404");
         }
-        $paginator = $this->createPaginationForRequestWithService($request, $this->questionService);
+        $paginator = $this->createFromRequest($request, $this->questionService);
         $renderParams = [
             'session' => $this->session,
             //message is for the future messages that will be displayed

@@ -18,25 +18,18 @@ class UrlHelper
      * @var Paginator $paginator
      */
     private $paginator;
+
     /**
-     * Sets the urlParameters with the newParameters,
-     * the initial parameters from urlParameters are deleted.
-     * @param array $newParameters
-     */
-    public function setParameters(array $newParameters)
-    {
-        if ($newParameters !== []) {
-            $this->urlParameters = $newParameters;
-        }
-    }
-    /**
-     * Sets the paginator
+     * UrlHelper constructor.
      * @param Paginator $paginator
+     * @param array $urlParameters
      */
-    public function setPaginator(Paginator $paginator)
+    public function __construct(Paginator $paginator, array $urlParameters = [])
     {
         $this->paginator = $paginator;
+        $this->urlParameters = $urlParameters;
     }
+
     /**
      * Check if a key exists in an array
      * @param string $key
@@ -46,12 +39,13 @@ class UrlHelper
     {
         return array_key_exists($key, $this->urlParameters);
     }
+
     /**
      * Get the value of the specified parameter
      * @param string $key
      * @return mixed|null
      */
-    public function getValue(string $key)
+    public function getValue(string $key): string
     {
         if (!$this->keyExists($key)) {
             return "";
@@ -59,6 +53,7 @@ class UrlHelper
 
         return $this->urlParameters[$key];
     }
+
     /**
      * Returns the previous page's url
      * @return string
@@ -69,8 +64,9 @@ class UrlHelper
             return "";
         }
 
-        return "?page=".$this->paginator->getPreviousPage().http_build_query($this->urlParameters);
+        return "?page=".$this->paginator->getPreviousPage() . $this->getRemainingUrl();
     }
+
     /**
      * Returns the next page's url
      * @return string
@@ -81,8 +77,9 @@ class UrlHelper
             return "";
         }
 
-        return "?page=".$this->paginator->getNextPage().http_build_query($this->urlParameters);
+        return "?page=".$this->paginator->getNextPage() . $this->getRemainingUrl();
     }
+
     /**
      * Returns the
      * @return string
@@ -94,12 +91,21 @@ class UrlHelper
             $pageParameter = "?page=".$this->paginator->getCurrentPage();
         }
 
-        return $pageParameter.http_build_query($this->urlParameters);
+        return $pageParameter . $this->getRemainingUrl();
     }
     public function getUrlForPage(int $page): string
     {
-        return "?page=$page&".http_build_query($this->urlParameters);
+        return "?page=$page" . $this->getRemainingUrl();
     }
+
+    /**
+     * @return string
+     */
+    private function getRemainingUrl(): string
+    {
+        return ($this->urlParameters != []) ? "&" . http_build_query($this->urlParameters) : "";
+    }
+
     /**
      * @return string that is the complete url containing all the urlParameters.
      * This url will have the sort state set to the next one, or nothing if the state is dsc:

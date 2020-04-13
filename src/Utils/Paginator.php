@@ -31,8 +31,8 @@ class Paginator
         int $resultsPerPage = 10
     ) {
         $this->totalResults = $totalResults;
-        $this->setCurrentPage($currentPage);
         $this->setResultsPerPage($resultsPerPage);
+        $this->setCurrentPage($currentPage);
     }
     /**
      * Sets the number of results that should be displayed on a page

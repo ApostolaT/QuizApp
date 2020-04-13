@@ -2,10 +2,10 @@
 
 namespace QuizApp\Services;
 
+use Exception;
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Entities\User;
 use ReallyOrm\Exceptions\NoSuchRepositoryException;
-use ReallyOrm\Exceptions\NoSuchRowException;
 use ReallyOrm\Repository\RepositoryManagerInterface;
 use ReallyOrm\Test\Repository\RepositoryManager;
 
@@ -15,10 +15,12 @@ class UserService extends AbstractService
      * Constant for pagination.
      */
     private const RESULTS_PER_PAGE = 10;
+
     /**
      * @var RepositoryManager
      */
     private $repositoryManager;
+
     /**
      * Sets the repositoryManager.
      * @param RepositoryManagerInterface $repositoryManager
@@ -33,24 +35,25 @@ class UserService extends AbstractService
      * with the offset equal to page - 1 * $this::RESULTS_PER_PAGE.
      * If no results found, it will return null.
      * @param int $page
-     * @param array $filters
+     * @param string $filter
      * @param string $searchValue
-     * @param string $sortParams
+     * @param string $sortParam
      * @return array|null
      */
-    public function getAll(int $page, array $filters = [], string $searchValue = "", $sortParams = ""): ?array
+    public function getAll(int $page, string $filter = "", string $searchValue = "", $sortParam = ""): ?array
     {
         $offset = ($page - 1) * $this::RESULTS_PER_PAGE;
-        $orderParams = ($sortParams !== "") ? ["name" => ($sortParams === "asc") ? "ASC" : "DESC"] : [];
 
         try {
             $repository = $this->repositoryManager->getRepository(User::class);
-        } catch (NoSuchRepositoryException $e) {
-            return null;
-        }
-        try {
-            $entities = $repository->findBy($filters, $searchValue, $orderParams, self::RESULTS_PER_PAGE, $offset);
-        } catch (NoSuchRowException $e) {
+            $entities = $repository->findAll(
+                $filter,
+                $searchValue,
+                $sortParam,
+                self::RESULTS_PER_PAGE,
+                $offset
+            );
+        } catch (Exception $e) {
             $entities = null;
         }
 
@@ -64,16 +67,19 @@ class UserService extends AbstractService
      * @param string $searchValue
      * @return int
      */
-    public function countRows(array $role = [], string $searchValue = ""): int
+    public function countRows(string $role = "", string $searchValue = ""): int
     {
+        $filters = ($role) ? ["role" => $role] : [];
+
         try {
             $userRepository = $this->repositoryManager->getRepository(User::class);
         } catch (NoSuchRepositoryException $e) {
             return 0;
         }
 
-        return $userRepository->countRowsBy($role, $searchValue);
+        return $userRepository->countRowsBy($filters, $searchValue);
     }
+
     /**
      * This function returns true if a user is inserted into
      * the Repository or false on fail.
@@ -94,6 +100,7 @@ class UserService extends AbstractService
 
         return $entity->save();
     }
+
     /**
      * This function returns true if a user is deleted from
      * the Repository or null on fail.
@@ -101,8 +108,8 @@ class UserService extends AbstractService
      * @return bool
      * @throws \Exception
      */
-    //TODO PSR!!!
-    public function delete($request) {
+    public function delete($request)
+    {
         $repository = $this->repositoryManager->getRepository(User::class);
         $id = $request->getRequestParameters()['id'];
 
@@ -111,6 +118,7 @@ class UserService extends AbstractService
 
         return $entity->remove();
     }
+
     /**
      * This function returns the entity of the user with the provided id.
      * @param RequestInterface $request
@@ -125,6 +133,7 @@ class UserService extends AbstractService
         //TODO add try catch like in ResultsService
         return $repository->find((int)$id);
     }
+
     /**
      * This function update info about the user with provided id.
      * true is returned if the user is updated, false if failed.
