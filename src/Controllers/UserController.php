@@ -4,19 +4,18 @@ namespace QuizApp\Controllers;
 
 use Framework\Controller\AbstractController;
 use Framework\Http\Response;
-use Framework\Http\Stream;
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Services\AbstractService;
 use QuizApp\Services\UserService;
 use QuizApp\Utils\Paginator;
 
-//TODO redirect using the getRedirectPage
 class UserController extends AbstractController
 {
     /**
      * @var UserService
      */
     private $userService;
+
     /**
      * This function sets the userService
      * @param AbstractService $userService
@@ -31,9 +30,9 @@ class UserController extends AbstractController
      * with all the users from the system. If a user calls to see all
      * the users, he is redirected to a login page;
      * @param RequestInterface $request
-     * @return \Framework\Http\Message|Response|\Psr\Http\Message\MessageInterface
+     * @return Response
      */
-    public function listAll(RequestInterface $request)
+    public function listAll(RequestInterface $request): Response
     {
         if ($this->session->get('role') !== 'admin') {
             return $this->getRedirectPage('/');
@@ -60,20 +59,17 @@ class UserController extends AbstractController
 
         return $this->renderer->renderView('admin-users-listing.phtml', $renderParams);
     }
+
     /**
      * This function is called to return a
      * response with the add users page
      * @param RequestInterface $request
-     * @return \Framework\Http\Message|Response|\Psr\Http\Message\MessageInterface
+     * @return Response
      */
-    public function goToAddUser(RequestInterface $request)
+    public function getNewUserPage(RequestInterface $request): Response
     {
         if ($this->session->get('role') !== 'admin') {
-            $response = new Response(Stream::createFromString(' '), []);
-            $response = $response->withStatus(301);
-            $response = $response->withHeader('Location', '/');
-
-            return $response;
+            return $this->getRedirectPage("/");
         }
 
         return $this->renderer->renderView("admin-user-details.phtml", ['session' => $this->session]);
@@ -84,26 +80,19 @@ class UserController extends AbstractController
      * If the insertion of the new user is a success, the response will contain
      * a success message, else it will contain an error message.
      * @param RequestInterface $request
-     * @return \Framework\Http\Message|Response|\Psr\Http\Message\MessageInterface
+     * @return Response
      */
-    public function addUser(RequestInterface $request)
+    public function addUser(RequestInterface $request): Response
     {
         if ($this->session->get('role') !== 'admin') {
-            $response = new Response(Stream::createFromString(' '), []);
-            $response = $response->withStatus(301);
-            $response = $response->withHeader('Location', '/');
-
-            return $response;
+            return $this->getRedirectPage("/");
         }
 
         $message = ($this->userService->addNewUser($request)) ?
             "Success." : "User addition failed!";
         $this->session->set('message', $message);
-        $response = new Response(Stream::createFromString(' '), []);
-        $response = $response->withStatus(301);
-        $response = $response->withHeader('Location', '/user');
 
-        return $response;
+        return $this->getRedirectPage("/user");
     }
     /**
      * This function if called by an admin deletes a user,
@@ -111,48 +100,38 @@ class UserController extends AbstractController
      * If the deletion is successful, the response will contain
      * a success message, else it will contain an error.
      * @param RequestInterface $request
-     * @return \Framework\Http\Message|Response|\Psr\Http\Message\MessageInterface
+     * @return Response
      */
-    public function deleteUser(RequestInterface $request)
+    public function deleteUser(RequestInterface $request): Response
     {
         if ($this->session->get('role') !== 'admin') {
-            $response = new Response(Stream::createFromString(' '), []);
-            $response = $response->withStatus(301);
-            $response = $response->withHeader('Location', '/');
-
-            return $response;
+            return $this->getRedirectPage("/");
         }
 
         $message = ($this->userService->delete($request)) ?
             "Success" : "Delete Failed";
         $this->session->set('message', $message);
-        $response = new Response(Stream::createFromString(' '), []);
-        $response = $response->withStatus(301);
-        $response = $response->withHeader('Location', '/user');
 
-        return $response;
+        return $this->getRedirectPage("/user");
     }
     /**
      * This function is called to return a
      * response with the update users page
      * containing all the info of that user
      * @param RequestInterface $request
-     * @return \Framework\Http\Message|Response|\Psr\Http\Message\MessageInterface
+     * @return Response
      */
-    public function getUpdateUserPage(RequestInterface $request)
+    public function getUpdateUserPage(RequestInterface $request): Response
     {
         if ($this->session->get('role') !== 'admin') {
-            $response = new Response(Stream::createFromString(' '), []);
-            $response = $response->withStatus(301);
-            $response = $response->withHeader('Location', '/');
-
-            return $response;
+            return $this->getRedirectPage("/");
         }
 
         $renderParams = [
             'session' => $this->session,
             'entity' => $this->userService->getUpdatePageParams($request)
         ];
+
         return $this->renderer->renderView('admin-user-details.phtml', $renderParams);
     }
     /**
@@ -161,25 +140,18 @@ class UserController extends AbstractController
      * If the update of the user is a success, the response will contain
      * a success message, else it will contain an error message.
      * @param RequestInterface $request
-     * @return \Framework\Http\Message|Response|\Psr\Http\Message\MessageInterface
+     * @return Response
      */
-    public function updateUser(RequestInterface $request)
+    public function updateUser(RequestInterface $request): Response
     {
         if ($this->session->get('role') !== 'admin') {
-            $response = new Response(Stream::createFromString(' '), []);
-            $response = $response->withStatus(301);
-            $response = $response->withHeader('Location', '/');
-
-            return $response;
+            return $this->getRedirectPage("/");
         }
 
         $message = ($this->userService->updateEntity($request)) ?
             "Success" : "Update Failed";
         $this->session->set('message', $message);
-        $response = new Response(Stream::createFromString(' '), []);
-        $response = $response->withStatus(301);
-        $response = $response->withHeader('Location', '/user');
 
-        return $response;
+        return $this->getRedirectPage("/user");
     }
 }
