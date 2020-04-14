@@ -4,12 +4,13 @@ namespace QuizApp\Services;
 
 use Exception;
 use Psr\Http\Message\RequestInterface;
+use QuizApp\Contracts\RowsCountInterface;
 use QuizApp\Entities\User;
 use ReallyOrm\Exceptions\NoSuchRepositoryException;
 use ReallyOrm\Repository\RepositoryManagerInterface;
 use ReallyOrm\Test\Repository\RepositoryManager;
 
-class UserService extends AbstractService
+class UserService implements RowsCountInterface
 {
     /**
      * Constant for pagination.
@@ -63,13 +64,13 @@ class UserService extends AbstractService
     /**
      * This function counts all the user entities from the user repository
      * that match the filters
-     * @param array $role
-     * @param string $searchValue
+     * @param string $filterParameter
+     * @param string $searchParameter
      * @return int
      */
-    public function countRows(string $role = "", string $searchValue = ""): int
+    public function countRows(string $filterParameter = "", string $searchParameter = ""): int
     {
-        $filters = ($role) ? ["role" => $role] : [];
+        $filters = ($filterParameter) ? ["role" => $filterParameter] : [];
 
         try {
             $userRepository = $this->repositoryManager->getRepository(User::class);
@@ -77,7 +78,7 @@ class UserService extends AbstractService
             return 0;
         }
 
-        return $userRepository->countRowsBy($filters, $searchValue);
+        return $userRepository->countRowsBy($filters, $searchParameter);
     }
 
     /**

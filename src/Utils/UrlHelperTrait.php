@@ -4,7 +4,8 @@ namespace QuizApp\Utils;
 
 use Psr\Http\Message\RequestInterface;
 
-trait UrlHelperTrait {
+trait UrlHelperTrait
+{
 
     public function createUrlHelper(RequestInterface $request, Paginator $paginator): UrlHelper
     {

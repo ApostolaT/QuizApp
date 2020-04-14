@@ -14,6 +14,7 @@ class UrlHelper
      * @var [] $urlParameters Type ["parameterName" => "parameterValue", ....]
      */
     private $urlParameters = [];
+
     /**
      * @var Paginator $paginator
      */
@@ -43,12 +44,13 @@ class UrlHelper
     /**
      * Get the value of the specified parameter
      * @param string $key
-     * @return mixed|null
+     * @param string $default
+     * @return string
      */
-    public function getValue(string $key): string
+    public function getValue(string $key, string $default = ""): string
     {
         if (!$this->keyExists($key)) {
-            return "";
+            return $default;
         }
 
         return $this->urlParameters[$key];

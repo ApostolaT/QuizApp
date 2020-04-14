@@ -26,7 +26,7 @@ class UserController extends AbstractController
      * This function sets the userService
      * @param AbstractService $userService
      */
-    public function setService(AbstractService $userService)
+    public function setService(UserService $userService)
     {
         $this->userService = $userService;
     }

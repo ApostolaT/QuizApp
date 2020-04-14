@@ -30,7 +30,7 @@ class UserRepository extends AbstractRepository
         string $sortParam,
         int $resultsPerPage,
         int $offset
-    ){
+    ) {
         $orderParam = ($sortParam !== "") ? ["name" => ($sortParam === "asc") ? "ASC" : "DESC"] : [];
         $filter = ($filter !== "") ? ["role" => $filter] : [];
 

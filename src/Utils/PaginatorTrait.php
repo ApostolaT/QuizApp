@@ -3,6 +3,7 @@
 namespace QuizApp\Utils;
 
 use Psr\Http\Message\RequestInterface;
+use QuizApp\Contracts\RowsCountInterface;
 use QuizApp\Services\AbstractService;
 
 /**
@@ -11,6 +12,7 @@ use QuizApp\Services\AbstractService;
  * @package QuizApp\Utils
  */
 trait PaginatorTrait {
+
     /**
      * This function is called within controllers to create
      * a paginator for all pages that will need it.
@@ -34,19 +36,19 @@ trait PaginatorTrait {
     /**
      * Create paginator for request based on filters and search parameters.
      * @param RequestInterface $request
-     * @param AbstractService $service
-     * @param string $filterParameters
-     * @param string $searchParameters
+     * @param RowsCountInterface $service
+     * @param string $filterParameter
+     * @param string $searchParameter
      * @return Paginator
      */
     public function createCustomPaginator(
         RequestInterface $request,
-        AbstractService $service,
-        string $filterParameters = "",
-        string $searchParameters = ""
+        RowsCountInterface $service,
+        string $filterParameter = "",
+        string $searchParameter = ""
     ) {
         $page = (int)$request->getParameter('page');
-        $totalResults = $service->countRows($filterParameters, $searchParameters);
+        $totalResults = $service->countRows($filterParameter, $searchParameter);
 
         $paginator = new Paginator($totalResults);
         if ($page) {
