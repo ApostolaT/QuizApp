@@ -4,13 +4,11 @@ namespace QuizApp\Controllers;
 
 use Framework\Controller\AbstractController;
 use Framework\Http\Response;
-use Framework\Http\Stream;
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Services\AbstractService;
 use QuizApp\Services\UserService;
 use QuizApp\Utils\Paginator;
 
-//TODO redirect using the getRedirectPage
 class UserController extends AbstractController
 {
     /**
@@ -69,11 +67,7 @@ class UserController extends AbstractController
     public function goToAddUser(RequestInterface $request)
     {
         if ($this->session->get('role') !== 'admin') {
-            $response = new Response(Stream::createFromString(' '), []);
-            $response = $response->withStatus(301);
-            $response = $response->withHeader('Location', '/');
-
-            return $response;
+            return $this->getRedirectPage("/");
         }
 
         return $this->renderer->renderView("admin-user-details.phtml", ['session' => $this->session]);
@@ -89,21 +83,13 @@ class UserController extends AbstractController
     public function addUser(RequestInterface $request)
     {
         if ($this->session->get('role') !== 'admin') {
-            $response = new Response(Stream::createFromString(' '), []);
-            $response = $response->withStatus(301);
-            $response = $response->withHeader('Location', '/');
-
-            return $response;
+            return $this->getRedirectPage("/");
         }
 
         $message = ($this->userService->addNewUser($request)) ?
             "Success." : "User addition failed!";
         $this->session->set('message', $message);
-        $response = new Response(Stream::createFromString(' '), []);
-        $response = $response->withStatus(301);
-        $response = $response->withHeader('Location', '/user');
-
-        return $response;
+        return $this->getRedirectPage("/user");
     }
     /**
      * This function if called by an admin deletes a user,
@@ -116,21 +102,13 @@ class UserController extends AbstractController
     public function deleteUser(RequestInterface $request)
     {
         if ($this->session->get('role') !== 'admin') {
-            $response = new Response(Stream::createFromString(' '), []);
-            $response = $response->withStatus(301);
-            $response = $response->withHeader('Location', '/');
-
-            return $response;
+            return $this->getRedirectPage("/");
         }
 
         $message = ($this->userService->delete($request)) ?
             "Success" : "Delete Failed";
         $this->session->set('message', $message);
-        $response = new Response(Stream::createFromString(' '), []);
-        $response = $response->withStatus(301);
-        $response = $response->withHeader('Location', '/user');
-
-        return $response;
+        return $this->getRedirectPage("/user");
     }
     /**
      * This function is called to return a
@@ -142,11 +120,7 @@ class UserController extends AbstractController
     public function getUpdateUserPage(RequestInterface $request)
     {
         if ($this->session->get('role') !== 'admin') {
-            $response = new Response(Stream::createFromString(' '), []);
-            $response = $response->withStatus(301);
-            $response = $response->withHeader('Location', '/');
-
-            return $response;
+            return $this->getRedirectPage("/");
         }
 
         $renderParams = [
@@ -166,20 +140,12 @@ class UserController extends AbstractController
     public function updateUser(RequestInterface $request)
     {
         if ($this->session->get('role') !== 'admin') {
-            $response = new Response(Stream::createFromString(' '), []);
-            $response = $response->withStatus(301);
-            $response = $response->withHeader('Location', '/');
-
-            return $response;
+            return $this->getRedirectPage("/");
         }
 
         $message = ($this->userService->updateEntity($request)) ?
             "Success" : "Update Failed";
         $this->session->set('message', $message);
-        $response = new Response(Stream::createFromString(' '), []);
-        $response = $response->withStatus(301);
-        $response = $response->withHeader('Location', '/user');
-
-        return $response;
+        return $this->getRedirectPage("/user");
     }
 }

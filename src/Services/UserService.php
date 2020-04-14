@@ -14,11 +14,14 @@ class UserService extends AbstractService
     /**
      * Constant for pagination.
      */
+
     private const RESULTS_PER_PAGE = 10;
     /**
      * @var RepositoryManager
      */
+
     private $repositoryManager;
+
     /**
      * Sets the repositoryManager.
      * @param RepositoryManagerInterface $repositoryManager
@@ -73,6 +76,7 @@ class UserService extends AbstractService
 
         return $userRepository->countRowsBy($role, $searchValue);
     }
+
     /**
      * This function returns true if a user is inserted into
      * the Repository or false on fail.
@@ -93,29 +97,31 @@ class UserService extends AbstractService
 
         return $entity->save();
     }
+
     /**
      * This function returns true if a user is deleted from
      * the Repository or null on fail.
      * @param $request
      * @return bool
-     * @throws \Exception
      */
-    //TODO PSR!!!
-    public function delete($request) {
-        $repository = $this->repositoryManager->getRepository(User::class);
+    public function delete($request)
+    {
         $id = $request->getRequestParameters()['id'];
+        $repository = $this->repositoryManager->getRepository(User::class);
 
         //TODO add try catch like in ResultsService
         $entity = $repository->find((int)$id);
 
         return $entity->remove();
     }
+
     /**
      * This function returns the entity of the user with the provided id.
      * @param RequestInterface $request
      * @return \ReallyOrm\Entity\EntityInterface|null
      * @throws \Exception
      */
+
     public function getUpdatePageParams(RequestInterface $request)
     {
         $id = $request->getRequestParameters()['id'];
@@ -124,6 +130,7 @@ class UserService extends AbstractService
         //TODO add try catch like in ResultsService
         return $repository->find((int)$id);
     }
+
     /**
      * This function update info about the user with provided id.
      * true is returned if the user is updated, false if failed.
