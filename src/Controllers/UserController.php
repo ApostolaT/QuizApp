@@ -6,6 +6,7 @@ use Framework\Controller\AbstractController;
 use Framework\Http\Response;
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Services\AbstractService;
+use QuizApp\Services\MessageService;
 use QuizApp\Services\UserService;
 use QuizApp\Utils\PaginatorTrait;
 use QuizApp\Utils\UrlHelperTrait;
@@ -21,12 +22,26 @@ class UserController extends AbstractController
     private $userService;
 
     /**
+     * @var MessageService
+     */
+    private $messageService;
+
+    /**
      * This function sets the userService
      * @param AbstractService $userService
      */
     public function setService(UserService $userService)
     {
         $this->userService = $userService;
+    }
+
+    /**
+     * @param MessageService $messageService
+     */
+    public function setMessageService(MessageService $messageService)
+    {
+        $this->messageService = $messageService;
+        $this->messageService->setSession($this->session);
     }
 
     /**
@@ -43,10 +58,10 @@ class UserController extends AbstractController
         }
 
         $renderParams = [
-            'message' => $this->session->get('message'),
+            'message' => $this->messageService,
+            //TODO Extract needed params like message
             'session' => $this->session,
         ];
-        $this->session->delete('message');
 
         $sortParam = ($request->getParameter('sort')) ?? "";
         $filterParams = ($request->getParameter('role')) ?? "";
@@ -93,9 +108,15 @@ class UserController extends AbstractController
             return $this->getRedirectPage("/");
         }
 
-        $message = ($this->userService->addNewUser($request)) ?
-            "Success." : "User addition failed!";
-        $this->session->set('message', $message);
+        $name = $request->getParameter('email');
+        $role = $request->getParameter('role');
+        $operationStatus = $this->userService->addNewUser($name, $role);
+        $this->messageService->addMessage(
+            $operationStatus,
+            "user",
+            $name,
+            "added"
+        );
 
         return $this->getRedirectPage("/user");
     }
@@ -114,9 +135,14 @@ class UserController extends AbstractController
             return $this->getRedirectPage("/");
         }
 
-        $message = ($this->userService->delete($request)) ?
-            "Success" : "Delete Failed";
-        $this->session->set('message', $message);
+        $id = $request->getRequestParameters()['id'];
+        $operationStatus = $this->userService->delete($id);
+        $this->messageService->addMessage(
+            $operationStatus,
+            "user",
+            $id,
+            "deleted"
+        );
 
         return $this->getRedirectPage("/user");
     }
@@ -156,9 +182,16 @@ class UserController extends AbstractController
             return $this->getRedirectPage("/");
         }
 
-        $message = ($this->userService->updateEntity($request)) ?
-            "Success" : "Update Failed";
-        $this->session->set('message', $message);
+        $name = $request->getParameter('email');
+        $role = $request->getParameter('role');
+        $id = $request->getRequestParameters()['id'];
+        $operationStatus = $this->userService->updateEntity($name, $role, $id);
+        $this->messageService->addMessage(
+            $operationStatus,
+            "user",
+            $id,
+            "updated"
+        );
 
         return $this->getRedirectPage("/user");
     }
