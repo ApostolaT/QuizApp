@@ -52,9 +52,9 @@
 
         <!--Quiz listing table-->
         <div class="table-responsive my-4">
-            <?php if(isset($message)): ?>
-                <div class="alert alert-info">
-                    <strong>Info!</strong> <?php echo $message ?>
+            <?php if($message->isSet()): ?>
+                <div class="alert alert-<?php echo ($message->isSuccess()) ? "success" : "error";?>">
+                    <strong>Info!</strong> <?php echo $message->getMessage(); ?>
                 </div>
             <?php endif;?>
             <table class="table table-bordered">

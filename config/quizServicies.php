@@ -87,7 +87,8 @@ $quizInstanceService = $container
 $resultService = $container
     ->register(\QuizApp\Services\ResultService::class, \QuizApp\Services\ResultService::class)
     ->addTag('service');
-
+$messageService = $container
+    ->register(\QuizApp\Services\MessageService::class, \QuizApp\Services\MessageService::class);
 $container
     ->register(QuizApp\Entities\User::class, QuizApp\Entities\User::class);
 $container
@@ -219,6 +220,7 @@ $loginController->addMethodCall('setService', [$loginService]);
 $quizController->addMethodCall('setQuizService', [$quizService]);
 $quizController->addMethodCall('setQuestionService', [$questionService]);
 $userController->addMethodCall('setService', [$userService]);
+$userController->addMethodCall('setMessageService', [$messageService]);
 $questionController->addMethodCall('setService', [$questionService]);
 $quizInstanceController->addMethodCall('setService', [$quizInstanceService]);
 $questionInstanceController->addMethodCall('setService', [$questionInstanceService]);

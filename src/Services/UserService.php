@@ -85,20 +85,19 @@ class UserService implements RowsCountInterface
     /**
      * This function returns true if a user is inserted into
      * the Repository or false on fail.
-     * @param $request
+     * @param string $email
+     * @param string $role
      * @return bool
      */
-    public function addNewUser($request)
+    public function addNewUser(string $email, string $role)
     {
-        $name = $request->getParameter('email');
-        $type = $request->getParameter('role');
         $password = "";
 
         $entity = new User();
         $entity->setRepositoryManager($this->repositoryManager);
-        $entity->setName($name);
+        $entity->setName($email);
         $entity->setPassword($password);
-        $entity->setRole($type);
+        $entity->setRole($role);
 
         return $entity->save();
     }
@@ -106,12 +105,12 @@ class UserService implements RowsCountInterface
     /**
      * This function returns true if a user is deleted from
      * the Repository or null on fail.
-     * @param $request
+     * @param string $id
      * @return bool
+     * @throws NoSuchRepositoryException
      */
-    public function delete($request)
+    public function delete(string $id)
     {
-        $id = $request->getRequestParameters()['id'];
         $repository = $this->repositoryManager->getRepository(User::class);
 
         //TODO add try catch like in ResultsService
@@ -143,12 +142,9 @@ class UserService implements RowsCountInterface
      * @return bool
      * @throws \Exception
      */
-    public function updateEntity($request)
+    public function updateEntity(string $name, string $role, string $id)
     {
         $repository = $this->repositoryManager->getRepository(User::class);
-        $name = $request->getParameter('email');
-        $role = $request->getParameter('role');
-        $id = $request->getRequestParameters()['id'];
         //TODO add try catch like in ResultsService
         $entity = $repository->find((int)$id);
 
