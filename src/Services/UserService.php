@@ -2,21 +2,22 @@
 
 namespace QuizApp\Services;
 
+use Exception;
 use Psr\Http\Message\RequestInterface;
+use QuizApp\Contracts\RowsCountInterface;
 use QuizApp\Entities\User;
 use ReallyOrm\Exceptions\NoSuchRepositoryException;
-use ReallyOrm\Exceptions\NoSuchRowException;
 use ReallyOrm\Repository\RepositoryManagerInterface;
 use ReallyOrm\Test\Repository\RepositoryManager;
 
-class UserService extends AbstractService
+class UserService implements RowsCountInterface
 {
+  
     /**
      * Constant for pagination.
      */
-
     private const RESULTS_PER_PAGE = 10;
-    
+
     /**
      * @var RepositoryManager
      */
@@ -36,23 +37,25 @@ class UserService extends AbstractService
      * with the offset equal to page - 1 * $this::RESULTS_PER_PAGE.
      * If no results found, it will return null.
      * @param int $page
-     * @param array $filters
+     * @param string $filter
      * @param string $searchValue
+     * @param string $sortParam
      * @return array|null
      */
-    public function getAll(int $page, array $filters = [], string $searchValue = ""): ?array
+    public function getAll(int $page, string $filter = "", string $searchValue = "", $sortParam = ""): ?array
     {
         $offset = ($page - 1) * $this::RESULTS_PER_PAGE;
 
         try {
             $repository = $this->repositoryManager->getRepository(User::class);
-        } catch (NoSuchRepositoryException $e) {
-            return null;
-        }
-
-        try {
-            $entities = $repository->findBy($filters, $searchValue, [], self::RESULTS_PER_PAGE, $offset);
-        } catch (NoSuchRowException $e) {
+            $entities = $repository->findAll(
+                $filter,
+                $searchValue,
+                $sortParam,
+                self::RESULTS_PER_PAGE,
+                $offset
+            );
+        } catch (Exception $e) {
             $entities = null;
         }
 
@@ -62,19 +65,21 @@ class UserService extends AbstractService
     /**
      * This function counts all the user entities from the user repository
      * that match the filters
-     * @param array $role
-     * @param string $searchValue
+     * @param string $filterParameter
+     * @param string $searchParameter
      * @return int
      */
-    public function countRows(array $role = [], string $searchValue = ""): int
+    public function countRows(string $filterParameter = "", string $searchParameter = ""): int
     {
+        $filters = ($filterParameter) ? ["role" => $filterParameter] : [];
+
         try {
             $userRepository = $this->repositoryManager->getRepository(User::class);
         } catch (NoSuchRepositoryException $e) {
             return 0;
         }
 
-        return $userRepository->countRowsBy($role, $searchValue);
+        return $userRepository->countRowsBy($filters, $searchParameter);
     }
 
     /**

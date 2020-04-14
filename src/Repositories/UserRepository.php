@@ -14,4 +14,32 @@ class UserRepository extends AbstractRepository
     {
         return ["name"];
     }
+
+    /**
+     * @param string $filter
+     * @param string $searchValue
+     * @param string $sortParam
+     * @param int $resultsPerPage
+     * @param int $offset
+     * @return array|\ReallyOrm\Entity\EntityInterface[]
+     * @throws \ReallyOrm\Exceptions\NoSuchRowException
+     */
+    public function findAll(
+        string $filter,
+        string $searchValue,
+        string $sortParam,
+        int $resultsPerPage,
+        int $offset
+    ) {
+        $orderParam = ($sortParam !== "") ? ["name" => ($sortParam === "asc") ? "ASC" : "DESC"] : [];
+        $filter = ($filter !== "") ? ["role" => $filter] : [];
+
+        return $this->findBy(
+            $filter,
+            $searchValue,
+            $orderParam,
+            $resultsPerPage,
+            $offset
+        );
+    }
 }

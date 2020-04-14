@@ -62,7 +62,7 @@ class QuizController extends AbstractController
 
         $path = ($this->session->get('role') === 'admin') ? "admin-quizzes-listing.phtml" : "candidate-quiz-listing.phtml";
 
-        $paginator = $this->createPaginationForRequestWithService($request, $this->quizService);
+        $paginator = $this->createFromRequest($request, $this->quizService);
         $entities = $this->quizService->getAll($paginator->getCurrentPage());
         $renderParams = [
             'session' => $this->session,

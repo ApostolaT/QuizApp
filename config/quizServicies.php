@@ -33,7 +33,6 @@ $container->setParameter("dbPassword", $dbPassword);
 $container->setParameter("options", $options);
 $container->setParameter("tokens", $tokens);
 
-
 $container
     ->register(\HighlightLib\Tokenizer\Tokenizer::class, \HighlightLib\Tokenizer\Tokenizer::class);
 $container

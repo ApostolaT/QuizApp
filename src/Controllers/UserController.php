@@ -7,10 +7,14 @@ use Framework\Http\Response;
 use Psr\Http\Message\RequestInterface;
 use QuizApp\Services\AbstractService;
 use QuizApp\Services\UserService;
-use QuizApp\Utils\Paginator;
+use QuizApp\Utils\PaginatorTrait;
+use QuizApp\Utils\UrlHelperTrait;
 
 class UserController extends AbstractController
 {
+    use UrlHelperTrait;
+    use PaginatorTrait;
+
     /**
      * @var UserService
      */
@@ -20,7 +24,7 @@ class UserController extends AbstractController
      * This function sets the userService
      * @param AbstractService $userService
      */
-    public function setService(AbstractService $userService)
+    public function setService(UserService $userService)
     {
         $this->userService = $userService;
     }
@@ -40,22 +44,22 @@ class UserController extends AbstractController
 
         $renderParams = [
             'message' => $this->session->get('message'),
-            //TODO Extract needed params like message
             'session' => $this->session,
-            'role' => $request->getParameter('role'),
-            'email' => $request->getParameter('email'),
-            'sort' => $request->getParameter('sort')
         ];
         $this->session->delete('message');
 
-        $filterParams = ($request->getParameter('role')) ? ['role' => $request->getParameter('role')] : [];
-        $searchParam = ($request->getParameter('email')) ? $request->getParameter('email') : "";
-        $totalResults = $this->userService->countRows($filterParams, $searchParam);
-        $paginator = new Paginator($totalResults);
-        $paginator->setCurrentPage((int)$request->getParameter('page'));
-
-        $renderParams['paginator'] = $paginator;
-        $renderParams['entities'] = $this->userService->getAll($paginator->getCurrentPage(), $filterParams, $searchParam);
+        $sortParam = ($request->getParameter('sort')) ?? "";
+        $filterParams = ($request->getParameter('role')) ?? "";
+        $searchParam = ($request->getParameter('email')) ?? "";
+        //Create paginator based on filters and searchParams
+        $renderParams['paginator'] = $this->createCustomPaginator(
+            $request,
+            $this->userService,
+            $filterParams,
+            $searchParam
+        );
+        $renderParams['urlHelper'] = $this->createUrlHelper($request, $renderParams['paginator']);
+        $renderParams['entities'] = $this->userService->getAll($renderParams['paginator']->getCurrentPage(), $filterParams, $searchParam, $sortParam);
 
         return $this->renderer->renderView('admin-users-listing.phtml', $renderParams);
     }
@@ -74,6 +78,7 @@ class UserController extends AbstractController
 
         return $this->renderer->renderView("admin-user-details.phtml", ['session' => $this->session]);
     }
+
     /**
      * This function is called when an admin adds a new user to the system.
      * If not an admin calls the function, he is redirected to login.
@@ -94,6 +99,7 @@ class UserController extends AbstractController
 
         return $this->getRedirectPage("/user");
     }
+
     /**
      * This function if called by an admin deletes a user,
      * else it will redirect the user to login.
@@ -114,6 +120,7 @@ class UserController extends AbstractController
 
         return $this->getRedirectPage("/user");
     }
+
     /**
      * This function is called to return a
      * response with the update users page
@@ -134,6 +141,7 @@ class UserController extends AbstractController
 
         return $this->renderer->renderView('admin-user-details.phtml', $renderParams);
     }
+
     /**
      * This function is called when an admin edits a user from the system.
      * If not an admin calls the function, he is redirected to login.
