@@ -16,10 +16,10 @@ class UserService extends AbstractService
      */
 
     private const RESULTS_PER_PAGE = 10;
+    
     /**
      * @var RepositoryManager
      */
-
     private $repositoryManager;
 
     /**
