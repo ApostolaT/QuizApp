@@ -31,7 +31,7 @@ class UserController extends AbstractController
      * @param RequestInterface $request
      * @return \Framework\Http\Message|Response|\Psr\Http\Message\MessageInterface
      */
-    public function listAll(RequestInterface $request)
+    public function listAll(RequestInterface $request): Response
     {
         if ($this->session->get('role') !== 'admin') {
             return $this->getRedirectPage('/');
@@ -64,7 +64,7 @@ class UserController extends AbstractController
      * @param RequestInterface $request
      * @return \Framework\Http\Message|Response|\Psr\Http\Message\MessageInterface
      */
-    public function goToAddUser(RequestInterface $request)
+    public function goToAddUser(RequestInterface $request): Response
     {
         if ($this->session->get('role') !== 'admin') {
             return $this->getRedirectPage("/");
@@ -80,7 +80,7 @@ class UserController extends AbstractController
      * @param RequestInterface $request
      * @return \Framework\Http\Message|Response|\Psr\Http\Message\MessageInterface
      */
-    public function addUser(RequestInterface $request)
+    public function addUser(RequestInterface $request): Response
     {
         if ($this->session->get('role') !== 'admin') {
             return $this->getRedirectPage("/");
@@ -99,7 +99,7 @@ class UserController extends AbstractController
      * @param RequestInterface $request
      * @return \Framework\Http\Message|Response|\Psr\Http\Message\MessageInterface
      */
-    public function deleteUser(RequestInterface $request)
+    public function deleteUser(RequestInterface $request): Response
     {
         if ($this->session->get('role') !== 'admin') {
             return $this->getRedirectPage("/");
@@ -117,7 +117,7 @@ class UserController extends AbstractController
      * @param RequestInterface $request
      * @return \Framework\Http\Message|Response|\Psr\Http\Message\MessageInterface
      */
-    public function getUpdateUserPage(RequestInterface $request)
+    public function getUpdateUserPage(RequestInterface $request): Response
     {
         if ($this->session->get('role') !== 'admin') {
             return $this->getRedirectPage("/");
@@ -137,7 +137,7 @@ class UserController extends AbstractController
      * @param RequestInterface $request
      * @return \Framework\Http\Message|Response|\Psr\Http\Message\MessageInterface
      */
-    public function updateUser(RequestInterface $request)
+    public function updateUser(RequestInterface $request): Response
     {
         if ($this->session->get('role') !== 'admin') {
             return $this->getRedirectPage("/");
