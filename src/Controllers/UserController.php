@@ -15,6 +15,7 @@ class UserController extends AbstractController
      * @var UserService
      */
     private $userService;
+
     /**
      * This function sets the userService
      * @param AbstractService $userService
@@ -29,7 +30,7 @@ class UserController extends AbstractController
      * with all the users from the system. If a user calls to see all
      * the users, he is redirected to a login page;
      * @param RequestInterface $request
-     * @return \Framework\Http\Message|Response|\Psr\Http\Message\MessageInterface
+     * @return Response
      */
     public function listAll(RequestInterface $request): Response
     {
@@ -58,13 +59,14 @@ class UserController extends AbstractController
 
         return $this->renderer->renderView('admin-users-listing.phtml', $renderParams);
     }
+
     /**
      * This function is called to return a
      * response with the add users page
      * @param RequestInterface $request
-     * @return \Framework\Http\Message|Response|\Psr\Http\Message\MessageInterface
+     * @return Response
      */
-    public function goToAddUser(RequestInterface $request): Response
+    public function getNewUserPage(RequestInterface $request): Response
     {
         if ($this->session->get('role') !== 'admin') {
             return $this->getRedirectPage("/");
@@ -78,7 +80,7 @@ class UserController extends AbstractController
      * If the insertion of the new user is a success, the response will contain
      * a success message, else it will contain an error message.
      * @param RequestInterface $request
-     * @return \Framework\Http\Message|Response|\Psr\Http\Message\MessageInterface
+     * @return Response
      */
     public function addUser(RequestInterface $request): Response
     {
@@ -97,7 +99,7 @@ class UserController extends AbstractController
      * If the deletion is successful, the response will contain
      * a success message, else it will contain an error.
      * @param RequestInterface $request
-     * @return \Framework\Http\Message|Response|\Psr\Http\Message\MessageInterface
+     * @return Response
      */
     public function deleteUser(RequestInterface $request): Response
     {
@@ -115,7 +117,7 @@ class UserController extends AbstractController
      * response with the update users page
      * containing all the info of that user
      * @param RequestInterface $request
-     * @return \Framework\Http\Message|Response|\Psr\Http\Message\MessageInterface
+     * @return Response
      */
     public function getUpdateUserPage(RequestInterface $request): Response
     {
@@ -135,7 +137,7 @@ class UserController extends AbstractController
      * If the update of the user is a success, the response will contain
      * a success message, else it will contain an error message.
      * @param RequestInterface $request
-     * @return \Framework\Http\Message|Response|\Psr\Http\Message\MessageInterface
+     * @return Response
      */
     public function updateUser(RequestInterface $request): Response
     {
