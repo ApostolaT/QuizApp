@@ -91,6 +91,7 @@ class UserController extends AbstractController
         $message = ($this->userService->addNewUser($request)) ?
             "Success." : "User addition failed!";
         $this->session->set('message', $message);
+
         return $this->getRedirectPage("/user");
     }
     /**
@@ -110,6 +111,7 @@ class UserController extends AbstractController
         $message = ($this->userService->delete($request)) ?
             "Success" : "Delete Failed";
         $this->session->set('message', $message);
+
         return $this->getRedirectPage("/user");
     }
     /**
@@ -129,6 +131,7 @@ class UserController extends AbstractController
             'session' => $this->session,
             'entity' => $this->userService->getUpdatePageParams($request)
         ];
+
         return $this->renderer->renderView('admin-user-details.phtml', $renderParams);
     }
     /**
@@ -148,6 +151,7 @@ class UserController extends AbstractController
         $message = ($this->userService->updateEntity($request)) ?
             "Success" : "Update Failed";
         $this->session->set('message', $message);
+
         return $this->getRedirectPage("/user");
     }
 }
