@@ -12,6 +12,7 @@ use ReallyOrm\Test\Repository\RepositoryManager;
 
 class UserService implements RowsCountInterface
 {
+  
     /**
      * Constant for pagination.
      */
@@ -107,12 +108,11 @@ class UserService implements RowsCountInterface
      * the Repository or null on fail.
      * @param $request
      * @return bool
-     * @throws \Exception
      */
     public function delete($request)
     {
-        $repository = $this->repositoryManager->getRepository(User::class);
         $id = $request->getRequestParameters()['id'];
+        $repository = $this->repositoryManager->getRepository(User::class);
 
         //TODO add try catch like in ResultsService
         $entity = $repository->find((int)$id);
@@ -126,6 +126,7 @@ class UserService implements RowsCountInterface
      * @return \ReallyOrm\Entity\EntityInterface|null
      * @throws \Exception
      */
+
     public function getUpdatePageParams(RequestInterface $request)
     {
         $id = $request->getRequestParameters()['id'];
