@@ -2,6 +2,7 @@
 
 namespace QuizApp\Controllers;
 
+use Framework\Contracts\RendererInterface;
 use Framework\Controller\AbstractController;
 use Framework\Http\Response;
 use Psr\Http\Message\RequestInterface;
@@ -25,6 +26,17 @@ class UserController extends AbstractController
      * @var MessageService
      */
     private $messageService;
+
+    /**
+     * UserController constructor.
+     * @param RendererInterface $renderer
+     * @param MessageService $messageService
+     */
+    public function __construct(RendererInterface $renderer, MessageService $messageService)
+    {
+        parent::__construct($renderer);
+        $this->messageService = $messageService;
+    }
 
     /**
      * This function sets the userService
@@ -108,13 +120,13 @@ class UserController extends AbstractController
             return $this->getRedirectPage("/");
         }
 
-        $name = $request->getParameter('email');
+        $email = $request->getParameter('email');
         $role = $request->getParameter('role');
-        $operationStatus = $this->userService->addNewUser($name, $role);
+        $operationStatus = $this->userService->addNewUser($email, $role);
         $this->messageService->addMessage(
             $operationStatus,
             "user",
-            $name,
+            $email,
             "added"
         );
 
@@ -185,7 +197,7 @@ class UserController extends AbstractController
         $name = $request->getParameter('email');
         $role = $request->getParameter('role');
         $id = $request->getRequestParameters()['id'];
-        $operationStatus = $this->userService->updateEntity($name, $role, $id);
+        $operationStatus = $this->userService->updateUser($name, $role, $id);
         $this->messageService->addMessage(
             $operationStatus,
             "user",

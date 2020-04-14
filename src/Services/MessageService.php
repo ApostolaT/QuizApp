@@ -16,11 +16,7 @@ class MessageService
      */
     private $session;
 
-
-    /**
-     * @param Session $session
-     */
-    public function setSession(Session $session)
+    public function __construct(Session $session)
     {
         $this->session = $session;
     }
@@ -66,7 +62,7 @@ class MessageService
      * Checks whether a message exists
      * @return bool
      */
-    public function isSet()
+    public function isSet(): bool
     {
         return $this->session->isSet("success") || $this->session->isSet("error");
     }
@@ -75,7 +71,7 @@ class MessageService
      * Checks whether a success message exists
      * @return bool
      */
-    public function isSuccess()
+    public function isSuccess(): bool
     {
         return $this->session->isSet("success");
     }

@@ -87,8 +87,10 @@ $quizInstanceService = $container
 $resultService = $container
     ->register(\QuizApp\Services\ResultService::class, \QuizApp\Services\ResultService::class)
     ->addTag('service');
-$messageService = $container
-    ->register(\QuizApp\Services\MessageService::class, \QuizApp\Services\MessageService::class);
+$container
+    ->register(\QuizApp\Services\MessageService::class, \QuizApp\Services\MessageService::class)
+    ->addArgument($container->getDefinition(\Framework\Session\Session::class));
+
 $container
     ->register(QuizApp\Entities\User::class, QuizApp\Entities\User::class);
 $container
@@ -163,12 +165,9 @@ $container
     ->addTag("repository");
 
 $userController = $container
-    ->register(QuizApp\Controllers\ErrorController::class, QuizApp\Controllers\ErrorController::class)
-    ->addArgument(new Reference(Framework\Contracts\RendererInterface::class))
-    ->addTag('controller');
-$userController = $container
     ->register(QuizApp\Controllers\UserController::class, QuizApp\Controllers\UserController::class)
     ->addArgument(new Reference(Framework\Contracts\RendererInterface::class))
+    ->addArgument(new Reference(QuizApp\Services\MessageService::class))
     ->addTag('controller');
 $quizController = $container
     ->register(QuizApp\Controllers\QuizController::class, QuizApp\Controllers\QuizController::class)
@@ -220,7 +219,6 @@ $loginController->addMethodCall('setService', [$loginService]);
 $quizController->addMethodCall('setQuizService', [$quizService]);
 $quizController->addMethodCall('setQuestionService', [$questionService]);
 $userController->addMethodCall('setService', [$userService]);
-$userController->addMethodCall('setMessageService', [$messageService]);
 $questionController->addMethodCall('setService', [$questionService]);
 $quizInstanceController->addMethodCall('setService', [$quizInstanceService]);
 $questionInstanceController->addMethodCall('setService', [$questionInstanceService]);

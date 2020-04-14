@@ -142,7 +142,7 @@ class UserService implements RowsCountInterface
      * @return bool
      * @throws \Exception
      */
-    public function updateEntity(string $name, string $role, string $id)
+    public function updateUser(string $name, string $role, string $id)
     {
         $repository = $this->repositoryManager->getRepository(User::class);
         //TODO add try catch like in ResultsService
