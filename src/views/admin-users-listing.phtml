@@ -54,7 +54,7 @@
         <div class="table-responsive my-4">
             <?php if($message->isSet()): ?>
                 <div class="alert alert-<?php echo ($message->isSuccess()) ? "success" : "error";?>">
-                    <strong>Info!</strong> <?php echo $message->getMessage(); ?>
+                    <strong>Info!</strong> <?php echo $message->getMessage(); $message->deleteMessage();?>
                 </div>
             <?php endif;?>
             <table class="table table-bordered">

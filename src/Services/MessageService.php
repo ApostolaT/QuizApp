@@ -53,7 +53,6 @@ class MessageService
     {
         $message = ($this->session->get("success")) ?? $this->session->get("error");
         $message = ($message) ?? "";
-        $this->deleteMessage();
 
         return $message;
     }
@@ -97,7 +96,7 @@ class MessageService
     /**
      * Delete the message from session
      */
-    private function deleteMessage(): void
+    public function deleteMessage(): void
     {
         $this->session->delete("success");
         $this->session->delete("error");
