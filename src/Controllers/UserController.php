@@ -108,7 +108,8 @@ class UserController extends AbstractController
 
     /**
      * This function is called when an admin adds a new user to the system.
-     * If not an admin calls the function, he is redirected to login.
+     * If not an  +
+     * +admin calls the function, he is redirected to login.
      * If the insertion of the new user is a success, the response will contain
      * a success message, else it will contain an error message.
      * @param RequestInterface $request
