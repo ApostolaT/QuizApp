@@ -3,15 +3,18 @@
 namespace QuizApp\Services;
 
 use Psr\Http\Message\RequestInterface;
+use QuizApp\Contracts\RowsCountInterface;
 use QuizApp\Entities\QuizInstance;
 use QuizApp\Entities\QuizQuestionTemplate;
 use QuizApp\Entities\QuizTemplate;
 use QuizApp\Entities\QuizType;
+use QuizApp\Repositories\QuizRepository;
+use ReallyOrm\Exceptions\NoSuchRepositoryException;
 use ReallyOrm\Exceptions\NoSuchRowException;
 use ReallyOrm\Repository\RepositoryManagerInterface;
 use ReallyOrm\Test\Repository\RepositoryManager;
 
-class QuizService extends AbstractService
+class QuizService implements RowsCountInterface
 {
     /**
      * Constant for pagination.
@@ -45,16 +48,24 @@ class QuizService extends AbstractService
         }
         return $entities;
     }
+
     /**
      * Counts how many quiz entities the Repository has.
-     * @return mixed
-     * @throws \Exception
+     * @param string $filterParameter
+     * @param string $searchParameter
+     * @return int
      */
-    public function countRows()
+    public function countRows(string $filterParameter = "", string $searchParameter = ""): int
     {
-        $quizInstanceRepository = $this->repositoryManager->getRepository(QuizTemplate::class);
+        $filters = ($filterParameter) ? ["type" => $filterParameter] : [];
 
-        return $quizInstanceRepository->countRows();
+        try {
+            $quizRepository = $this->repositoryManager->getRepository(QuizTemplate::class);
+        } catch (NoSuchRepositoryException $e) {
+            return 0;
+        }
+
+        return $quizRepository->countRowsBy($filters, $searchParameter);
     }
 
     /**

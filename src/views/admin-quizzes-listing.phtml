@@ -35,8 +35,14 @@
                 <thead>
                 <tr>
                     <!--Sorting arrow are displayed using the 'asc','dsc' classes-->
-                    <th scope="col" class="sorting-header asc dsc">ID</th>
-                    <th scope="col">Quiz</th>
+                    <th scope="col">ID</th>
+                    <th scope="col" class="sorting-header <?php
+                    if ($urlHelper->getValue("sort") === "asc"): echo "asc"; endif;
+                    if ($urlHelper->getValue("sort") === "dsc"): echo "dsc"; endif;
+                    if (!$urlHelper->keyExists("sort")): echo "asc dsc"; endif;
+                    ?>">
+                        <a style="display: block; width: 100%; height: 100%;" href="/quiz<?php echo $urlHelper->getNextSortStateUrl();?>">Email</a>
+                    </th>
                     <th scope="col">Type</th>
                     <th scope="col">Created By</th>
                     <th scope="col">Actions</th>
