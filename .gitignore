@@ -1,0 +1,9 @@
+/vendor/
+
+/vendor_copy/
+
+.idea
+
+/config/db_config.php
+
+SQLscripts.txt

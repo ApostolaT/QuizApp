@@ -6,11 +6,10 @@ use Framework\Controller\AbstractController;
 use Framework\Http\Response;
 use Framework\Http\Stream;
 use Psr\Http\Message\RequestInterface;
-use QuizApp\Services\AbstractService;
 use QuizApp\Services\QuestionService;
 use QuizApp\Services\QuizService;
 use QuizApp\Utils\PaginatorTrait;
-use ReallyOrm\Exceptions\NoSuchRowException;
+use QuizApp\Utils\UrlHelperTrait;
 
 /**
  * Class QuizController
@@ -18,7 +17,9 @@ use ReallyOrm\Exceptions\NoSuchRowException;
  */
 class QuizController extends AbstractController
 {
+    use UrlHelperTrait;
     use PaginatorTrait;
+
     /**
      * @var QuizService
      */
@@ -27,27 +28,29 @@ class QuizController extends AbstractController
      * @var QuestionService
      */
     private $questionService;
+
     /**
      * Setter Injection by Container
      * This function sets the $quizService
-     * @param AbstractService $quizService
+     * @param QuizService $quizService
      */
-    public function setQuizService(AbstractService $quizService)
+    public function setQuizService(QuizService $quizService)
     {
         $this->quizService = $quizService;
     }
+
     /**
      * Setter Injection by Container
      * This function sets the $questionService
-     * @param AbstractService $questionService
+     * @param QuestionService $questionService
      */
-    public function setQuestionService(AbstractService $questionService)
+    public function setQuestionService(QuestionService $questionService)
     {
         $this->questionService = $questionService;
     }
 
     /**
-     * Gets all the entities and displays them on them either on
+     * Gets all the entities and displays them either on
      * admin quizzes page or on user quizzes page
      * Depending on what user is requesting this info
      * @param RequestInterface $request
@@ -59,16 +62,31 @@ class QuizController extends AbstractController
         if ($this->session->get('name') === null) {
             return $this->getRedirectPage("/error/404");
         }
-
         $path = ($this->session->get('role') === 'admin') ? "admin-quizzes-listing.phtml" : "candidate-quiz-listing.phtml";
 
-        $paginator = $this->createFromRequest($request, $this->quizService);
-        $entities = $this->quizService->getAll($paginator->getCurrentPage());
         $renderParams = [
             'session' => $this->session,
-            'message' => $this->session->get('message'),
-            'paginator' => $paginator,
-            'entities' => $entities
+            'message' => $this->session->get('message')
+        ];
+
+        //TODO Create a method to build a DTO for urlService and every findAll method.
+        $sortParam = ($request->getParameter('sort')) ?? "";
+        $filterParams = ($request->getParameter('type')) ?? "";
+        $searchParam = ($request->getParameter('search')) ?? "";
+
+        $renderParams["paginator"] = $paginator = $this->createCustomPaginator(
+            $request,
+            $this->quizService,
+            $filterParams,
+            $searchParam
+        );
+        $renderParams["urlHelper"] = $this->createUrlHelper($request, $paginator);
+        $renderParams['entities'] => $this->quizService->getAll(
+            $renderParams['paginator'],
+            $filterParams,
+            $searchParam,
+            $sortParam
+        );
         ];
 
         return $this->renderer->renderView($path, $renderParams);
