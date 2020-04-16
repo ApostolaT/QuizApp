@@ -48,15 +48,6 @@ class UserController extends AbstractController
     }
 
     /**
-     * @param MessageService $messageService
-     */
-    public function setMessageService(MessageService $messageService)
-    {
-        $this->messageService = $messageService;
-        $this->messageService->setSession($this->session);
-    }
-
-    /**
      * This function if called by an admin displays the current page
      * with all the users from the system. If a user calls to see all
      * the users, he is redirected to a login page;
